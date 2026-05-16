@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 820fb83ff7bef46459039c95107c9b5b
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Ramche
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 55015223ef50fab4093f05527d1c6783, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

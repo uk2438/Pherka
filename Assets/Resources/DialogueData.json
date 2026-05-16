@@ -1,0 +1,35 @@
+{
+  "dialogues": [
+    {
+      "id": 100,
+      "name": "Desk",
+      "sentences": ["평범한 표지판이다.", "저장 하시겠습니까?"]
+    },
+    {
+      "id": 200,
+      "name": "Box",
+      "sentences": ["평범한 상자이다.", "옮길 수 있을 것 같다."]
+      
+    },
+    {
+      "id": 1000,
+      "name": "Ludo",
+      "sentences": ["안녕?", "날씨 좋다 그치?", "옆에 있는 상자를 내 앞으로 옮겨줄래?"],
+      "sequences": [2, 2, 2]
+
+    },
+    {
+      "id": 1001,
+      "name": "Ludo",
+      "sentences": ["정말 고마워!"],
+      "sequences": [2]
+
+    },
+        {
+      "id": 1100,
+      "name": "Luna",
+      "sentences": ["힝....", "졸업작품이 너무 힘들어..."],
+            "sequences": [0,3]
+    }
+  ]
+}
