@@ -11,17 +11,19 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     bool isHorizontalMove = false;
     bool isGrabbing = false;
-    public Animator anim;
     Vector3 vecDir;
     GameObject obj;
     Vector3 distancePlayerObj;
-    public float grabDelay;
     float lastGrabTime;
     RaycastHit2D rayhit;
     RaycastHit2D prevRayHit = default;
     Vector2 rayDirection;
-    public BoxCollider2D hitBox, objCol;
     Vector2 prevSize, prevOffset;
+    BoxCollider2D objCol;
+
+    public PlayerData playerData = new PlayerData();
+    public MovementData objMovementData = new MovementData();
+    public FadeData fadeData = new FadeData();
 
 
     void Awake()
@@ -34,7 +36,9 @@ public class PlayerController : MonoBehaviour
         // get axis 방향키에따라 입력값이 -1, 0, 1로 받음
         // 쯔꾸르형 게임에선 대각선 이동이 안되도록 하기 위해서 수평과 수직 중 하나의 입력만 받도록 함
         // 대화창이 열려있을때에는 움직이지 못하게 하기
-        if (GameManager.Instance.isAction || FadeManager.Instance.isFading || GameManager.Instance.isPause)
+        if (GameManager.Instance.gameData.isAction || 
+            FadeManager.Instance.fadeData.isFading || 
+            GameManager.Instance.panelData.isPause)
         {
             h = 0;
             v = 0;
@@ -73,8 +77,8 @@ public class PlayerController : MonoBehaviour
 
         // 4. 애니메이션 파라미터 전달
         // 현재 애니메이터가 들고 있는 값과 새로 입력된 값이 다를 때만 업데이트
-        int curH = anim.GetInteger("hAxisRaw");
-        int curV = anim.GetInteger("vAxisRaw");
+        int curH = playerData.anim.GetInteger("hAxisRaw");
+        int curV = playerData.anim.GetInteger("vAxisRaw");
 
         // 실제 애니메이터에 꽂아줄 목표 값 계산
         int targetH = isHorizontalMove ? (int)h : 0;
@@ -83,16 +87,16 @@ public class PlayerController : MonoBehaviour
         if (curH != targetH || curV != targetV)
         {
             // 1. 값이 변했으므로 isChange를 true로 켜서 트랜지션 유도
-            anim.SetBool("isChange", true);
+            playerData.anim.SetBool("isChange", true);
 
             // 2. 바뀐 방향 값 전달
-            anim.SetInteger("hAxisRaw", targetH);
-            anim.SetInteger("vAxisRaw", targetV);
+            playerData.anim.SetInteger("hAxisRaw", targetH);
+            playerData.anim.SetInteger("vAxisRaw", targetV);
         }
         else
         {
             // 3. 값이 변하지 않은 상태(이미 걷는 중이거나 가만히 있는 중)라면 false
-            anim.SetBool("isChange", false);
+            playerData.anim.SetBool("isChange", false);
         }
 
 
@@ -121,7 +125,7 @@ public class PlayerController : MonoBehaviour
         {
             if (rayhit.collider.CompareTag("Structure") || rayhit.collider.CompareTag("Carried"))
             {
-                GameManager.Instance.scanObject = obj;
+                GameManager.Instance.gameData.scanObject = obj;
                 GameManager.Instance.Action();
             }
 
@@ -159,7 +163,7 @@ public class PlayerController : MonoBehaviour
             //옮길 수 있는 obj인지 확인
             if (rayhit.collider.CompareTag("Carried"))
             {   //grab key down && grab cooltime
-                if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastGrabTime + grabDelay)
+                if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time >= lastGrabTime + playerData.grabDelay)
                 {   //player와 obj의 간격 계산
                     distancePlayerObj = obj.transform.position - transform.position;
 
@@ -246,7 +250,7 @@ public class PlayerController : MonoBehaviour
         prevRayHit = rayhit;
 
         //anim 출력
-        anim.SetBool("isGrabbing", true);
+        playerData.anim.SetBool("isGrabbing", true);
 
         //obj를 player에 상속
         //grabobj를 쉽게 관리 하기 위함
@@ -278,7 +282,7 @@ public class PlayerController : MonoBehaviour
         //값들 초기화
         isGrabbing = false;
         prevRayHit = default;
-        anim.SetBool("isGrabbing", false);
+        playerData.anim.SetBool("isGrabbing", false);
         obj.transform.SetParent(null);
 
         //물체도 초기화
@@ -300,33 +304,33 @@ public class PlayerController : MonoBehaviour
     void ChangeHitBox()
     {   //물건의 상하좌우를 판별 후 히트박스 재정의
         //player의 히트박스를 크게하는 형식으로 개발
-        prevSize = hitBox.size;
-        prevOffset = hitBox.offset;
+        prevSize = playerData.hitBox.size;
+        prevOffset = playerData.hitBox.offset;
         if (obj != null)
         {
             if (rayDirection.y == 0)
             {
                 if (rayDirection.x > 0)
                 {
-                    hitBox.offset = new Vector2(0.5f, 0f);
+                    playerData.hitBox.offset = new Vector2(0.5f, 0f);
                 }
                 else
                 {
-                    hitBox.offset = new Vector2(-0.5f, 0f);
+                    playerData.hitBox.offset = new Vector2(-0.5f, 0f);
                 }
-                hitBox.size = new Vector2(1.8f, 0.9f);
+                playerData.hitBox.size = new Vector2(1.8f, 0.9f);
             }
             else
             {
                 if (rayDirection.y > 0)
                 {
-                    hitBox.offset = new Vector2(0f, 0.5f);
+                    playerData.hitBox.offset = new Vector2(0f, 0.5f);
                 }
                 else
                 {
-                    hitBox.offset = new Vector2(0f, -0.5f);
+                    playerData.hitBox.offset = new Vector2(0f, -0.5f);
                 }
-                hitBox.size = new Vector2(0.9f, 1.8f);
+                playerData.hitBox.size = new Vector2(0.9f, 1.8f);
             }
         }
 
@@ -334,35 +338,33 @@ public class PlayerController : MonoBehaviour
 
     void InitHitBox()
     {   //player hitbox init
-        hitBox.offset = prevOffset;
-        hitBox.size = prevSize;
+        playerData.hitBox.offset = prevOffset;
+        playerData.hitBox.size = prevSize;
     }
 
     IEnumerator Move()
     {
         rayDirection = -rayhit.normal;
 
-        MovementData objMovementData = obj.GetComponent<MovementData>();
-
         float xOffset = objMovementData.hOffset;
         float yOffset = objMovementData.vOffset;
-        Vector3 originPos = this.transform.position;
+        Vector3 originPos = transform.position;
         yield return StartCoroutine(FadeManager.Instance.FadeOut(0.5f));
         if (rayDirection == Vector2.up)
         {
-            this.transform.position = new Vector3(originPos.x, originPos.y + yOffset, originPos.z);
+            transform.position = new Vector3(originPos.x, originPos.y + yOffset, originPos.z);
         }
         else if (rayDirection == Vector2.down)
         {
-            this.transform.position = new Vector3(originPos.x, originPos.y - yOffset, originPos.z);
+            transform.position = new Vector3(originPos.x, originPos.y - yOffset, originPos.z);
         }
         else if (rayDirection == Vector2.left)
         {
-            this.transform.position = new Vector3(originPos.x + xOffset, originPos.y, originPos.z);
+            transform.position = new Vector3(originPos.x + xOffset, originPos.y, originPos.z);
         }
-        else if (rayDirection == Vector2.down)
+        else if (rayDirection == Vector2.right)
         {
-            this.transform.position = new Vector3(originPos.x - xOffset, originPos.y, originPos.z);
+            transform.position = new Vector3(originPos.x - xOffset, originPos.y, originPos.z);
         }
         yield return StartCoroutine(FadeManager.Instance.FadeIn(0.5f));
     }

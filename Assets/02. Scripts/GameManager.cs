@@ -8,34 +8,25 @@ using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
-    public TextMeshProUGUI mainText;
-    public TextMeshProUGUI nameText;
-    public GameObject scanObject;
-    public Animator dialogueBox;
-    public bool isAction = false;
-    public Image potrait;
-    public GameObject potraitObj;
-    public Animator potraitAnim;
-
-    public int talkIdx;
-    public int prevPotrait;
-    public int currPotrait;
-    public GameObject pausePanel;
-    public GameObject quitPanel;
-    public GameObject checkPanel;
-    public GameObject firstButton;
-    public bool isPause = false;
+    public UIData UIData = new UIData();
+    public GameData gameData = new GameData();
+    public PanelData panelData = new PanelData();
 
     public void Action()
     {
-        ObjectData objData = scanObject.GetComponent<ObjectData>();
+        ObjectData objData = gameData.scanObject.GetComponent<ObjectData>();
         Talk(objData);
         //대화창 애니메이션 (실전에선 안쓸듯?)
-        dialogueBox.SetBool("isShow", isAction);
+        UIData.dialogueBox.SetBool("isShow", gameData.isAction);
     }
 
     public void Talk(ObjectData objData)
     {
+        // GameManager.cs의 Talk 함수 내부 (39번째 줄 바로 위에 붙여넣기)
+        Debug.Log($"[디버그 완료] objData 상태: {objData != null}");
+        Debug.Log($"[디버그 완료] UIData 상태: {UIData != null}");
+        if (UIData != null) Debug.Log($"[디버그 완료] UIData.nameText 상태: {UIData.nameText != null}");
+        Debug.Log($"[디버그 완료] DialogueManager 인스턴스 상태: {DialogueManager.Instance != null}");
         string nameData = "";
         string talkData = "";
         // 1. 대사 데이터를 먼저 가져옵니다.
@@ -45,12 +36,12 @@ public class GameManager : Singleton<GameManager>
             TextAnim.Instance.SetText("");
             return;
         }
-        talkData = DialogueManager.Instance.GetTalk(objData, talkIdx);
+        talkData = DialogueManager.Instance.GetTalk(objData, UIData.talkIdx);
         nameData = DialogueManager.Instance.GetName(objData);
 
         if (nameData != null)
         {
-            nameText.text = nameData;
+            UIData.nameText.text = nameData;
         }
         // 2. 대사가 끝났는지(null인지) 먼저 확인합니다.
         if (talkData == null)
@@ -62,8 +53,8 @@ public class GameManager : Singleton<GameManager>
             }
             else
             {
-                isAction = false;
-                talkIdx = 0;
+                gameData.isAction = false;
+                UIData.talkIdx = 0;
                 return;
             }
         }
@@ -73,30 +64,30 @@ public class GameManager : Singleton<GameManager>
 
         if (isNpc)
         {
-            if (potraitObj != null)
+            if (UIData.potraitObj != null)
             {
-                potraitObj.SetActive(true);
+                UIData.potraitObj.SetActive(true);
             }
             // NPC일 때만 초상화 데이터를 가져오고 색상을 조절합니다.
-            potrait.sprite = DialogueManager.Instance.GetPotrait(objData, talkIdx);
-            currPotrait = DialogueManager.Instance.GetCurrentSequenceNum(objData, talkIdx);
-            potrait.color = new Color(1, 1, 1, 1);
-            if (prevPotrait != currPotrait)
+            UIData.potrait.sprite = DialogueManager.Instance.GetPotrait(objData, UIData.talkIdx);
+            UIData.currPotrait = DialogueManager.Instance.GetCurrentSequenceNum(objData, UIData.talkIdx);
+            UIData.potrait.color = new Color(1, 1, 1, 1);
+            if (UIData.prevPotrait != UIData.currPotrait)
             {
                 // 초상화가 바뀔 때 애니메이션
-                potraitAnim.SetTrigger("doMove");
-                prevPotrait = currPotrait;
+                UIData.potraitAnim.SetTrigger("doMove");
+                UIData.prevPotrait = UIData.currPotrait;
             }
         }
         else
         {
             // NPC가 아니면 초상화를 투명하게 만듭니다.
-            potrait.color = new Color(1, 1, 1, 0);
+            UIData.potrait.color = new Color(1, 1, 1, 0);
         }
         // 텍스트 애니메이션
         TextAnim.Instance.SetText(talkData);
-        isAction = true;
-        talkIdx++;
+        gameData.isAction = true;
+        UIData.talkIdx++;
     }
 
 
@@ -105,24 +96,24 @@ public class GameManager : Singleton<GameManager>
     public void TogglePause()
     {
         //isPause라는 변수 대신 pausePanel.activeSelf라는 변수도 사용가능
-        if (!isPause)
+        if (!panelData.isPause)
         {
-            isPause = true;
-            pausePanel.SetActive(isPause);
+            panelData.isPause = true;
+            panelData.pausePanel.SetActive(panelData.isPause);
         }
         else
         {
-            isPause = false;
-            pausePanel.SetActive(isPause);
+            panelData.isPause = false;
+            panelData.pausePanel.SetActive(panelData.isPause);
         }
     }
 
     public void OpenQuit()
     {
         //이거 작동 안됨 고쳐야 함
-        if (!quitPanel.activeSelf)
+        if (!panelData.quitPanel.activeSelf)
         {
-            quitPanel.SetActive(true);
+            panelData.quitPanel.SetActive(true);
         }
     }
 
@@ -133,9 +124,9 @@ public class GameManager : Singleton<GameManager>
 
     public void CancelQuit()
     {
-        if (quitPanel.activeSelf)
+        if (panelData.quitPanel.activeSelf)
         {
-            quitPanel.SetActive(false);
+            panelData.quitPanel.SetActive(false);
         }
     }
 
@@ -147,21 +138,21 @@ public class GameManager : Singleton<GameManager>
 
     public void OpenCheckPanel()
     {
-        checkPanel.SetActive(true);
+        panelData.checkPanel.SetActive(true);
         //키보드로 버튼 선택 가능하게 만드는 함수
         // inspector창에서 button - navigation을 automatic이여야만 사용가능
         EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(firstButton);
+        EventSystem.current.SetSelectedGameObject(panelData.firstButton);
         // 중요: 이번 프레임의 모든 입력을 리셋하여 
         // 다음 버튼 클릭 판정이 스페이스바에 의해 즉시 발생하는 것을 방지
         Input.ResetInputAxes();
     }
     public void CloseSave()
     {
-        isAction = false;
-        talkIdx = 0;
-        dialogueBox.SetBool("isShow", isAction);
-        checkPanel.SetActive(false);
+        gameData.isAction = false;
+        UIData.talkIdx = 0;
+        UIData.dialogueBox.SetBool("isShow", gameData.isAction);
+        panelData.checkPanel.SetActive(false);
 
         // 중요: 이번 프레임의 모든 입력을 리셋하여 
         // 다음 버튼 클릭 판정이 스페이스바에 의해 즉시 발생하는 것을 방지
