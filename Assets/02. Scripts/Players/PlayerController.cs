@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         // 대화창이 열려있을때에는 움직이지 못하게 하기
         if (GameManager.Instance.gameData.isAction || 
             FadeManager.Instance.fadeData.isFading || 
-            GameManager.Instance.panelData.isPause)
+            UIManager.Instance.panelData.isPause)
         {
             h = 0;
             v = 0;
