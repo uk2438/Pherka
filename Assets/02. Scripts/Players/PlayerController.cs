@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     Vector2 rayDirection;
     Vector2 prevSize, prevOffset;
     BoxCollider2D objCol;
+    DoorInteraction doorInteraction;
 
     public PlayerData playerData = new PlayerData();
     public MovementData objMovementData = new MovementData();
@@ -36,8 +37,8 @@ public class PlayerController : MonoBehaviour
         // get axis 방향키에따라 입력값이 -1, 0, 1로 받음
         // 쯔꾸르형 게임에선 대각선 이동이 안되도록 하기 위해서 수평과 수직 중 하나의 입력만 받도록 함
         // 대화창이 열려있을때에는 움직이지 못하게 하기
-        if (GameManager.Instance.gameData.isAction || 
-            FadeManager.Instance.fadeData.isFading || 
+        if (GameManager.Instance.gameData.isAction ||
+            FadeManager.Instance.fadeData.isFading ||
             UIManager.Instance.panelData.isPause)
         {
             h = 0;
@@ -120,13 +121,21 @@ public class PlayerController : MonoBehaviour
 
         }
 
+
         // game action 구현
+
         if (Input.GetKeyDown(KeyCode.Space) && obj != null)
         {
             if (rayhit.collider.CompareTag("Structure") || rayhit.collider.CompareTag("Carried"))
             {
                 GameManager.Instance.gameData.scanObject = obj;
                 GameManager.Instance.Action();
+            }
+            else if (rayhit.collider.CompareTag("Door"))
+            {
+                doorInteraction = rayhit.collider.GetComponent<DoorInteraction>();
+                if (doorInteraction != null)
+                    doorInteraction.OpenDoor();
             }
 
             else if (rayhit.collider.CompareTag("Movement"))
@@ -244,6 +253,15 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (GameManager.Instance.gameData.isDoorOpen && doorInteraction != null)
+        {
+            doorInteraction.CloseDoor();
+            doorInteraction = null;
+        }
+    }
     void Grab()
     {
         isGrabbing = true;
@@ -342,30 +360,13 @@ public class PlayerController : MonoBehaviour
         playerData.hitBox.size = prevSize;
     }
 
+    // 방과 방사이를 이동할 때 사용하는 함수
     IEnumerator Move()
     {
-        rayDirection = -rayhit.normal;
 
-        float xOffset = objMovementData.hOffset;
-        float yOffset = objMovementData.vOffset;
-        Vector3 originPos = transform.position;
         yield return StartCoroutine(FadeManager.Instance.FadeOut(0.5f));
-        if (rayDirection == Vector2.up)
-        {
-            transform.position = new Vector3(originPos.x, originPos.y + yOffset, originPos.z);
-        }
-        else if (rayDirection == Vector2.down)
-        {
-            transform.position = new Vector3(originPos.x, originPos.y - yOffset, originPos.z);
-        }
-        else if (rayDirection == Vector2.left)
-        {
-            transform.position = new Vector3(originPos.x + xOffset, originPos.y, originPos.z);
-        }
-        else if (rayDirection == Vector2.right)
-        {
-            transform.position = new Vector3(originPos.x - xOffset, originPos.y, originPos.z);
-        }
+
         yield return StartCoroutine(FadeManager.Instance.FadeIn(0.5f));
     }
+
 }

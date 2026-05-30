@@ -33,6 +33,8 @@ public class GameData
     [Header("-----GameData-----")]
     public GameObject scanObject;
     public bool isAction = false;
+
+    public bool isDoorOpen = false;
 }
 
 [Serializable]
@@ -58,11 +60,23 @@ public class FadeData
 }
 
 //TeleportManager에 사용할 변수들
+[Serializable]
 public class TeleportData
 {
     [Header("-----TeleportData-----")]
     public GameObject targetRoom;
-    public GameObject curruntRoom;
+    public Vector3 offsetPosition;
+}
+
+[Serializable]
+
+public class SoundData
+{
+    [Header("-----SoundData-----")]
+    public AudioSource bgmSource;
+    public AudioSource sfxSource;
+    public AudioClip[] bgmClips;
+    public AudioClip[] sfxClips;
 }
 
 #endregion

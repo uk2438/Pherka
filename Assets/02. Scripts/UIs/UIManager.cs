@@ -49,7 +49,6 @@ public class UIManager : Singleton<UIManager>
         // 텍스트 애니메이션 실행
         TextAnim.Instance.SetText(talkData);
     }
-
     // 일시정지 토글
     public void TogglePause()
     {
