@@ -27,6 +27,9 @@ public class UIData
     public Animator potraitAnim;
     [HideInInspector]
     public int prevPotrait, currPotrait;
+
+    // [Header("-----SettingData-----")]
+
 }
 public class GameData
 {
@@ -35,6 +38,7 @@ public class GameData
     public bool isAction = false;
 
     public bool isDoorOpen = false;
+    public int ChapterIdx;
 }
 
 [Serializable]
@@ -47,6 +51,7 @@ public class PanelData
     public GameObject firstButton;
     [HideInInspector]
     public bool isPause = false;
+    public bool isChoice = false;
 }
 
 //FadeManager에 사용할 변수들
@@ -95,5 +100,12 @@ public class MovementData
 {
     public float hOffset;
     public float vOffset;
+}
+#endregion
+// 일시정지했을 떄 나타나는 설정 데이터
+#region Setting Data
+public class MenuData
+{
+    public bool isSetting = false;
 }
 #endregion

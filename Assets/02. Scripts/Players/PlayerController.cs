@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
         // game action 구현
 
-        if (Input.GetKeyDown(KeyCode.Space) && obj != null)
+        if (Input.GetKeyDown(KeyCode.Space) && obj != null&& !UIManager.Instance.panelData.isChoice)
         {
             if (rayhit.collider.CompareTag("Structure") || rayhit.collider.CompareTag("Carried"))
             {
@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
             {
                 doorInteraction = rayhit.collider.GetComponent<DoorInteraction>();
                 if (doorInteraction != null)
-                    doorInteraction.OpenDoor();
+                    doorInteraction.Activate();
             }
 
             else if (rayhit.collider.CompareTag("Movement"))
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
         // pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            GameManager.Instance.TogglePause();
+            UIManager.Instance.TogglePause();
         }
 
         // grab 상태일때는 raycast의 시선이 고정되게
@@ -256,9 +256,10 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
+        if(doorInteraction == null) return;
         if (GameManager.Instance.gameData.isDoorOpen && doorInteraction != null)
         {
-            doorInteraction.CloseDoor();
+            doorInteraction.Deactivate();
             doorInteraction = null;
         }
     }

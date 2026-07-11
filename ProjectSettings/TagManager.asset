@@ -11,6 +11,7 @@ TagManager:
   - Placed
   - Door
   - DoorTrigger
+  - Usable
   layers:
   - Default
   - TransparentFX

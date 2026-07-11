@@ -33,66 +33,30 @@ public class DialogueManager : Singleton<DialogueManager>
         }
     }
 
-    public string GetTalk(ObjectData objdata, int talkIdx)
+    public DialogueLine? GetLine(ObjectData objectData, int lineIdx)
     {
-        if (!dialogueDict.ContainsKey(objdata.id)) return null;
+        if(!dialogueDict.ContainsKey(objectData.id)) return null;
 
-        DialogueData data = dialogueDict[objdata.id];
+        DialogueData data = dialogueDict[objectData.id];
 
-        if (data.sentences != null && talkIdx < data.sentences.Length)
-        {
-            return data.sentences[talkIdx];
-        }
+        if(data.lines == null || lineIdx < 0 || lineIdx >= data.lines.Length) 
+            return null; //대화 종료
 
-        return null; // 대사가 끝남
+        return data.lines[lineIdx];
+
     }
 
-    public Sprite GetPotrait(ObjectData objData, int talkIdx)
+    public Sprite GetPotrait(ObjectData objData, DialogueLine line)
     {
-        if (!dialogueDict.ContainsKey(objData.id)) return null;
-
-        DialogueData data = dialogueDict[objData.id];
-        int[] talkSequence = data.sequences;
-
-        // 1. 초상화 시퀀스가 없으면 null 반환
-        if (talkSequence == null || talkSequence.Length == 0)
-        {
+        if(objData.imgs == null || line.portraitIdx < 0 || line.portraitIdx >= objData.imgs.Length)
             return null;
-        }
 
-        // 2. 인덱스 범위 체크
-        if (talkIdx >= talkSequence.Length)
-        {
-            return null;
-        }
-
-        // 3. 위 조건을 다 통과했을 때만 배열에 접근
-        int spriteIdx = talkSequence[talkIdx];
-
-        // 4. imgs 배열 범위 체크
-        if (objData.imgs == null || spriteIdx >= objData.imgs.Length)
-        {
-            return null;
-        }
-
-        return objData.imgs[spriteIdx];
+        return objData.imgs[line.portraitIdx];
     }
 
     public string GetName(ObjectData objdata)
     {
         if (!dialogueDict.ContainsKey(objdata.id)) return "Unknown";
         return dialogueDict[objdata.id].name;
-    }
-
-    public int GetCurrentSequenceNum(ObjectData objData, int talkIdx)
-    {
-        if (!dialogueDict.ContainsKey(objData.id)) return -1;
-
-        DialogueData data = dialogueDict[objData.id];
-        if (data.sequences != null && talkIdx < data.sequences.Length)
-        {
-            return data.sequences[talkIdx];
-        }
-        return -1;
     }
 }
