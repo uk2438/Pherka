@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 public class TeleportManager : MonoBehaviour
 {
+    [Header("사운드 설정")]
+    public bool sound = false;
+    
+    [ShowIf("sound")]
+    public List<AudioClip> soundClips;
     public TeleportData teleportData = new TeleportData();
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -16,6 +22,7 @@ public class TeleportManager : MonoBehaviour
 
     IEnumerator TeleportSequence(Transform playerTransform)
     {
+        if(sound) SoundManager.Instance.PlaySFX(soundClips[0]);
         yield return StartCoroutine(FadeManager.Instance.FadeOut(1f));
         playerTransform.transform.position = teleportData.targetRoom.transform.position - teleportData.offsetPosition;
 

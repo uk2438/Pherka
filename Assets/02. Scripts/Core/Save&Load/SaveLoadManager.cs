@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.IO;
-public class SaveLoadManager : MonoBehaviour
+public class SaveLoadManager : Singleton<SaveLoadManager>
 {
     [Serializable]
     public class ObjectState
@@ -27,8 +27,7 @@ public class SaveLoadManager : MonoBehaviour
         string json = JsonUtility.ToJson(new Wrapper {objects = data}, true);
         string path = Application.persistentDataPath + "/save.json";
         File.WriteAllText(path, json);
-
-        UIManager.Instance.CloseCheckPanel();
+        Debug.Log(path);
     }
 
     public void LoadGame()

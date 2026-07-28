@@ -193,7 +193,7 @@ public class UIManager : Singleton<UIManager>
     // ── Choice UI on/off ────────────────────────────────────────────
 
 
-    public void ShowChoices(DialogueLine line, Action<int> onNextLineSelected)
+    public void ShowChoices(DialogueLine line, Action<int, int> onNextLineSelected)
     {
 
         if (choicePanel != null) choicePanel.SetActive(false);
@@ -205,12 +205,12 @@ public class UIManager : Singleton<UIManager>
         choiceButton1Text.text = line.choice1Text;
         choiceButton1.onClick.RemoveAllListeners();
         int next1 = line.choice1NextLineIdx;
-        choiceButton1.onClick.AddListener(() => onNextLineSelected(next1));
+        choiceButton1.onClick.AddListener(() => onNextLineSelected(0, next1));
 
         choiceButton2Text.text = line.choice2Text;
         choiceButton2.onClick.RemoveAllListeners();
         int next2 = line.choice2NextLineIdx;
-        choiceButton2.onClick.AddListener(() => onNextLineSelected(next2));
+        choiceButton2.onClick.AddListener(() => onNextLineSelected(1, next2));
 
         // 키보드 조작을 위해 첫 번째 버튼을 선택 상태로 설정
         EventSystem.current.SetSelectedGameObject(null);

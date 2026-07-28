@@ -6,16 +6,43 @@ public class GameManager : Singleton<GameManager>
 {
     public GameData gameData = new GameData();
 
-    // UI 분리로 인해 내부적으로 관리할 대화 인덱스
+    // 현재 진행 중인 대사 인덱스
     public int currentLineIdx = 0;
 
+
+    public void TriggerAction()
+    {
+        if(gameData.triggerObjectData == null) return;
+
+        gameData.isTrigger = true;
+
+        Talk(gameData.triggerObjectData);
+
+        UIManager.Instance.SetDialogueBoxActive(gameData.isTrigger);
+        
+    }
     public void Action()
     {
-        ObjectData objData = gameData.scanObject.GetComponent<ObjectData>();
+        if (gameData.scanObject == null)
+        {
+            Debug.LogWarning("상호작용할 오브젝트가 없습니다.");
+            return;
+        }
+
+        ObjectData objData =
+            gameData.scanObject.GetComponent<ObjectData>();
+
+        if (objData == null)
+        {
+            Debug.LogWarning("상호작용 오브젝트에 ObjectData가 없습니다.");
+            return;
+        }
+
         Talk(objData);
 
-        // UI 연출은 UIManager에게 위임
-        UIManager.Instance.SetDialogueBoxActive(gameData.isAction);
+        UIManager.Instance.SetDialogueBoxActive(
+            gameData.isAction
+        );
     }
 
     public void Talk(ObjectData objData)
@@ -26,36 +53,53 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        DialogueLine? lineNullable = DialogueManager.Instance.GetLine(objData, currentLineIdx);
+        DialogueLine? lineNullable =
+            DialogueManager.Instance.GetLine(
+                objData,
+                currentLineIdx
+            );
 
+        // 더 이상 출력할 대사가 없으면 대화 종료
         if (lineNullable == null)
         {
-            gameData.isAction = false;
-            currentLineIdx = 0;
+            EndDialogue();
             return;
         }
 
         DialogueLine line = lineNullable.Value;
-        string nameData = DialogueManager.Instance.GetName(objData);
+
+        string nameData =
+            DialogueManager.Instance.GetName(objData, currentLineIdx);
 
         gameData.isAction = true;
 
-        // 대사는 선택지 유무와 상관없이 항상 먼저 표시
+        // 현재 대사 표시
         UIManager.Instance.UpdateDialogueUI(objData, nameData, line);
 
         if (line.hasChoices)
         {
-            // 선택지가 있으면 버튼 띄우고 자동 진행 멈춤
-            UIManager.Instance.ShowChoices(line, (nextIdx) =>
-            {
-                currentLineIdx = nextIdx;
-                UIManager.Instance.HideChoices();
-                StartCoroutine(TalkNextFrame(objData));
-            });
+            UIManager.Instance.ShowChoices(
+                line,
+                (choiceIndex, nextIdx) =>
+                {
+                    UIManager.Instance.HideChoices();
+
+                    // ID가 1인 저장 책상에서
+                    // 첫 번째 선택지인 "예"를 눌렀을 때만 저장
+                    if (objData.id == 0 &&choiceIndex == 0)
+                    {
+                        SaveLoadManager.Instance.SaveGame();
+                    }
+
+                    currentLineIdx = nextIdx;
+
+                    StartCoroutine(TalkNextFrame(objData));
+                }
+            );
         }
         else
         {
-            // 선택지 없으면 기존처럼 자동으로 다음 라인 인덱스 저장
+            // 일반 대사는 다음 인덱스 저장
             currentLineIdx = line.nextLineIdx;
         }
     }
@@ -63,25 +107,25 @@ public class GameManager : Singleton<GameManager>
     private IEnumerator TalkNextFrame(ObjectData objData)
     {
         yield return null;
+
         Talk(objData);
+
+        UIManager.Instance.SetDialogueBoxActive(gameData.isAction);
+    }
+
+    private void EndDialogue()
+    {
+        gameData.isAction = false;
+        gameData.isTrigger = false;
+        gameData.triggerObjectData = null;
+        currentLineIdx = 0;
+
+        UIManager.Instance.HideChoices();
+        UIManager.Instance.SetDialogueBoxActive(false);
     }
 
     public void Quit()
     {
         Application.Quit();
     }
-
-    public void OpenSave()
-    {
-        Debug.Log("save panel open");
-    }
-
-    // public void CloseSave()
-    // {
-    //     gameData.isAction = false;
-    //     talkIdx = 0;
-
-    //     UIManager.Instance.SetDialogueBoxActive(gameData.isAction);
-    //     UIManager.Instance.CloseCheckPanel();
-    // }
 }

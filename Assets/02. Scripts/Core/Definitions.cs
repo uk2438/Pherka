@@ -35,9 +35,12 @@ public class GameData
 {
     [Header("-----GameData-----")]
     public GameObject scanObject;
+    public ObjectData triggerObjectData;
     public bool isAction = false;
-
+    public bool isRunningCutScene = false;
+    public bool isTrigger = false;
     public bool isDoorOpen = false;
+    
     public int ChapterIdx;
 }
 

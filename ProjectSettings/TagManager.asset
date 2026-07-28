@@ -12,6 +12,7 @@ TagManager:
   - Door
   - DoorTrigger
   - Usable
+  - BGMTrigger
   layers:
   - Default
   - TransparentFX

@@ -39,7 +39,8 @@ public class PlayerController : MonoBehaviour
         // 대화창이 열려있을때에는 움직이지 못하게 하기
         if (GameManager.Instance.gameData.isAction ||
             FadeManager.Instance.fadeData.isFading ||
-            UIManager.Instance.panelData.isPause)
+            UIManager.Instance.panelData.isPause ||
+            GameManager.Instance.gameData.isRunningCutScene)
         {
             h = 0;
             v = 0;
@@ -123,6 +124,9 @@ public class PlayerController : MonoBehaviour
 
 
         // game action 구현
+
+        if(Input.GetKeyDown(KeyCode.Space) && GameManager.Instance.gameData.isTrigger)
+            GameManager.Instance.TriggerAction();
 
         if (Input.GetKeyDown(KeyCode.Space) && obj != null&& !UIManager.Instance.panelData.isChoice)
         {
@@ -253,16 +257,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if(doorInteraction == null) return;
-        if (GameManager.Instance.gameData.isDoorOpen && doorInteraction != null)
-        {
-            doorInteraction.Deactivate();
-            doorInteraction = null;
-        }
-    }
     void Grab()
     {
         isGrabbing = true;

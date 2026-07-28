@@ -17,16 +17,9 @@ public abstract class InteractiableObject : MonoBehaviour
     }
 
 
-    protected void PlayInteractSound() => PlayClip(interactSound);
-    protected void PlayactivateSound() => PlayClip(activateSound);
-    protected void PlaydeactivateSound() => PlayClip(deactivateSound);
-
-    private void PlayClip(AudioClip clip)
-    {
-        if(audioSource == null || clip == null) return;
-        audioSource.clip = clip;
-        audioSource.Play();
-    }
+    protected void PlayInteractSound() => SoundManager.Instance.PlaySFX(interactSound);
+    protected void PlayactivateSound() => SoundManager.Instance.PlaySFX(activateSound);
+    protected void PlaydeactivateSound() =>SoundManager.Instance.PlaySFX(deactivateSound);
 
     public abstract void Activate();
     public abstract void Deactivate();
