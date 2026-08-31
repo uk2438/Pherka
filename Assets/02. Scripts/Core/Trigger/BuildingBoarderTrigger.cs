@@ -4,67 +4,21 @@ using UnityEngine;
 
 public class BuildingBoarderTrigger : MonoBehaviour
 {
-    ObjectData objectData;
-    [Header("백스텝 설정")]
-    public float stepDistance = 1f;
-    public float moveDuration = 0.3f;
-    public enum BackStepDirection {Up, Down, Left, Right};
-    public BackStepDirection backStepDir;
-    private Coroutine backStepCoroutine;
-    void Awake()
-    {
+    private ObjectData objectData;
+    private BackStepFunc backStep;
+    private void Awake() {
         objectData = GetComponent<ObjectData>();
-    }
-    void OnTriggerEnter2D(Collider2D other) {
-
-        if(!other.CompareTag("Player")) return;
-        GameManager.Instance.gameData.triggerObjectData = objectData;
-        GameManager.Instance.TriggerAction();
-
-        BackStep(other.transform, stepDistance);
+        backStep = GetComponent<BackStepFunc>();
         
     }
 
-    void BackStep(Transform player, float distance)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (backStepCoroutine != null)
-            StopCoroutine(backStepCoroutine);
+        if(!other.CompareTag("Player")) return;
 
-        // backstep 방향 선택
-        Vector3 dir = GetDirection(backStepDir);
+        GameManager.Instance.gameData.triggerObjectData = objectData;
+        GameManager.Instance.TriggerAction();
 
-        Vector3 startPos = player.position;
-        Vector3 targetPos = startPos + dir * distance;
-
-        backStepCoroutine = StartCoroutine(MoveBackCoroutine(player, startPos, targetPos));
-    }
-
-    private Vector3 GetDirection(BackStepDirection dir)
-    {
-        switch (dir)
-        {
-            case BackStepDirection.Up: return Vector3.up;
-            case BackStepDirection.Down: return Vector3.down;
-            case BackStepDirection.Left: return Vector3.left;
-            case BackStepDirection.Right: return Vector3.right;
-            default: return Vector3.up;
-            
-        }
-    }
-
-    private IEnumerator MoveBackCoroutine(Transform player, Vector3 startPos, Vector3 targetPos)
-    {
-        float elapsed = 0f;
-
-        while (elapsed < moveDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / moveDuration);
-            player.position = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }
-
-        player.position = targetPos;
-        backStepCoroutine = null;
+        backStep.BackStep(other.transform, backStep.stepDistance);
     }
 }

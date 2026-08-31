@@ -10,6 +10,9 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
     [Header("컷신 대화 데이터")]
     [SerializeField] private ObjectData dialogueObjectData;
 
+    [Header("컷신 등장인물 데이터")]
+    [SerializeField] private CharacterData characterData;
+
     private DialogueLine currentLine;
     private bool isDialogueRunning;
     private bool isChoice;
@@ -36,29 +39,32 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
         if (!Input.GetKeyDown(KeyCode.Space))
             return;
 
-        // 글자가 출력 중이면 현재 문장을 즉시 완성
         if (TextAnim.Instance.isAnim)
         {
             TextAnim.Instance.SetText(currentLine.sentence);
             return;
         }
 
-        // 출력이 끝났으면 다음 대사로 이동
         GoToNextLine(currentLine.nextLineIdx);
     }
 
-    // Timeline Signal Receiver에서 호출
     public void StartDialogue(int startIndex)
     {
         if (director == null)
         {
-            Debug.LogError("PlayableDirector가 연결되지 않았습니다.", this);
+            Debug.LogError(
+                "PlayableDirector가 연결되지 않았습니다.",
+                this
+            );
             return;
         }
 
         if (dialogueObjectData == null)
         {
-            Debug.LogError("컷신 ObjectData가 연결되지 않았습니다.", this);
+            Debug.LogError(
+                "컷신 대화용 ObjectData가 연결되지 않았습니다.",
+                this
+            );
             return;
         }
 
@@ -70,7 +76,9 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
 
         GameManager.Instance.gameData.isAction = true;
 
-        director.Pause();
+
+        SetTimelineSpeed(0);
+
 
         UIManager.Instance.SetDialogueBoxActive(true);
 
@@ -80,7 +88,10 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
     private void ShowLine(int lineIndex)
     {
         DialogueLine? line =
-            DialogueManager.Instance.GetLine(dialogueObjectData, lineIndex);
+            DialogueManager.Instance.GetLine(
+                dialogueObjectData,
+                lineIndex
+            );
 
         if (!line.HasValue)
         {
@@ -91,10 +102,13 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
         currentLine = line.Value;
 
         string speakerName =
-            DialogueManager.Instance.GetName(dialogueObjectData, lineIndex);
+            DialogueManager.Instance.GetName(
+                dialogueObjectData,
+                lineIndex
+            );
 
-        UIManager.Instance.UpdateDialogueUI(
-            dialogueObjectData,
+        UIManager.Instance.UpdateCutSceneDialogueUI(
+            characterData,
             speakerName,
             currentLine
         );
@@ -122,9 +136,9 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
     }
 
     private void OnChoiceSelected(
-       int choiceIndex,
-       int nextLineIndex
-   )
+        int choiceIndex,
+        int nextLineIndex
+    )
     {
         UIManager.Instance.HideChoices();
 
@@ -146,16 +160,30 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
         UIManager.Instance.HideChoices();
         UIManager.Instance.SetDialogueBoxActive(false);
 
-        if (director != null)
-        {
-            director.Resume();
-        }
+        SetTimelineSpeed(1);
     }
 
-    // Timeline 종료용 Signal에서도 호출 가능
     public void FinishDialogueSignal()
     {
         GameManager.Instance.gameData.isRunningCutScene = false;
         FinishDialogue();
     }
+    private void SetTimelineSpeed(double speed)
+{
+    if (director == null)
+        return;
+
+    if (!director.playableGraph.IsValid())
+        return;
+
+    int rootCount =
+        director.playableGraph.GetRootPlayableCount();
+
+    for (int i = 0; i < rootCount; i++)
+    {
+        director.playableGraph
+            .GetRootPlayable(i)
+            .SetSpeed(speed);
+    }
+}
 }

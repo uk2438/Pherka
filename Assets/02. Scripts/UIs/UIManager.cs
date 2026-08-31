@@ -5,9 +5,14 @@ using UnityEngine.UI;
 using DialogueSystem;
 using System;
 using TMPro;
+using UnityEngine.TextCore.Text;
 
 public class UIManager : Singleton<UIManager>
 {
+
+    // ── 초상화 index ──────────────────────────────────────────
+    private int prevPotraitIdx = -1;
+    private int currPotraitIdx = -1;
     // ── 볼륨 슬라이더 ──────────────────────────────────────────
     [Header("볼륨 슬라이더")]
     [SerializeField] private Slider bgmSlider;
@@ -113,35 +118,90 @@ public class UIManager : Singleton<UIManager>
         UIData.dialogueBox.SetBool("isShow", isActive);
     }
 
-    public void UpdateDialogueUI(ObjectData objData, string nameData, DialogueLine line)
+    public void UpdatePotrait(CharacterData characterData, DialogueLine line)
     {
-        if (nameData != null)
+        if (characterData == null || characterData.potraits == null || line.potraitIdx < 0 || line.potraitIdx >= characterData.potraits.Length || characterData.potraits[line.potraitIdx] == null)
         {
-            UIData.nameText.text = nameData;
+            HidePotrait();
+            return;
         }
-        bool isNpc = objData.isNpc;
-        if (isNpc)
+
+        Sprite portraitSprite = characterData.potraits[line.potraitIdx];
+
+        if (UIData.potraitObj != null)
         {
-            if (UIData.potraitObj != null)
-            {
-                UIData.potraitObj.SetActive(true);
-            }
+            UIData.potraitObj.SetActive(true);
+        }
 
-            UIData.potrait.sprite = DialogueManager.Instance.GetPotrait(objData, line);
-            UIData.currPotrait = line.portraitIdx;
-            UIData.potrait.color = new Color(1, 1, 1, 1);
+        if (UIData.potrait != null)
+        {
+            UIData.potrait.sprite = portraitSprite;
+            UIData.potrait.color = Color.white;
+        }
 
-            if (UIData.prevPotrait != UIData.currPotrait)
+        currPotraitIdx = line.potraitIdx;
+
+        if (prevPotraitIdx != currPotraitIdx)
+        {
+            if (UIData.potraitAnim != null)
             {
                 UIData.potraitAnim.SetTrigger("doMove");
-                UIData.prevPotrait = UIData.currPotrait;
             }
+
+            prevPotraitIdx = currPotraitIdx;
         }
-        else
+    }
+    private void HidePotrait()
+    {
+        if (UIData.potraitObj != null)
         {
-            UIData.potrait.color = new Color(1, 1, 1, 0);
+            UIData.potraitObj.SetActive(false);
         }
-        // hasChoices가 true면 기존 텍스트를 그대로 유지하고, 새로 덮어쓰지 않음
+
+        if (UIData.potrait != null)
+        {
+            UIData.potrait.sprite = null;
+            UIData.potrait.color = new Color(1f, 1f, 1f, 0f);
+        }
+
+        currPotraitIdx = -1;
+        prevPotraitIdx = -1;
+    }
+
+    public void UpdateDialogueUI(ObjectData objData, string nameData, DialogueLine line)
+    {
+
+        if (UIData.nameText != null)
+        {
+            UIData.nameText.text = nameData ?? string.Empty;
+
+        }
+
+        CharacterData characterData = objData != null ? objData.characterData : null;
+
+        UpdatePotrait(characterData, line);
+
+        if (!line.hasChoices)
+        {
+            TextAnim.Instance.SetText(line.sentence);
+        }
+
+    }
+    public void UpdateMonologueUI(string nameData, DialogueLine line)
+    {
+        UIData.nameText.text = nameData;
+        TextAnim.Instance.SetText(line.sentence);
+    }
+    public void UpdateCutSceneDialogueUI(CharacterData characterData, string nameData, DialogueLine line)
+    {
+
+        if (UIData.nameText != null)
+        {
+            UIData.nameText.text = nameData ?? string.Empty;
+        }
+
+        UpdatePotrait(characterData, line);
+
         if (!line.hasChoices)
         {
             TextAnim.Instance.SetText(line.sentence);
@@ -235,12 +295,12 @@ public class UIManager : Singleton<UIManager>
     {
         Transform outlineTransform = button.transform.Find("ChoiceOutline");
 
-        if(outlineTransform != null)
+        if (outlineTransform != null)
         {
             GameObject choiceOutline = outlineTransform.gameObject;
 
             Image img = choiceOutline.GetComponent<Image>();
-            img.color = new Color(1,1,1,0);
+            img.color = new Color(1, 1, 1, 0);
         }
     }
 

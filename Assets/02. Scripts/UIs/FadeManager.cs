@@ -67,7 +67,7 @@ public class FadeManager : Singleton<FadeManager>
         fadeData.isFading = false;
     }
 
-        public IEnumerator FadeInImage(Sprite image, float fadeDuration)
+    public IEnumerator FadeInImage(Sprite image, float fadeDuration)
     {
         float elapsed = 0f;
         img.sprite = image;
@@ -85,6 +85,19 @@ public class FadeManager : Singleton<FadeManager>
         fadeData.isFading = false;
     }
 
+    public void SetGuideBackgroundActive(bool active)
+{
+    if (fadeData.guideBackground == null)
+    {
+        Debug.LogWarning(
+            "FadeManager의 Background가 지정되지 않았습니다."
+        );
+
+        return;
+    }
+
+    fadeData.guideBackground .gameObject.SetActive(active);
+}
     public void StartFadeOut(float fadeDuration)
     {
         StartCoroutine(FadeOut(fadeDuration));

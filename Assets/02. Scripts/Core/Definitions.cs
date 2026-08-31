@@ -25,8 +25,6 @@ public class UIData
     public Image potrait;
     public GameObject potraitObj;
     public Animator potraitAnim;
-    [HideInInspector]
-    public int prevPotrait, currPotrait;
 
     // [Header("-----SettingData-----")]
 
@@ -63,6 +61,7 @@ public class FadeData
 {
     [Header("-----FadeData-----")]
     public Image fadeImage;
+    public Image guideBackground;
     [HideInInspector]
     public bool isFading = false;
 }
@@ -95,7 +94,7 @@ public class PlayerData
 {
     public Animator anim;
     public float grabDelay;
-    public BoxCollider2D hitBox;
+    public CapsuleCollider2D hitBox;
     
 }
 

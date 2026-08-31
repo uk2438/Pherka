@@ -19,12 +19,15 @@ public class PlayerController : MonoBehaviour
     RaycastHit2D prevRayHit = default;
     Vector2 rayDirection;
     Vector2 prevSize, prevOffset;
+    CapsuleDirection2D prevDirection;
     BoxCollider2D objCol;
     DoorInteraction doorInteraction;
+    private bool isAutoMoving;
 
     public PlayerData playerData = new PlayerData();
     public MovementData objMovementData = new MovementData();
     public FadeData fadeData = new FadeData();
+    private Transform originalParent;
 
 
     void Awake()
@@ -40,7 +43,8 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.gameData.isAction ||
             FadeManager.Instance.fadeData.isFading ||
             UIManager.Instance.panelData.isPause ||
-            GameManager.Instance.gameData.isRunningCutScene)
+            GameManager.Instance.gameData.isRunningCutScene||
+            GuideManager.Instance.IsShowing)
         {
             h = 0;
             v = 0;
@@ -78,29 +82,46 @@ public class PlayerController : MonoBehaviour
         else if (!isHorizontalMove && v != 0) h = 0;
 
         // 4. 애니메이션 파라미터 전달
-        // 현재 애니메이터가 들고 있는 값과 새로 입력된 값이 다를 때만 업데이트
-        int curH = playerData.anim.GetInteger("hAxisRaw");
-        int curV = playerData.anim.GetInteger("vAxisRaw");
-
-        // 실제 애니메이터에 꽂아줄 목표 값 계산
-        int targetH = isHorizontalMove ? (int)h : 0;
-        int targetV = !isHorizontalMove ? (int)v : 0;
-
-        if (curH != targetH || curV != targetV)
+        if (!isAutoMoving)
         {
-            // 1. 값이 변했으므로 isChange를 true로 켜서 트랜지션 유도
-            playerData.anim.SetBool("isChange", true);
+            int curH =
+                playerData.anim.GetInteger("hAxisRaw");
 
-            // 2. 바뀐 방향 값 전달
-            playerData.anim.SetInteger("hAxisRaw", targetH);
-            playerData.anim.SetInteger("vAxisRaw", targetV);
-        }
-        else
-        {
-            // 3. 값이 변하지 않은 상태(이미 걷는 중이거나 가만히 있는 중)라면 false
-            playerData.anim.SetBool("isChange", false);
-        }
+            int curV =
+                playerData.anim.GetInteger("vAxisRaw");
 
+            int targetH =
+                isHorizontalMove ? (int)h : 0;
+
+            int targetV =
+                !isHorizontalMove ? (int)v : 0;
+
+            if (curH != targetH ||
+                curV != targetV)
+            {
+                playerData.anim.SetBool(
+                    "isChange",
+                    true
+                );
+
+                playerData.anim.SetInteger(
+                    "hAxisRaw",
+                    targetH
+                );
+
+                playerData.anim.SetInteger(
+                    "vAxisRaw",
+                    targetV
+                );
+            }
+            else
+            {
+                playerData.anim.SetBool(
+                    "isChange",
+                    false
+                );
+            }
+        }
 
 
         // raycast 방향
@@ -124,30 +145,43 @@ public class PlayerController : MonoBehaviour
 
 
         // game action 구현
-
-        if(Input.GetKeyDown(KeyCode.Space) && GameManager.Instance.gameData.isTrigger)
-            GameManager.Instance.TriggerAction();
-
-        if (Input.GetKeyDown(KeyCode.Space) && obj != null&& !UIManager.Instance.panelData.isChoice)
+        if (Input.GetKeyDown(KeyCode.Space) &&
+            !UIManager.Instance.panelData.isChoice)
         {
-            if (rayhit.collider.CompareTag("Structure") || rayhit.collider.CompareTag("Carried"))
+            // 트리거 대화 진행
+            if (GameManager.Instance.gameData.isTrigger)
             {
-                GameManager.Instance.gameData.scanObject = obj;
+                GameManager.Instance.TriggerAction();
+            }
+            // 일반 대화가 이미 진행 중이면 Raycast와 관계없이 진행
+            else if (GameManager.Instance.gameData.isAction)
+            {
                 GameManager.Instance.Action();
             }
-            else if (rayhit.collider.CompareTag("Door"))
+            // 새로운 오브젝트와 상호작용
+            else if (obj != null && rayhit.collider != null)
             {
-                doorInteraction = rayhit.collider.GetComponent<DoorInteraction>();
-                if (doorInteraction != null)
-                    doorInteraction.Activate();
+                if (rayhit.collider.CompareTag("Structure") ||
+                    rayhit.collider.CompareTag("Carried"))
+                {
+                    GameManager.Instance.gameData.scanObject = obj;
+                    GameManager.Instance.Action();
+                }
+                else if (rayhit.collider.CompareTag("Door"))
+                {
+                    doorInteraction =
+                        rayhit.collider.GetComponent<DoorInteraction>();
+
+                    if (doorInteraction != null)
+                    {
+                        doorInteraction.Activate();
+                    }
+                }
+                else if (rayhit.collider.CompareTag("Movement"))
+                {
+                    StartCoroutine(Move());
+                }
             }
-
-            else if (rayhit.collider.CompareTag("Movement"))
-            {
-                StartCoroutine(Move());
-            }
-
-
         }
         // pause
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -186,33 +220,16 @@ public class PlayerController : MonoBehaviour
                     if (rayDirection.y == 0)
                     {   //obj를 playser position 축에 맞추기
                         distancePlayerObj = new Vector3(distancePlayerObj.x, 0, 0);
-
-                        // if (distancePlayerObj.x < 0)
-                        // {   //1. 초기 개발 당시 obj와 player collider conflict 방지를 위해 offset만큼 띄어줌
-                        //     //2. 지금은 obj의 collider를 제거한 후 player의 collider를 2배로 증가 하는 식으로 개발
-                        //     distancePlayerObj += new Vector3(-offset, 0, 0);
-                        // }
-                        // else if (distancePlayerObj.x > 0)
-                        // {
-                        //     distancePlayerObj += new Vector3(offset, 0, 0);
-                        // }
                     }
                     else
                     {   //playser position 축에 맞추기
                         distancePlayerObj = new Vector3(0, distancePlayerObj.y, 0);
-
-                        // if (distancePlayerObj.y < 0)
-                        // {
-                        //     distancePlayerObj += new Vector3(0, -offset, 0);
-                        // }
-                        // else if (distancePlayerObj.y > 0)
-                        // {
-                        //     distancePlayerObj += new Vector3(0, offset, 0);
-                        // }
                     }
                     if (!isGrabbing)
+                    {
+                        prevDirection = playerData.hitBox.direction;
                         Grab();
-
+                    }
 
                     else
                     {
@@ -240,6 +257,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isAutoMoving) return;
         // 이동 방향 설정 및 이동 구현
         Vector2 moveDir;
         if (isHorizontalMove)
@@ -265,6 +283,8 @@ public class PlayerController : MonoBehaviour
         //anim 출력
         playerData.anim.SetBool("isGrabbing", true);
 
+        // 플레이어의 자식으로 바꾸기 전에 원래 부모 저장
+        originalParent = obj.transform.parent;
         //obj를 player에 상속
         //grabobj를 쉽게 관리 하기 위함
         obj.transform.SetParent(this.transform);
@@ -296,7 +316,7 @@ public class PlayerController : MonoBehaviour
         isGrabbing = false;
         prevRayHit = default;
         playerData.anim.SetBool("isGrabbing", false);
-        obj.transform.SetParent(null);
+        obj.transform.SetParent(originalParent, true);
 
         //물체도 초기화
         Rigidbody2D grabRb = obj.GetComponent<Rigidbody2D>();
@@ -315,44 +335,45 @@ public class PlayerController : MonoBehaviour
     }
 
     void ChangeHitBox()
-    {   //물건의 상하좌우를 판별 후 히트박스 재정의
-        //player의 히트박스를 크게하는 형식으로 개발
+    {
         prevSize = playerData.hitBox.size;
         prevOffset = playerData.hitBox.offset;
-        if (obj != null)
-        {
-            if (rayDirection.y == 0)
-            {
-                if (rayDirection.x > 0)
-                {
-                    playerData.hitBox.offset = new Vector2(0.5f, 0f);
-                }
-                else
-                {
-                    playerData.hitBox.offset = new Vector2(-0.5f, 0f);
-                }
-                playerData.hitBox.size = new Vector2(1.8f, 0.9f);
-            }
-            else
-            {
-                if (rayDirection.y > 0)
-                {
-                    playerData.hitBox.offset = new Vector2(0f, 0.5f);
-                }
-                else
-                {
-                    playerData.hitBox.offset = new Vector2(0f, -0.5f);
-                }
-                playerData.hitBox.size = new Vector2(0.9f, 1.8f);
-            }
-        }
 
+        if (obj == null) return;
+
+        if (rayDirection.y == 0)
+        {
+            playerData.hitBox.direction =
+                CapsuleDirection2D.Horizontal;
+
+            playerData.hitBox.offset =
+                rayDirection.x > 0
+                ? new Vector2(0.5f, 0f)
+                : new Vector2(-0.5f, 0f);
+
+            playerData.hitBox.size =
+                new Vector2(1.8f, 0.9f);
+        }
+        else
+        {
+            playerData.hitBox.direction =
+                CapsuleDirection2D.Vertical;
+
+            playerData.hitBox.offset =
+                rayDirection.y > 0
+                ? new Vector2(0f, 0.5f)
+                : new Vector2(0f, -0.5f);
+
+            playerData.hitBox.size =
+                new Vector2(0.9f, 1.8f);
+        }
     }
 
     void InitHitBox()
     {   //player hitbox init
         playerData.hitBox.offset = prevOffset;
         playerData.hitBox.size = prevSize;
+        playerData.hitBox.direction = prevDirection;
     }
 
     // 방과 방사이를 이동할 때 사용하는 함수
@@ -364,4 +385,169 @@ public class PlayerController : MonoBehaviour
         yield return StartCoroutine(FadeManager.Instance.FadeIn(0.5f));
     }
 
+    public void StopMovement()
+    {
+        h = 0;
+        v = 0;
+
+        rb.velocity = Vector2.zero;
+
+        if (playerData.anim != null)
+        {
+            playerData.anim.SetInteger("hAxisRaw", 0);
+            playerData.anim.SetInteger("vAxisRaw", 0);
+            playerData.anim.SetBool("isChange", true);
+        }
+    }
+
+    public IEnumerator WalkToPosition(
+        Vector3 targetPosition,
+        float autoMoveSpeed
+    )
+    {
+        isAutoMoving = true;
+        rb.velocity = Vector2.zero;
+
+        if (playerData.anim != null)
+        {
+            playerData.anim.SetBool(
+                "isChange",
+                false
+            );
+        }
+
+        yield return null;
+
+        while (Vector2.Distance(
+            rb.position,
+            targetPosition
+        ) > 0.02f)
+        {
+            Vector2 currentPosition = rb.position;
+
+            Vector2 difference =
+                (Vector2)targetPosition - currentPosition;
+
+            Vector2 direction;
+
+            if (Mathf.Abs(difference.x) >
+                Mathf.Abs(difference.y))
+            {
+                direction = new Vector2(
+                    Mathf.Sign(difference.x),
+                    0
+                );
+            }
+            else
+            {
+                direction = new Vector2(
+                    0,
+                    Mathf.Sign(difference.y)
+                );
+            }
+
+            UpdateCutSceneWalkAnimation(
+                direction
+            );
+
+            Vector2 nextPosition;
+
+            if (direction.x != 0)
+            {
+                float nextX = Mathf.MoveTowards(
+                    currentPosition.x,
+                    targetPosition.x,
+                    autoMoveSpeed *
+                    Time.fixedDeltaTime
+                );
+
+                nextPosition = new Vector2(
+                    nextX,
+                    currentPosition.y
+                );
+            }
+            else
+            {
+                float nextY = Mathf.MoveTowards(
+                    currentPosition.y,
+                    targetPosition.y,
+                    autoMoveSpeed *
+                    Time.fixedDeltaTime
+                );
+
+                nextPosition = new Vector2(
+                    currentPosition.x,
+                    nextY
+                );
+            }
+
+            rb.MovePosition(nextPosition);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.position = targetPosition;
+        rb.velocity = Vector2.zero;
+
+        isAutoMoving = false;
+
+        StopMovement();
+    }
+    private void UpdateCutSceneWalkAnimation(
+        Vector2 direction
+    )
+    {
+        if (playerData.anim == null)
+            return;
+
+        int horizontal = 0;
+        int vertical = 0;
+
+        if (direction.x != 0)
+        {
+            horizontal =
+                direction.x > 0 ? 1 : -1;
+        }
+        else if (direction.y != 0)
+        {
+            vertical =
+                direction.y > 0 ? 1 : -1;
+        }
+
+        int currentH =
+            playerData.anim.GetInteger(
+                "hAxisRaw"
+            );
+
+        int currentV =
+            playerData.anim.GetInteger(
+                "vAxisRaw"
+            );
+
+        if (currentH != horizontal ||
+            currentV != vertical)
+        {
+            playerData.anim.SetBool(
+                "isChange",
+                true
+            );
+
+            playerData.anim.SetInteger(
+                "hAxisRaw",
+                horizontal
+            );
+
+            playerData.anim.SetInteger(
+                "vAxisRaw",
+                vertical
+            );
+        }
+        else
+        {
+            playerData.anim.SetBool(
+                "isChange",
+                false
+            );
+        }
+    }
 }

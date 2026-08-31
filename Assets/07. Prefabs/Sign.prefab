@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6035810669292305382}
   - component: {fileID: 8134543559571690119}
   - component: {fileID: 86869713957610816}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sign
-  m_TagString: Untagged
+  m_TagString: Structure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,5 +144,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  isNpc: 0
-  imgs: []
+  characterData: {fileID: 0}

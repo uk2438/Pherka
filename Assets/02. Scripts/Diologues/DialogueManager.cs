@@ -4,7 +4,7 @@ using DialogueSystem;
 
 public class DialogueManager : Singleton<DialogueManager>
 {
-    // Key: 오브젝트 ID, Value: 대화 데이터
+    // Key: Dialogue ID, Value: 대화 데이터
     private readonly Dictionary<int, DialogueData> dialogueDict
         = new Dictionary<int, DialogueData>();
 
@@ -40,11 +40,21 @@ public class DialogueManager : Singleton<DialogueManager>
         if (objectData == null)
             return null;
 
+        int dialogueId = objectData.GetCurrentDialogueId();
+
+        if (dialogueId < 0)
+            return null;
+
         if (!dialogueDict.TryGetValue(
-            objectData.id,
+            dialogueId,
             out DialogueData data
         ))
         {
+            Debug.LogWarning(
+                $"Dialogue ID {dialogueId}에 해당하는 대화가 없습니다.",
+                objectData
+            );
+
             return null;
         }
 
@@ -52,35 +62,33 @@ public class DialogueManager : Singleton<DialogueManager>
             lineIdx < 0 ||
             lineIdx >= data.lines.Length)
         {
+            PrologueManager.Instance.CheckWasAction(objectData);
             return null;
         }
 
         return data.lines[lineIdx];
     }
 
-    public Sprite GetPotrait(
-        ObjectData objectData,
-        DialogueLine line
-    )
-    {
-        if (objectData == null ||
-            objectData.imgs == null ||
-            line.portraitIdx < 0 ||
-            line.portraitIdx >= objectData.imgs.Length)
-        {
-            return null;
-        }
+    public DialogueLine? GetLine(int dialogueId, int lineIdx)
+{
+    if (!dialogueDict.TryGetValue(dialogueId, out DialogueData data))
+        return null;
 
-        return objectData.imgs[line.portraitIdx];
+    if (data.lines == null ||
+        lineIdx < 0 ||
+        lineIdx >= data.lines.Length)
+    {
+        return null;
     }
 
-    // 이미 가져온 DialogueLine에서 이름 반환
+    return data.lines[lineIdx];
+}
+
     public string GetName(DialogueLine line)
     {
         return line.defaultname;
     }
 
-    // ObjectData와 줄 번호로 이름 반환
     public string GetName(
         ObjectData objectData,
         int lineIdx
