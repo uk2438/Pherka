@@ -168,6 +168,43 @@ namespace DialogueSystem
                 }
             }
         ),
+        //광장 큰 문 트리거
+        new DialogueData(
+            5,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 영혼들이 들어오는 입구입니다!!", name = "근위병", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "들어가시면 안돼요!!", name = "근위병", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            6,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "영혼의 수가 너무 많아서 들어갈 수가 없다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 누가봐도 들어가면 안되는거 아닌가?", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        
         // 1000~4999 structure and object dialogue
 
         // 하달 집 표지판
@@ -939,6 +976,124 @@ namespace DialogueSystem
                 }
             }
         ),
+
+        new DialogueData(
+            1058,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "벤치다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1059,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "휴지통이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1060,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "가로등이다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "불은 안들어와있다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1061,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "향기로운 꽃이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1062,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "관목이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1063,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "영혼들을 위한 쇼파이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1064,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "유리책상이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1065,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "관목이다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1066,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "쉼터에 대한 안내서가 들어가있다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence ="영혼들을 위한것이니 나는 읽을 필요가 없다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            1067,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "정수기다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "진짜 정수기는 아니다.... 여기있는 영혼들과 관리자는 목이 안마르기 때문이다.", name = "하달", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "장식용으로 설치한것 같다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                },
+            }
+        ),
+
         // 5000~ 9999 npc
 
         // 분수대 앞 npc
@@ -1416,6 +1571,237 @@ namespace DialogueSystem
                 new DialogueLine
                 {
                     sentence = "자고있다. 할일을 하러 가자.", name = "영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        //조연 NPC
+
+        new DialogueData(
+            5020,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이 아래를 보면 현세의 모습을 관찰할 수 있어.", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "사람마다 보이는게 다른거 같아. 너는 어떤게 보여?", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "저는 아무것도 안보이는데요...", name = "하달", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "그렇구나... 이 멋진 광경을 못보다니..", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            5021,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "정말 멋진 시티뷰야...", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "(건들이지 말자.)", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            5022,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "틱택토는 무승부가 너무 많이 나는거 같아.", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이길 확률을 올릴려면 어떻게 둬야될까...", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5023,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "물고기가 있었다면 낚시라도 했을텐데.", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "하지만 이렇게 물 구경하는거도 나쁘진 않군.", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5024,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 하늘인데 윗쪽을 보면 별이 보여.", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "저별은 얼마나 높은곳에 있는거야?", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5025,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "......", name = "휴식중인 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "(휴식중인것 같으니 건들지 말자.)", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5026,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이런 구석까지 체크하다니 좀 꼼꼼한 성격인거야?", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "안타깝지만, 여기엔 아무것도 없어.", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5027,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 아무것도 없다니깐!", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5028,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "자꾸 찾아오면 플레이타임만 늘어날 뿐이야!", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5029,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "해야할일이 있지않아?", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),   
+        new DialogueData(
+            5030,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "저희는 근위병으로서 이 문을 지켜야됩니다.", name = "근위병", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5031,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여기 오른쪽으로 가면 윤회를 진행할 수 있는 곳이야.", name = "영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "충분히 휴식을 취한 나같은 영혼들이 현세에 다시 돌아갈 수 있다는 소리지.", name = "영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence ="물론 여기 쉼터에서 지낸 기억들과 과거 기억들은 다 잊혀진채로 다시 태어나.", name = "영혼", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "요즘 쉼터에 찾아온 영혼들이 많아져서 윤회를 기다리는 영혼들이 많아졌어.", name = "영혼", potraitIdx = -1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence ="나도 오늘 할 수 있었는데, 영혼 수가 많아져서 내일로 미뤄졌어...", name = "영혼", potraitIdx = -1, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "우리는 여기서 매일 쉬지만 관리자들은 언제 쉬지?", name = "영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5032,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "안녕하세요!", name = "순수한 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이제 막 들어와서 뭐가 뭔지 모르겠네요..", name = "순수한 영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "도와드릴까요?", name = "하달", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "아뇨! 한번 천천히 둘러볼려고요! 이제 시간은 많으니깐요!", name = "순수한 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5033,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "물이필요없는세상인데이런정수기를설치해둔이유는뭘까어떤의도가있지않을까설마아무의미도없이이걸여기에두진않았을거아니야이건분명어떤뜻이.....", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "(가까이 가면 안될거같아..)", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            5034,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "책을 읽으면 시간도 빠르게 지나가고, 마음도 편안해져", name = "이상한 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "아쉬운점은 현세로 돌아갈 때 지금 여기서 읽었던 내용들을 다 잊혀진다는 거지...", name = "하달", potraitIdx = -1, nextLineIdx = -1
                 }
             }
         ),
