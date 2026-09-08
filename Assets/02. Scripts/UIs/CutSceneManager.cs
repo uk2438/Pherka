@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OpeningCutSceneManager : MonoBehaviour
+public class CutSceneManager : MonoBehaviour
 {
     private Image cutSceneImage;
 
@@ -31,10 +31,12 @@ public class OpeningCutSceneManager : MonoBehaviour
 
         cutSceneImage.sprite = null;
     }
-    public void Finish()
+    public void FinishImageSignal()
     {
         GameManager.Instance.gameData.isRunningCutScene = false;
         DeactiveCutSceneImage();
     }
+
+    
 
 }

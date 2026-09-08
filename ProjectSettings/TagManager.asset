@@ -13,6 +13,8 @@ TagManager:
   - DoorTrigger
   - Usable
   - BGMTrigger
+  - Director
+  - SubPlayer
   layers:
   - Default
   - TransparentFX

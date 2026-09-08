@@ -282,9 +282,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 671
-        y: 1046
-        width: 189
-        height: 268
+        y: 1108
+        width: 187
+        height: 206
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -953,10 +953,10 @@ TextureImporter:
       name: HomeInteriors_47
       rect:
         serializedVersion: 2
-        x: 904
-        y: 967
-        width: 59
-        height: 126
+        x: 939
+        y: 978
+        width: 38
+        height: 107
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1289,10 +1289,10 @@ TextureImporter:
       name: HomeInteriors_71
       rect:
         serializedVersion: 2
-        x: 0
-        y: 685
-        width: 115
-        height: 123
+        x: 17
+        y: 715
+        width: 90
+        height: 87
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3121,7 +3121,7 @@ TextureImporter:
         width: 45
         height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3142,7 +3142,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3150,6 +3150,27 @@ TextureImporter:
       bones: []
       spriteID: cce090d03cec6b345b2f99c7b3722f4c
       internalID: -1276523995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HomeInteriors_54
+      rect:
+        serializedVersion: 2
+        x: 886
+        y: 978
+        width: 38
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb8505735fa5ccb458604335e505f690
+      internalID: 334775484
       vertices: []
       indices: 
       edges: []

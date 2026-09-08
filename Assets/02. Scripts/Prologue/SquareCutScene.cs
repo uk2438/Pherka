@@ -6,13 +6,13 @@ using UnityEngine.Playables;
 
 public class SquareCutScene : MonoBehaviour
 {
-    // bool isWatched = false;
+    bool isWatched = false;
     [Header("컷신 director")]
     [SerializeField] public PlayableDirector director;
 
     void OnTriggerEnter2D(Collider2D other)
     {
-
+        if(isWatched) return;
         director.Play();
 
     }

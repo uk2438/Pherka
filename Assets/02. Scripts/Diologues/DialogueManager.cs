@@ -8,6 +8,8 @@ public class DialogueManager : Singleton<DialogueManager>
     private readonly Dictionary<int, DialogueData> dialogueDict
         = new Dictionary<int, DialogueData>();
 
+    private int presentChpater = 1;
+
     private void Awake()
     {
         LoadDialogueData();
@@ -62,7 +64,7 @@ public class DialogueManager : Singleton<DialogueManager>
             lineIdx < 0 ||
             lineIdx >= data.lines.Length)
         {
-            PrologueManager.Instance.CheckWasAction(objectData);
+            CheckWasAction(objectData);
             return null;
         }
 
@@ -70,19 +72,19 @@ public class DialogueManager : Singleton<DialogueManager>
     }
 
     public DialogueLine? GetLine(int dialogueId, int lineIdx)
-{
-    if (!dialogueDict.TryGetValue(dialogueId, out DialogueData data))
-        return null;
-
-    if (data.lines == null ||
-        lineIdx < 0 ||
-        lineIdx >= data.lines.Length)
     {
-        return null;
-    }
+        if (!dialogueDict.TryGetValue(dialogueId, out DialogueData data))
+            return null;
 
-    return data.lines[lineIdx];
-}
+        if (data.lines == null ||
+            lineIdx < 0 ||
+            lineIdx >= data.lines.Length)
+        {
+            return null;
+        }
+
+        return data.lines[lineIdx];
+    }
 
     public string GetName(DialogueLine line)
     {
@@ -103,5 +105,34 @@ public class DialogueManager : Singleton<DialogueManager>
             return string.Empty;
 
         return line.Value.defaultname;
+    }
+
+    public void CheckWasAction(ObjectData objectData)
+    {
+        if (objectData == null) return;
+
+        switch (presentChpater)
+        {
+            case 0:
+                PrologueManager.Instance.CheckWasAction(objectData);
+                break;
+            case 1:
+                Chapter1Manager.Instance.CheckWasAction(objectData);
+                break;
+            case 2:
+                // PrologueManager.Instance.CheckWasAction(objectData);
+                break;
+            case 3:
+                // PrologueManager.Instance.CheckWasAction(objectData);
+                break;
+            case 4:
+                // PrologueManager.Instance.CheckWasAction(objectData);
+                break;
+        }
+    }
+
+    public void SetPresentChapter(int index)
+    {
+        presentChpater = index;
     }
 }

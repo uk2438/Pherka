@@ -5935,7 +5935,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -5943,6 +5943,27 @@ TextureImporter:
       bones: []
       spriteID: eb05fc8c49be4b548b1b50581e24efca
       internalID: 1610373739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interiors_16x16_278
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 702
+        width: 24
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 652791677d6ecf84f9336bcb7220a45f
+      internalID: 649297605
       vertices: []
       indices: 
       edges: []
@@ -6157,6 +6178,7 @@ TextureImporter:
       Interiors_16x16_275: 1704173300
       Interiors_16x16_276: 1535198825
       Interiors_16x16_277: 1610373739
+      Interiors_16x16_278: 649297605
       Interiors_16x16_28: 40179536
       Interiors_16x16_29: 1239097134
       Interiors_16x16_3: 738909609

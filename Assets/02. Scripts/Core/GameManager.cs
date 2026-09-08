@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using DialogueSystem;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -19,9 +21,22 @@ public class GameManager : Singleton<GameManager>
     private bool isMonologue;
     private int currentMonologueId;
     private int currentMonologueLineIdx;
+    //callback params
     private System.Action onMonologueFinished, onDialogueFinished;
+    private readonly HashSet<PlayableDirector> playedDirector = new HashSet<PlayableDirector>();
 
+    public void CutSceneAction(PlayableDirector director)
+    {
+        if (director == null)
+            return;
 
+        if (!playedDirector.Add(director))
+            return;
+
+        director.Play();
+
+        gameData.isRunningCutScene = true;
+    }
     public void TriggerAction()
     {
         if (isProcessingDialogueLine ||
@@ -142,6 +157,7 @@ public class GameManager : Singleton<GameManager>
             )
         );
     }
+
 
     private IEnumerator ProcessDialogueLine(ObjectData objData, DialogueLine line, string nameData, int lineIndex)
     {
@@ -323,7 +339,6 @@ public class GameManager : Singleton<GameManager>
             );
         }
 
-        // 이벤트 실행 도중 독백이 종료됐는지 확인
         if (!isMonologue)
         {
             isProcessingDialogueLine = false;
@@ -331,14 +346,14 @@ public class GameManager : Singleton<GameManager>
         }
 
         DialogueLine currentLine = line.Value;
-
         string nameData = currentLine.defaultname;
 
-        UIManager.Instance.SetDialogueBoxActive(true);
         UIManager.Instance.UpdateMonologueUI(
             nameData,
             currentLine
         );
+
+        UIManager.Instance.SetDialogueBoxActive(true);
 
         currentMonologueLineIdx = currentLine.nextLineIdx;
         isProcessingDialogueLine = false;
@@ -346,17 +361,18 @@ public class GameManager : Singleton<GameManager>
 
     public void StartMonologue(int dialogueId, System.Action onFinished)
     {
+
         if (isMonologue)
             return;
 
         isMonologue = true;
         onMonologueFinished = onFinished;
+
         currentMonologueId = dialogueId;
         currentMonologueLineIdx = 0;
 
         gameData.isAction = true;
 
-        UIManager.Instance.SetDialogueBoxActive(true);
         ShowMonologueLine();
     }
     public void StartMonologue(int dialogueId)
@@ -388,7 +404,12 @@ public class GameManager : Singleton<GameManager>
         System.Action callback = onMonologueFinished;
         onMonologueFinished = null;
 
-        callback?.Invoke();
+        if (callback != null)
+        {
+            StartCoroutine(
+                InvokeDialogueCallbackNextFrame(callback)
+            );
+        }
     }
     public void SetDialogueFinishedCallback(System.Action callback)
     {

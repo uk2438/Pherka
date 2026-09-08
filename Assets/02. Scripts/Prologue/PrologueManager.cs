@@ -262,6 +262,7 @@ public class PrologueManager : Singleton<PrologueManager>
     public void StartChapterOne()
     {
         activeObj.SetActive(true);
+        DialogueManager.Instance.SetPresentChapter(1);
     }
 
     public void EndPrologue()

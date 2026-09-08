@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class PlayerController : MonoBehaviour
 {
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.gameData.isAction ||
             FadeManager.Instance.fadeData.isFading ||
             UIManager.Instance.panelData.isPause ||
-            GameManager.Instance.gameData.isRunningCutScene||
+            GameManager.Instance.gameData.isRunningCutScene ||
             GuideManager.Instance.IsShowing)
         {
             h = 0;
@@ -82,7 +83,8 @@ public class PlayerController : MonoBehaviour
         else if (!isHorizontalMove && v != 0) h = 0;
 
         // 4. 애니메이션 파라미터 전달
-        if (!isAutoMoving)
+        if (!isAutoMoving &&
+            !GameManager.Instance.gameData.isRunningCutScene)
         {
             int curH =
                 playerData.anim.GetInteger("hAxisRaw");
@@ -148,6 +150,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) &&
             !UIManager.Instance.panelData.isChoice)
         {
+
             // 트리거 대화 진행
             if (GameManager.Instance.gameData.isTrigger)
             {
@@ -161,9 +164,24 @@ public class PlayerController : MonoBehaviour
             // 새로운 오브젝트와 상호작용
             else if (obj != null && rayhit.collider != null)
             {
+                if (rayhit.collider.CompareTag("Director")) 
+                {
+                    PlayableDirector director = rayhit.transform.GetComponent<PlayableDirector>();
+                    ObjectData objectData = rayhit.transform.GetComponent<ObjectData>();
+
+                    if (director != null)
+                    {
+                        GameManager.Instance.CutSceneAction(director);
+                        DialogueManager.Instance.CheckWasAction(objectData);
+
+                        return;
+
+                    }
+                }
                 if (rayhit.collider.CompareTag("Structure") ||
                     rayhit.collider.CompareTag("Carried"))
                 {
+
                     GameManager.Instance.gameData.scanObject = obj;
                     GameManager.Instance.Action();
                 }
@@ -400,154 +418,4 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public IEnumerator WalkToPosition(
-        Vector3 targetPosition,
-        float autoMoveSpeed
-    )
-    {
-        isAutoMoving = true;
-        rb.velocity = Vector2.zero;
-
-        if (playerData.anim != null)
-        {
-            playerData.anim.SetBool(
-                "isChange",
-                false
-            );
-        }
-
-        yield return null;
-
-        while (Vector2.Distance(
-            rb.position,
-            targetPosition
-        ) > 0.02f)
-        {
-            Vector2 currentPosition = rb.position;
-
-            Vector2 difference =
-                (Vector2)targetPosition - currentPosition;
-
-            Vector2 direction;
-
-            if (Mathf.Abs(difference.x) >
-                Mathf.Abs(difference.y))
-            {
-                direction = new Vector2(
-                    Mathf.Sign(difference.x),
-                    0
-                );
-            }
-            else
-            {
-                direction = new Vector2(
-                    0,
-                    Mathf.Sign(difference.y)
-                );
-            }
-
-            UpdateCutSceneWalkAnimation(
-                direction
-            );
-
-            Vector2 nextPosition;
-
-            if (direction.x != 0)
-            {
-                float nextX = Mathf.MoveTowards(
-                    currentPosition.x,
-                    targetPosition.x,
-                    autoMoveSpeed *
-                    Time.fixedDeltaTime
-                );
-
-                nextPosition = new Vector2(
-                    nextX,
-                    currentPosition.y
-                );
-            }
-            else
-            {
-                float nextY = Mathf.MoveTowards(
-                    currentPosition.y,
-                    targetPosition.y,
-                    autoMoveSpeed *
-                    Time.fixedDeltaTime
-                );
-
-                nextPosition = new Vector2(
-                    currentPosition.x,
-                    nextY
-                );
-            }
-
-            rb.MovePosition(nextPosition);
-
-            yield return new WaitForFixedUpdate();
-        }
-
-        rb.position = targetPosition;
-        rb.velocity = Vector2.zero;
-
-        isAutoMoving = false;
-
-        StopMovement();
-    }
-    private void UpdateCutSceneWalkAnimation(
-        Vector2 direction
-    )
-    {
-        if (playerData.anim == null)
-            return;
-
-        int horizontal = 0;
-        int vertical = 0;
-
-        if (direction.x != 0)
-        {
-            horizontal =
-                direction.x > 0 ? 1 : -1;
-        }
-        else if (direction.y != 0)
-        {
-            vertical =
-                direction.y > 0 ? 1 : -1;
-        }
-
-        int currentH =
-            playerData.anim.GetInteger(
-                "hAxisRaw"
-            );
-
-        int currentV =
-            playerData.anim.GetInteger(
-                "vAxisRaw"
-            );
-
-        if (currentH != horizontal ||
-            currentV != vertical)
-        {
-            playerData.anim.SetBool(
-                "isChange",
-                true
-            );
-
-            playerData.anim.SetInteger(
-                "hAxisRaw",
-                horizontal
-            );
-
-            playerData.anim.SetInteger(
-                "vAxisRaw",
-                vertical
-            );
-        }
-        else
-        {
-            playerData.anim.SetBool(
-                "isChange",
-                false
-            );
-        }
-    }
 }

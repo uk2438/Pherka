@@ -7,6 +7,7 @@ public class DialogueEventManager :
 {
     [Header("Player Object")]
     [SerializeField] private GameObject player;
+    [SerializeField] private PlayerFollower  SubPlayer;
     private bool isRunningEvent;
 
     public bool IsRunningEvent
@@ -38,8 +39,8 @@ public class DialogueEventManager :
     {
         isRunningEvent = true;
 
-        float duration =eventData.duration;
-        
+        float duration = eventData.duration;
+
         switch (eventData.eventType)
         {
             case DialogueEventType.FadeOut:
@@ -102,6 +103,8 @@ public class DialogueEventManager :
 
         Vector3 targetPosition;
 
+
+        // 텔레포트 할 위치가 생길때마다 case를 추가
         switch (teleportTarget)
         {
             case DialogueTeleportTarget.FirstGoToWork:
@@ -121,7 +124,7 @@ public class DialogueEventManager :
 
                 targetPosition =
                     PrologueManager.Instance.GetSecondGoToWork();
-                    
+
                 break;
 
             case DialogueTeleportTarget.GoToHome:
@@ -133,6 +136,12 @@ public class DialogueEventManager :
                 targetPosition =
                     PrologueManager.Instance.GetGoToHome();
 
+                break;
+            
+            case DialogueTeleportTarget.GoChapter1Map:
+                if(Chapter1Manager.Instance == null) yield break;
+
+                targetPosition = Chapter1Manager.Instance.GetChapter1MapPosition();
                 break;
 
             default:
@@ -169,17 +178,31 @@ public class DialogueEventManager :
         if (player == null)
             return;
 
-        Rigidbody2D playerRb =
-            player.GetComponent<Rigidbody2D>();
+        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
 
+        Vector3 previousPosition = player.transform.position;
+
+        if (playerRb != null)
+        {
+            previousPosition.x = playerRb.position.x;
+            previousPosition.y = playerRb.position.y;
+        }
+
+        Vector3 teleportOffset = position - previousPosition;
+
+        // 플레이어 순간이동
         if (playerRb != null)
         {
             playerRb.position = position;
             playerRb.velocity = Vector2.zero;
         }
-        else
+
+        player.transform.position = position;
+
+        // 현재 따라오는 동료만 함께 순간이동
+        if (SubPlayer != null && SubPlayer.isActiveAndEnabled)
         {
-            player.transform.position = position;
+            SubPlayer.TeleportWithPlayer(teleportOffset, position);
         }
 
         Physics2D.SyncTransforms();

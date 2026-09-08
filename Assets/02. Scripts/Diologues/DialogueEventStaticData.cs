@@ -6,6 +6,17 @@ public static class DialogueEventStaticData
     {
         new DialogueEventData
     {
+        dialogueId = 100,
+        lineIndex = 13,
+
+        eventType = DialogueEventType.TeleportPlayer,
+        timing = DialogueEventTiming.BeforeLine,
+        duration = 3f,
+
+        teleportTarget = DialogueTeleportTarget.GoChapter1Map
+    },
+        new DialogueEventData
+    {
         dialogueId = 1017,
         lineIndex = 5,
 
@@ -86,5 +97,6 @@ public static class DialogueEventStaticData
 
         teleportTarget = DialogueTeleportTarget.GoToHome
     },
+
     };
 }
