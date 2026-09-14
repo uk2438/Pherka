@@ -953,7 +953,7 @@ TextureImporter:
       name: HomeInteriors_47
       rect:
         serializedVersion: 2
-        x: 939
+        x: 937
         y: 978
         width: 38
         height: 107
@@ -1079,10 +1079,10 @@ TextureImporter:
       name: HomeInteriors_57
       rect:
         serializedVersion: 2
-        x: 320
-        y: 833
-        width: 101
-        height: 109
+        x: 333
+        y: 850
+        width: 76
+        height: 88
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1982,10 +1982,10 @@ TextureImporter:
       name: HomeInteriors_108
       rect:
         serializedVersion: 2
-        x: 898
-        y: 517
-        width: 66
-        height: 65
+        x: 909
+        y: 526
+        width: 42
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2003,10 +2003,10 @@ TextureImporter:
       name: HomeInteriors_109
       rect:
         serializedVersion: 2
-        x: 15
-        y: 337
-        width: 50
-        height: 148
+        x: 16
+        y: 341
+        width: 46
+        height: 144
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 5, y: 19, z: 6, w: 7}
@@ -2066,10 +2066,10 @@ TextureImporter:
       name: HomeInteriors_114
       rect:
         serializedVersion: 2
-        x: 641
-        y: 280
-        width: 86
-        height: 208
+        x: 653
+        y: 303
+        width: 48
+        height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2255,10 +2255,10 @@ TextureImporter:
       name: HomeInteriors_127
       rect:
         serializedVersion: 2
-        x: 717
-        y: 105
-        width: 300
-        height: 269
+        x: 739
+        y: 300
+        width: 40
+        height: 73
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3160,7 +3160,7 @@ TextureImporter:
         serializedVersion: 2
         x: 886
         y: 978
-        width: 38
+        width: 37
         height: 106
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -3171,6 +3171,27 @@ TextureImporter:
       bones: []
       spriteID: cb8505735fa5ccb458604335e505f690
       internalID: 334775484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HomeInteriors_59
+      rect:
+        serializedVersion: 2
+        x: 1063
+        y: 1272
+        width: 99
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e9bcd8967898ff4f83fec35702854d0
+      internalID: -1396380306
       vertices: []
       indices: 
       edges: []

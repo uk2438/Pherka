@@ -216,6 +216,7 @@ namespace DialogueSystem
             }
         ),
 
+        // 100 ~ 199 chapter1 triggers
         new DialogueData(
             100,
             new DialogueLine[]
@@ -314,7 +315,36 @@ namespace DialogueSystem
                 } 
             }
         ),
-        
+        //101 MainMap Backstep Trigger
+        new DialogueData(
+            101,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "영혼을 먼저 찾아야된다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+            ),
+        //102 TimeMachine Explain Trigger
+        new DialogueData(
+            102,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴.. 아까 공간과는 다르게 이질적이네요....", name = "모사", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "엇! 저기 엄청 큰 시계가 있어요!", name = "모사", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = " 한번 조사해볼까요?", name = "모사", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
         // 1000~4999 structure and object dialogue
 
         // 하달 집 표지판
@@ -1244,7 +1274,56 @@ namespace DialogueSystem
                 }
             }
         ),
+        // Timemachine Clock Explain
+        new DialogueData(
+            2001,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "시계가 엄청 커요!", name = "모사", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이걸로 뭔가 하는걸까요?", name = "모사", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "시계의 시침을 바꿀수 있는거 같네요.", name = "하달", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "바꾸면 뭐가 달라지지 않을까요??", name = "모사", potraitIdx = -1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "음...", name = "하달", potraitIdx = -1, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "달리 할수있는거도 없는데 한번 해보죠.", name = "하달", potraitIdx = -1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "좋아요!!", name = "모사", potraitIdx = -1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "(시간을 바꾸고싶으면 한번 더 시계를 조사해보자.)", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
 
+        new DialogueData(
+            2002,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    
+                }
+            }
+        ),
         
 
         // 5000~ 9999 npc
@@ -2058,6 +2137,64 @@ namespace DialogueSystem
                 new DialogueLine
                 {
                     sentence ="잘 부탁드립니다!!", name = "모사", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            6006,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "...", name = "영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "........", name = "영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "음...", name = "하달", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = ".......", name = "영혼", potraitIdx = -1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "안되겠어. 영혼이 전혀 단서를 주고있지 않아요.", name = "하달", potraitIdx = -1, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "그러면 어떻게 해야되나요?", name = "모사", potraitIdx = -1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "이 공간을 둘러봐서 단서를 찾아야될거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "꼼꼼히 살펴보면 단서들이 보일거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            6007,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "....", name = "영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "꼼꼼히 한번 둘러보죠.", name = "하달", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "네!!", name = "모사", potraitIdx = -1, nextLineIdx = -1
                 }
             }
         ),

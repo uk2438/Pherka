@@ -9,6 +9,7 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     [Header("Player 텔레포트 위치")]
     [SerializeField] private Vector3 Chpater1Map;
     private bool FirstToSecond = false;
+    private bool startPuzzle = false;
     public void CheckWasAction(ObjectData objectData)
     {
         int id = objectData.GetCurrentDialogueId();
@@ -18,6 +19,10 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
             //해당 object Condition은 CutScenePlayerBehavior에서 제어
             FirstToSecond = true;
 
+        }
+        else if(id == 6006)
+        {
+            startPuzzle = true;
         }
     }
 
@@ -39,6 +44,11 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     public Vector3 GetChapter1MapPosition()
     {
         return Chpater1Map;
+    }
+
+    public bool GetStartPuzzle()
+    {
+        return startPuzzle;
     }
     
 }

@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 24
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -114,8 +114,8 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 33
-        width: 32
+        y: 48
+        width: 48
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -134,9 +134,9 @@ TextureImporter:
       name: BuildingInterriors_1
       rect:
         serializedVersion: 2
-        x: 33
-        y: 33
-        width: 32
+        x: 64
+        y: 48
+        width: 48
         height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -155,8 +155,8 @@ TextureImporter:
       name: BuildingInterriors_2
       rect:
         serializedVersion: 2
-        x: 66
-        y: 33
+        x: 128
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -176,8 +176,8 @@ TextureImporter:
       name: BuildingInterriors_3
       rect:
         serializedVersion: 2
-        x: 83
-        y: 33
+        x: 160
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -218,7 +218,7 @@ TextureImporter:
       name: BuildingInterriors_5
       rect:
         serializedVersion: 2
-        x: 17
+        x: 32
         y: 0
         width: 16
         height: 32
@@ -239,7 +239,7 @@ TextureImporter:
       name: BuildingInterriors_6
       rect:
         serializedVersion: 2
-        x: 34
+        x: 64
         y: 0
         width: 16
         height: 32
@@ -260,7 +260,7 @@ TextureImporter:
       name: BuildingInterriors_7
       rect:
         serializedVersion: 2
-        x: 51
+        x: 96
         y: 0
         width: 16
         height: 32
@@ -281,7 +281,7 @@ TextureImporter:
       name: BuildingInterriors_8
       rect:
         serializedVersion: 2
-        x: 67
+        x: 128
         y: 16
         width: 16
         height: 16
@@ -302,7 +302,7 @@ TextureImporter:
       name: BuildingInterriors_9
       rect:
         serializedVersion: 2
-        x: 83
+        x: 160
         y: 16
         width: 16
         height: 16
