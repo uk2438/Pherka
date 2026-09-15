@@ -6,6 +6,13 @@ using UnityEngine.AI;
 
 namespace DialogueSystem
 {
+    [Serializable]
+    public struct DialogueChoice
+    {
+        public string text;
+        public int nextLineIdx;
+        public int eventId;
+    }
     // 대사 데이터를 담는 구조체
     [Serializable]
     public struct DialogueLine
@@ -23,15 +30,14 @@ namespace DialogueSystem
 
         public int potraitIdx;
         public int nextLineIdx;
-
-        public bool hasChoices;
         public bool isCutSceneEnd;
 
-        public string choice1Text;
-        public int choice1NextLineIdx;
+        public DialogueChoice[] choices;
 
-        public string choice2Text;
-        public int choice2NextLineIdx;
+        // 배열에 선택지가 있으면 자동으로 true
+        public bool hasChoices => ChoiceCount > 0;
+
+        public int ChoiceCount => choices?.Length ?? 0;
     }
     public struct DialogueData
     {
@@ -100,15 +106,24 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "저장하시겠습니까?", name = "시스템", potraitIdx = -1, nextLineIdx = 2
+                    sentence = "저장하시겠습니까?", name = "하달", potraitIdx = -1, nextLineIdx = 2
                 },
                 new DialogueLine
                 {
-                    hasChoices = true,
-                    choice1Text = "예", choice1NextLineIdx = 3,
-                    choice2Text = "아니오", choice2NextLineIdx = 4
+                    sentence = "", potraitIdx = -1,
+                    choices = new DialogueChoice[]
+                    {
+                        new DialogueChoice
+                        {
+                            text = "네", nextLineIdx = 3
+                        },
+                        new DialogueChoice
+                        {
+                            text = "아니오", nextLineIdx = 4
+                        }
+                    }
+                    
                 },
-
                 new DialogueLine
                 {
                     sentence = "저장되었습니다.", name = "시스템", potraitIdx = -1, nextLineIdx = -1
@@ -553,13 +568,22 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "들어가시겠습니까?" ,potraitIdx = -1, nextLineIdx = 2
+                    sentence = "들어가시겠습니까",potraitIdx = -1, nextLineIdx = 2
                 },
                 new DialogueLine
                 {
-                  hasChoices = true,
-                  choice1Text = "예", choice1NextLineIdx = 4,
-                  choice2Text = "아니오", choice2NextLineIdx = 3
+                    sentence = "" ,potraitIdx = -1,
+                    choices = new DialogueChoice[]
+                    {
+                        new DialogueChoice
+                        {
+                            text = "예", nextLineIdx = 4
+                        },
+                        new DialogueChoice
+                        {
+                            text = "아니오", nextLineIdx = 3
+                        }
+                    }
                 },
                 new DialogueLine
                 {
@@ -1320,7 +1344,34 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    
+                    sentence = "1시를 가르키고있다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "", potraitIdx = -1,
+                    choices = new DialogueChoice[]
+                    {
+                        new DialogueChoice
+                        {
+                            text = "2시", nextLineIdx = -1, eventId = 102
+                        },
+                        new DialogueChoice
+                        {
+                            text = "3시", nextLineIdx = -1, eventId = 103
+                        },
+                        new DialogueChoice
+                        {
+                            text = "4시", nextLineIdx = -1, eventId = 104
+                        },
+                        new DialogueChoice
+                        {
+                            text = "5시", nextLineIdx = -1, eventId = 105
+                        },
+                        new DialogueChoice
+                        {
+                            text = "6시", nextLineIdx = -1, eventId = 106
+                        }
+                    }
                 }
             }
         ),

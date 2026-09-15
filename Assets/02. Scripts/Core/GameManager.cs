@@ -223,7 +223,9 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.ShowChoices(
             line,
             (choiceIndex, nextIdx) =>
-            {
+            {   
+                ExecuteChoiceEvent(line.choices[choiceIndex].eventId);
+
                 UIManager.Instance.HideChoices();
 
                 int dialogueId =
@@ -236,10 +238,6 @@ public class GameManager : Singleton<GameManager>
                     SaveLoadManager.Instance.SaveGame();
                 }
 
-                /*
-                 * 순간이동 특수 처리는 제거했습니다.
-                 * 모든 선택지는 nextIdx로 동일하게 이동합니다.
-                 */
                 currentLineIdx = nextIdx;
 
                 StartCoroutine(
@@ -247,6 +245,28 @@ public class GameManager : Singleton<GameManager>
                 );
             }
         );
+    }
+
+    private void ExecuteChoiceEvent(int eventId)
+    {
+        switch(eventId)
+        {
+            case 102:
+                Chapter1Manager.Instance.SetHomeTime(2);
+                break;
+            case 103:
+                Chapter1Manager.Instance.SetHomeTime(3);
+                break;
+            case 104:
+                Chapter1Manager.Instance.SetHomeTime(4);
+                break;
+            case 105:
+                Chapter1Manager.Instance.SetHomeTime(5);
+                break;
+            case 106:
+                Chapter1Manager.Instance.SetHomeTime(6);
+                break;
+        }
     }
 
     private IEnumerator TalkNextFrame(ObjectData objData)

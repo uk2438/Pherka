@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using DialogueSystem;
 using UnityEngine;
 
 public class Chapter1Manager : Singleton<Chapter1Manager>
@@ -10,6 +9,7 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     [SerializeField] private Vector3 Chpater1Map;
     private bool FirstToSecond = false;
     private bool startPuzzle = false;
+    private int homeTIme = 1;
     public void CheckWasAction(ObjectData objectData)
     {
         int id = objectData.GetCurrentDialogueId();
@@ -50,5 +50,13 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     {
         return startPuzzle;
     }
-    
+    public void SetHomeTime(int time)
+    {
+        homeTIme = time;
+    }
+
+    public int GetHomeTime()
+    {
+        return homeTIme;
+    }
 }

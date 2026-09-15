@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DialogueSystem;
 using System;
+using System.Collections.Generic;
 using TMPro;
-using UnityEngine.TextCore.Text;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -26,11 +26,12 @@ public class UIManager : Singleton<UIManager>
 
     // ── Choice UI ────────────────────────────────────────────
     [Header("선택지 UI")]
-    [SerializeField] private Button choiceButton1;
-    [SerializeField] private Button choiceButton2;
-    [SerializeField] private TMP_Text choiceButton1Text;
-    [SerializeField] private TMP_Text choiceButton2Text;
+    [SerializeField] private Button choiceButtonPrefab;
+    [SerializeField] private Transform choiceButtonParent;
     [SerializeField] private GameObject choicePanel;
+
+    private readonly List<Button> choiceButtons = new List<Button>();
+    private Coroutine clearChoiceFlagCoroutine;
 
 
     public UIData UIData = new UIData();
@@ -181,10 +182,7 @@ public class UIManager : Singleton<UIManager>
 
         UpdatePotrait(characterData, line);
 
-        if (!line.hasChoices)
-        {
-            TextAnim.Instance.SetText(line.sentence);
-        }
+        TextAnim.Instance.SetText(line.sentence);
 
     }
     public void UpdateMonologueUI(string nameData, DialogueLine line)
@@ -202,10 +200,7 @@ public class UIManager : Singleton<UIManager>
 
         UpdatePotrait(characterData, line);
 
-        if (!line.hasChoices)
-        {
-            TextAnim.Instance.SetText(line.sentence);
-        }
+        TextAnim.Instance.SetText(line.sentence);
     }
 
     // ── Pause UI on/off ────────────────────────────────────────────
@@ -255,58 +250,139 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowChoices(DialogueLine line, Action<int, int> onNextLineSelected)
     {
+        // 이전 선택지의 지연 종료 취소
+        if (clearChoiceFlagCoroutine != null)
+        {
+            StopCoroutine(clearChoiceFlagCoroutine);
+            clearChoiceFlagCoroutine = null;
+        }
 
-        if (choicePanel != null) choicePanel.SetActive(false);
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        // 이전 버튼 초기화
+        foreach (Button button in choiceButtons)
+        {
+            button.onClick.RemoveAllListeners();
+            OutlineDeactive(button);
+            button.gameObject.SetActive(false);
+        }
+
+        if (choicePanel != null)
+            choicePanel.SetActive(false);
+
+        panelData.isChoice = false;
+
+        if (!line.hasChoices)
+            return;
+
+        if (choicePanel == null ||
+            choiceButtonPrefab == null ||
+            choiceButtonParent == null)
+        {
+            Debug.LogError("선택지 Panel, Button Prefab, Parent를 연결해주세요.", this);
+            return;
+        }
+
+        // 부족한 개수만큼 생성하고 다음에도 재사용
+        while (choiceButtons.Count < line.ChoiceCount)
+        {
+            Button button = Instantiate(choiceButtonPrefab, choiceButtonParent);
+            button.gameObject.SetActive(false);
+            choiceButtons.Add(button);
+        }
+
+        for (int i = 0; i < line.ChoiceCount; i++)
+        {
+            Button button = choiceButtons[i];
+            DialogueChoice choice = line.choices[i];
+
+            TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>(true);
+
+            if (buttonText != null)
+                buttonText.text = choice.text;
+
+            button.onClick.RemoveAllListeners();
+
+            int selectedIndex = i;
+            int nextLineIdx = choice.nextLineIdx;
+
+            button.onClick.AddListener(() =>
+            {
+                onNextLineSelected?.Invoke(selectedIndex, nextLineIdx);
+            });
+
+            // 활성 선택지끼리 위아래 이동
+            Navigation navigation = new Navigation
+            {
+                mode = Navigation.Mode.Explicit,
+                selectOnUp = i > 0 ? choiceButtons[i - 1] : null,
+                selectOnDown = i < line.ChoiceCount - 1 ? choiceButtons[i + 1] : null
+            };
+
+            button.navigation = navigation;
+
+            OutlineDeactive(button);
+            button.gameObject.SetActive(true);
+        }
 
         panelData.isChoice = true;
+        choicePanel.SetActive(true);
 
-        if (choicePanel != null) choicePanel.SetActive(true);
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(choiceButtons[0].gameObject);
+        }
 
-        choiceButton1Text.text = line.choice1Text;
-        choiceButton1.onClick.RemoveAllListeners();
-        int next1 = line.choice1NextLineIdx;
-        choiceButton1.onClick.AddListener(() => onNextLineSelected(0, next1));
-
-        choiceButton2Text.text = line.choice2Text;
-        choiceButton2.onClick.RemoveAllListeners();
-        int next2 = line.choice2NextLineIdx;
-        choiceButton2.onClick.AddListener(() => onNextLineSelected(1, next2));
-
-        // 키보드 조작을 위해 첫 번째 버튼을 선택 상태로 설정
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(choiceButton1.gameObject);
-
-        Input.ResetInputAxes(); // CheckPanel에서 쓰신 것과 동일한 목적 (방향키 입력 잔상 제거)
+        Input.ResetInputAxes();
     }
 
     public void HideChoices()
     {
-        EventSystem.current.SetSelectedGameObject(null);
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
 
-        OutlineDeactive(choiceButton1);
-        OutlineDeactive(choiceButton2);
+        foreach (Button button in choiceButtons)
+        {
+            button.onClick.RemoveAllListeners();
+            OutlineDeactive(button);
+            button.gameObject.SetActive(false);
+        }
 
-        if (choicePanel != null) choicePanel.SetActive(false);
+        if (choicePanel != null)
+            choicePanel.SetActive(false);
 
-        StartCoroutine(ClearChoiceFlagNextFrame());
+        if (clearChoiceFlagCoroutine != null)
+            StopCoroutine(clearChoiceFlagCoroutine);
+
+        clearChoiceFlagCoroutine = StartCoroutine(ClearChoiceFlagNextFrame());
     }
 
     private void OutlineDeactive(Button button)
     {
+        if (button == null)
+            return;
+
         Transform outlineTransform = button.transform.Find("ChoiceOutline");
 
-        if (outlineTransform != null)
-        {
-            GameObject choiceOutline = outlineTransform.gameObject;
+        if (outlineTransform == null)
+            return;
 
-            Image img = choiceOutline.GetComponent<Image>();
-            img.color = new Color(1, 1, 1, 0);
-        }
+        Image img = outlineTransform.GetComponent<Image>();
+
+        if (img != null)
+            img.color = new Color(1f, 1f, 1f, 0f);
     }
 
     private IEnumerator ClearChoiceFlagNextFrame()
-    {//프레임 대기를 하지 않으면 PlayerController에서 Update함수를 바로 통과되기 때문에 space가 두번 눌린 판정이 되어 TextAnim가 정상적으로 실행이 되지 않음
-        yield return null; // 한 프레임 대기
-        panelData.isChoice = false; // 다음 프레임에 가서야 끔
+    {
+        // 같은 Space 입력이 다음 대사까지 진행시키는 것을 방지
+        yield return null;
+
+        panelData.isChoice = false;
+        clearChoiceFlagCoroutine = null;
     }
+
+    
 }
