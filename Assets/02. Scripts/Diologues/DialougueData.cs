@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
+using UnityEditor.Callbacks;
 
 namespace DialogueSystem
 {
@@ -1344,7 +1345,7 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    sentence = "1시를 가르키고있다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                    sentence = $"시간을 바꿀수 있다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
                 },
                 new DialogueLine
                 {
@@ -1370,13 +1371,106 @@ namespace DialogueSystem
                         new DialogueChoice
                         {
                             text = "6시", nextLineIdx = -1, eventId = 106
+                        },
+                        new DialogueChoice
+                        {
+                            text = "바꾸지 않는다.", nextLineIdx = -1
                         }
                     }
                 }
             }
         ),
         
+        //pot table
+        new DialogueData(
+            2003,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "화분이다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence ="조금 메말라있다.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
 
+        //water can table
+        new DialogueData(
+            2004,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "상당히 높은 곳에 물 뿌리개가 놓여져있다.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "성인조차 가져가기 힘든데..", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        //open box
+        new DialogueData(
+            2005,
+            new DialogueLine[]{
+
+                new DialogueLine
+                {
+                    sentence = "이 상자만 열려있네요?", name = "모사", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "한번 살펴보죠.", name = "하달", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "네!! 제가 한번 볼께요!!", name = "모사", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "어... 뭐가 들어있는지 안보여요...", name = "모사", potraitIdx = -1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "안보인다고요?", name = "하달", potraitIdx = -1, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "정확히는... 뭔가 가림막이 있는것처럼 보이지 않아요..", name = "모사", potraitIdx = -1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "음... 다른 곳부터 한번 살펴볼까요?", name = "하달", potraitIdx = -1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "이런 경우에 다른곳부터 조사를 하면 보이는 경우가 있어요.", name = "하달", potraitIdx = -1, nextLineIdx = 8
+                },
+                new DialogueLine
+                {
+                    sentence = "네! 다른 곳부터 둘러보죠!", name = "모사", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            2006,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "다른 곳부터 가죠.", name = "하달", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "다른 시간대로 가는것도 좋아보여요!!!", name = "모사", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
         // 5000~ 9999 npc
 
         // 분수대 앞 npc
@@ -2192,6 +2286,7 @@ namespace DialogueSystem
             }
         ),
 
+        //Pherka 1
         new DialogueData(
             6006,
             new DialogueLine[]
@@ -2222,15 +2317,10 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "이 공간을 둘러봐서 단서를 찾아야될거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = 7
-                },
-                new DialogueLine
-                {
-                    sentence = "꼼꼼히 살펴보면 단서들이 보일거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = -1
+                    sentence = "이 공간을 둘러봐서 단서를 찾아야될거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = -1
                 }
             }
         ),
-
         new DialogueData(
             6007,
             new DialogueLine[]
@@ -2249,8 +2339,82 @@ namespace DialogueSystem
                 }
             }
         ),
+        
+        //Pherka 2
+        new DialogueData(
+            6008,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = ".....", name = "영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "... 너무 높아..", name = "영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
 
-
+        //Pherka 3
+        new DialogueData(
+            6009,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "....", name = "영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "어떡하죠???", name = "모사", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "물 뿌리개를 꺼낼려다가 꺠진건가..", name = "하달", potraitIdx = -1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "좋은 마음으로 했을텐데....", name = "모사", potraitIdx = -1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "이게 후회하는 과거인거같네요. 이것만 치우면 될거같아요.", name = "하달", potraitIdx = -1, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "...이상해요.", name = "모사", potraitIdx = -1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "뭐가 이상한건가요?", name = "하달", potraitIdx = -1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "이렇게 간단하지 않을거같아요...", name = "모사", potraitIdx = -1, nextLineIdx = 8
+                },
+                new DialogueLine
+                {
+                    sentence = "그냥.. 그런느낌이 들어요.", name = "모사", potraitIdx = -1, nextLineIdx = 9
+                },
+                new DialogueLine
+                {
+                    sentence = "혹시 조금만 더 둘러보면 안될까요?", name = "모사", potraitIdx = -1, nextLineIdx = 10
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = -1, nextLineIdx = 11
+                },
+                new DialogueLine
+                {
+                    sentence = "네 알겠어요. 조금만 더 둘러보죠.", name = "하달", potraitIdx = -1, nextLineIdx = 12
+                },
+                new DialogueLine
+                {
+                    sentence = "네!!", name = "모사", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
         // 10000~19999 cutscene dialogue
 
          // Opening
