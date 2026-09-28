@@ -57,42 +57,35 @@ public class PlayerFollower : MonoBehaviour
 
     private void RecordPlayerPosition()
     {
-        float movedDistance =
-            Vector3.Distance(
+        float spacing = Mathf.Max(recordSpacing, 0.01f);
+
+        while (Vector3.Distance(lastRecordedPosition, player.position) >= spacing)
+        {
+            lastRecordedPosition = Vector3.MoveTowards(
                 lastRecordedPosition,
-                player.position
+                player.position,
+                spacing
             );
 
-        if (movedDistance < recordSpacing)
-            return;
+            positionHistory.Insert(0, lastRecordedPosition);
+        }
 
-        positionHistory.Insert(
-            0,
-            player.position
-        );
-
-        lastRecordedPosition =
-            player.position;
-
-        int maximumHistory =
-            Mathf.CeilToInt(
-                followDistance / recordSpacing
-            ) + 10;
+        int maximumHistory = Mathf.CeilToInt(followDistance / spacing) + 10;
 
         if (positionHistory.Count > maximumHistory)
         {
-            positionHistory.RemoveAt(
-                positionHistory.Count - 1
+            positionHistory.RemoveRange(
+                maximumHistory,
+                positionHistory.Count - maximumHistory
             );
         }
     }
 
     private void FollowPlayerPath()
     {
-        int targetIndex =
-            Mathf.RoundToInt(
-                followDistance / recordSpacing
-            );
+        int targetIndex = Mathf.RoundToInt(
+            followDistance / Mathf.Max(recordSpacing, 0.01f)
+        );
 
         if (positionHistory.Count <= targetIndex)
         {
@@ -185,21 +178,18 @@ public class PlayerFollower : MonoBehaviour
         );
     }
 
-    public void TeleportWithPlayer(Vector3 teleportOffset, Vector3 newPlayerPosition)
+    public void TeleportWithPlayer(Vector3 newPlayerPosition)
     {
-        Vector3 destination = transform.position + teleportOffset;
-
         Rigidbody2D followerRb = GetComponent<Rigidbody2D>();
 
         if (followerRb != null)
         {
-            followerRb.position = destination;
+            followerRb.position = newPlayerPosition;
             followerRb.velocity = Vector2.zero;
         }
 
-        transform.position = destination;
+        transform.position = newPlayerPosition;
 
-        // 이전 장소의 이동 기록을 지우고 새 위치에서 시작
         positionHistory.Clear();
         lastRecordedPosition = newPlayerPosition;
         positionHistory.Add(newPlayerPosition);

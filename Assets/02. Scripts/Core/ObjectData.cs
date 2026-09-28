@@ -29,25 +29,24 @@ public class ObjectData : MonoBehaviour
         return isConditionSatisfied ? satisfyDialogueIds : defaultDialogueIds;
     }
 
-    public int GetCurrentDialogueId()
-    {
-        int[] activeDialogueIds = GetActiveDialogueIds();
+public int GetCurrentDialogueId(bool? satisfied = null)
+{
+    bool useSatisfied = satisfied ?? isConditionSatisfied;
+    int[] dialogueIds = useSatisfied
+        ? satisfyDialogueIds
+        : defaultDialogueIds;
 
-        if (activeDialogueIds == null ||
-            activeDialogueIds.Length == 0)
-        {
+    if (dialogueIds == null || dialogueIds.Length == 0)
+        return -1;
 
-            return -1;
-        }
+    int index = Mathf.Clamp(
+        currentDialogueIndex,
+        0,
+        dialogueIds.Length - 1
+    );
 
-        currentDialogueIndex = Mathf.Clamp(
-            currentDialogueIndex,
-            0,
-            activeDialogueIds.Length - 1
-        );
-
-        return activeDialogueIds[currentDialogueIndex];
-    }
+    return dialogueIds[index];
+}
 
     public void AdvanceDialogue()
     {

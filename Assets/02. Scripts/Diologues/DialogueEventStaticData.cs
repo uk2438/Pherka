@@ -7,7 +7,7 @@ public static class DialogueEventStaticData
         new DialogueEventData
     {
         dialogueId = 100,
-        lineIndex = 13,
+        lineIndex = 10,
 
         eventType = DialogueEventType.TeleportPlayer,
         timing = DialogueEventTiming.BeforeLine,
@@ -15,6 +15,18 @@ public static class DialogueEventStaticData
 
         teleportTarget = DialogueTeleportTarget.GoChapter1Map
     },
+
+        new DialogueEventData
+        {
+            dialogueId = 105,
+            lineIndex = 1,
+
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+            duration = 3f,
+
+            teleportTarget = DialogueTeleportTarget.GoToMainStreet
+        },
         new DialogueEventData
     {
         dialogueId = 1017,

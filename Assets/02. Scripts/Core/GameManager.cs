@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DialogueSystem;
@@ -6,6 +7,7 @@ using UnityEngine.Playables;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] Vector3 mainStreetMap;
     public GameData gameData = new GameData();
 
     // 현재 대화 묶음 안에서 진행 중인 줄 인덱스
@@ -100,6 +102,11 @@ public class GameManager : Singleton<GameManager>
 
             return;
         }
+
+        Debug.Log(
+    $"상호작용 대상: {objData.name}, " +
+    $"현재 대화 ID: {objData.GetCurrentDialogueId()}"
+);
 
         currentDialogueObject = objData;
 
@@ -223,8 +230,12 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.ShowChoices(
             line,
             (choiceIndex, nextIdx) =>
-            {   
+            {
                 ExecuteChoiceEvent(line.choices[choiceIndex].eventId);
+                Debug.Log(
+    $"선택지 실행 후: {objData.name}, " +
+    $"현재 대화 ID: {objData.GetCurrentDialogueId()}"
+);
 
                 UIManager.Instance.HideChoices();
 
@@ -249,7 +260,7 @@ public class GameManager : Singleton<GameManager>
 
     private void ExecuteChoiceEvent(int eventId)
     {
-        switch(eventId)
+        switch (eventId)
         {
             case 102:
                 Chapter1Manager.Instance.SetHomeTime(2);
@@ -266,12 +277,29 @@ public class GameManager : Singleton<GameManager>
             case 106:
                 Chapter1Manager.Instance.SetHomeTime(6);
                 break;
+            case 107:
+                Chapter1Manager.Instance.isOpenBox = true;
+                Chapter1Manager.Instance.SetHomeTime(2);
+                break;
+            case 108:
+                Chapter1Manager.Instance.tiedCurtains = true;
+                Chapter1Manager.Instance.SetHomeTime(3);
+                Chapter1Manager.Instance.isPherka4 = true;
+                int monologueId = 21002 + Chapter1Manager.Instance.completeIndex;
+                Chapter1Manager.Instance.completeIndex++;
+
+                SetDialogueFinishedCallback(() => StartMonologue(monologueId), false);
+
+                break;
         }
     }
 
     private IEnumerator TalkNextFrame(ObjectData objData)
     {
         yield return null;
+
+        // 선택 당시 이전 문장의 글자 출력이 진행 중이라면 끝날 때까지 기다림
+        yield return new WaitUntil(() => !TextAnim.Instance.isAnim);
 
         if (objData == null)
             yield break;
@@ -308,7 +336,8 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.HideChoices();
         UIManager.Instance.SetDialogueBoxActive(false);
 
-        System.Action callback = onDialogueFinished;
+        Debug.Log($"EndDialogue 실행 / 등록된 콜백: {onDialogueFinished?.Method.Name ?? "없음"}");
+        Action callback = onDialogueFinished;
         onDialogueFinished = null;
 
         if (callback != null)
@@ -316,7 +345,7 @@ public class GameManager : Singleton<GameManager>
             StartCoroutine(InvokeDialogueCallbackNextFrame(callback));
         }
     }
-    private IEnumerator InvokeDialogueCallbackNextFrame(System.Action callback)
+    private IEnumerator InvokeDialogueCallbackNextFrame(Action callback)
     {
         yield return null;
         callback?.Invoke();
@@ -379,7 +408,7 @@ public class GameManager : Singleton<GameManager>
         isProcessingDialogueLine = false;
     }
 
-    public void StartMonologue(int dialogueId, System.Action onFinished)
+    public void StartMonologue(int dialogueId, Action onFinished)
     {
 
         if (isMonologue)
@@ -421,7 +450,7 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.HideChoices();
         UIManager.Instance.SetDialogueBoxActive(false);
 
-        System.Action callback = onMonologueFinished;
+        Action callback = onMonologueFinished;
         onMonologueFinished = null;
 
         if (callback != null)
@@ -431,11 +460,18 @@ public class GameManager : Singleton<GameManager>
             );
         }
     }
-    public void SetDialogueFinishedCallback(System.Action callback)
+    public void SetDialogueFinishedCallback(Action callback, bool overwrite = true)
     {
+        if (!overwrite && onDialogueFinished != null)
+            return;
+
         onDialogueFinished = callback;
     }
 
+    public Vector3 GetMainStreetMap()
+    {
+        return mainStreetMap;
+    }
 
     public void Quit()
     {

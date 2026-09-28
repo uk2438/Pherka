@@ -88,7 +88,8 @@ public class PrologueManager : Singleton<PrologueManager>
                 {
                     tmpdata.SetDialogueCondition(true);
                     GameManager.Instance.StartMonologue(20003);
-                }
+                },
+                false
                 );
             }
         }

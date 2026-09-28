@@ -5,43 +5,55 @@ using NaughtyAttributes;
 
 public class TeleportManager : MonoBehaviour
 {
+    [SerializeField] private PlayerFollower follower;
     [Header("사운드 설정")]
     public bool sound = false;
-    
+
     [ShowIf("sound")]
     public List<AudioClip> soundClips;
     public TeleportData teleportData = new TeleportData();
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!other.CompareTag("Player")) return;
 
-        if (other.CompareTag("Player"))
-        {
-            StartCoroutine(TeleportSequence(other.transform));
-        }
+        StartCoroutine(TeleportSequence(other.transform));
     }
-
     IEnumerator TeleportSequence(Transform playerTransform)
     {
-        if(sound) SoundManager.Instance.PlaySFX(soundClips[0]);
+        if (sound) SoundManager.Instance.PlaySFX(soundClips[0]);
         yield return StartCoroutine(FadeManager.Instance.FadeOut(1f));
-        playerTransform.transform.position = teleportData.targetRoom.transform.position - teleportData.offsetPosition;
+
+        Vector3 destination =
+            teleportData.targetRoom.transform.position - teleportData.offsetPosition;
+
+        playerTransform.position = destination;
+
+        if (follower == null)
+        {
+            follower = FindObjectOfType<PlayerFollower>(true);
+        }
+
+        if (follower != null && follower.isActiveAndEnabled)
+        {
+            follower.TeleportWithPlayer(destination);
+        }
 
         Animator playerAnim = playerTransform.GetComponent<Animator>();
         if (playerAnim != null)
         {
-            if(teleportData.offsetPosition.x > 0)
+            if (teleportData.offsetPosition.x > 0)
             {
                 playerAnim.Play("PlayerLeftIdle");
             }
-            else if(teleportData.offsetPosition.x < 0)
+            else if (teleportData.offsetPosition.x < 0)
             {
                 playerAnim.Play("PlayerRightIdle");
             }
-             else if(teleportData.offsetPosition.y > 0)
+            else if (teleportData.offsetPosition.y > 0)
             {
                 playerAnim.Play("PlayerDownIdle");
             }
-            else if(teleportData.offsetPosition.y < 0)
+            else if (teleportData.offsetPosition.y < 0)
             {
                 playerAnim.Play("PlayerUpIdle");
             }

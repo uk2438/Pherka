@@ -7,7 +7,7 @@ public class DialogueEventManager :
 {
     [Header("Player Object")]
     [SerializeField] private GameObject player;
-    [SerializeField] private PlayerFollower  SubPlayer;
+    [SerializeField] private PlayerFollower SubPlayer;
     private bool isRunningEvent;
 
     public bool IsRunningEvent
@@ -137,11 +137,17 @@ public class DialogueEventManager :
                     PrologueManager.Instance.GetGoToHome();
 
                 break;
-            
+
             case DialogueTeleportTarget.GoChapter1Map:
-                if(Chapter1Manager.Instance == null) yield break;
+                if (Chapter1Manager.Instance == null) yield break;
 
                 targetPosition = Chapter1Manager.Instance.GetChapter1MapPosition();
+                break;
+
+            case DialogueTeleportTarget.GoToMainStreet:
+                if (GameManager.Instance == null) yield break;
+
+                targetPosition = GameManager.Instance.GetMainStreetMap();
                 break;
 
             default:
@@ -180,17 +186,6 @@ public class DialogueEventManager :
 
         Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
 
-        Vector3 previousPosition = player.transform.position;
-
-        if (playerRb != null)
-        {
-            previousPosition.x = playerRb.position.x;
-            previousPosition.y = playerRb.position.y;
-        }
-
-        Vector3 teleportOffset = position - previousPosition;
-
-        // 플레이어 순간이동
         if (playerRb != null)
         {
             playerRb.position = position;
@@ -199,10 +194,10 @@ public class DialogueEventManager :
 
         player.transform.position = position;
 
-        // 현재 따라오는 동료만 함께 순간이동
+        // 따라가기 시작한 동료만 플레이어와 같은 위치로 이동
         if (SubPlayer != null && SubPlayer.isActiveAndEnabled)
         {
-            SubPlayer.TeleportWithPlayer(teleportOffset, position);
+            SubPlayer.TeleportWithPlayer(position);
         }
 
         Physics2D.SyncTransforms();
