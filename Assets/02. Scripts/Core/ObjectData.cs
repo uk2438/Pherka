@@ -16,11 +16,6 @@ public class ObjectData : MonoBehaviour
 
     [Header("현재 대화 순서")]
     [SerializeField] private int currentDialogueIndex;
-
-
-
-    public CharacterData characterData;
-
     public int SaveId => saveId;
 
     // 현재 조건에 맞는 대화 배열 반환
@@ -29,24 +24,24 @@ public class ObjectData : MonoBehaviour
         return isConditionSatisfied ? satisfyDialogueIds : defaultDialogueIds;
     }
 
-public int GetCurrentDialogueId(bool? satisfied = null)
-{
-    bool useSatisfied = satisfied ?? isConditionSatisfied;
-    int[] dialogueIds = useSatisfied
-        ? satisfyDialogueIds
-        : defaultDialogueIds;
+    public int GetCurrentDialogueId(bool? satisfied = null)
+    {
+        bool useSatisfied = satisfied ?? isConditionSatisfied;
+        int[] dialogueIds = useSatisfied
+            ? satisfyDialogueIds
+            : defaultDialogueIds;
 
-    if (dialogueIds == null || dialogueIds.Length == 0)
-        return -1;
+        if (dialogueIds == null || dialogueIds.Length == 0)
+            return -1;
 
-    int index = Mathf.Clamp(
-        currentDialogueIndex,
-        0,
-        dialogueIds.Length - 1
-    );
+        int index = Mathf.Clamp(
+            currentDialogueIndex,
+            0,
+            dialogueIds.Length - 1
+        );
 
-    return dialogueIds[index];
-}
+        return dialogueIds[index];
+    }
 
     public void AdvanceDialogue()
     {
@@ -64,19 +59,19 @@ public int GetCurrentDialogueId(bool? satisfied = null)
         }
     }
 
-public void SetDialogueIndex(int index)
-{
-    int[] activeDialogueIds = GetActiveDialogueIds();
+    public void SetDialogueIndex(int index)
+    {
+        int[] activeDialogueIds = GetActiveDialogueIds();
 
-    if (activeDialogueIds == null || activeDialogueIds.Length == 0)
-        return;
+        if (activeDialogueIds == null || activeDialogueIds.Length == 0)
+            return;
 
-    currentDialogueIndex = Mathf.Clamp(
-        index,
-        0,
-        activeDialogueIds.Length - 1
-    );
-}
+        currentDialogueIndex = Mathf.Clamp(
+            index,
+            0,
+            activeDialogueIds.Length - 1
+        );
+    }
 
 
     public int GetDialogueIndex()

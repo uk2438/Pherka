@@ -108,7 +108,6 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
             );
 
         UIManager.Instance.UpdateCutSceneDialogueUI(
-            characterData,
             speakerName,
             currentLine
         );

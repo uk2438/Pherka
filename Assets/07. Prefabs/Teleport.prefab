@@ -171,6 +171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 712a5d3772634ad4babeba8f4fc42a63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  follower: {fileID: 0}
+  sound: 0
+  soundClips: []
   teleportData:
     targetRoom: {fileID: 0}
-    currentRoom: {fileID: 0}
+    offsetPosition: {x: 0, y: 0, z: 0}

@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using DialogueSystem;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chapter1Manager : Singleton<Chapter1Manager>
@@ -26,9 +23,6 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
 
     [Header("조건 충족 시 Condition 바꿔야 할 ObjectData 목록")]
     [SerializeField] private ObjectData[] ConditionData;
-    [Header("Player 텔레포트 위치")]
-    [SerializeField] private Vector3 Chpater1Map;
-    [SerializeField] private Vector3 goToMainStreet;
     [Header("Pherka Objects")]
     [SerializeField] private Transform Pherka1;
     [SerializeField] private Transform Pherka2;
@@ -45,6 +39,9 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     [SerializeField] private Condition waterCan;
     [SerializeField] private Condition painting;
     [SerializeField] private Condition phone;
+    [Header("Chapter 1 맵 Deactive")]
+    [SerializeField] private GameObject deactiveObj;
+    [SerializeField] private GameObject activeObj;
 
     private bool FirstToSecond = false;
     private bool startPuzzle = false;
@@ -73,7 +70,6 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     public void CheckWasAction(ObjectData objectData)
     {
         int id = objectData.GetCurrentDialogueId();
-        ObjectData data = GetObjectData(id);
 
         switch (id)
         {
@@ -207,11 +203,6 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
         transform.gameObject.SetActive(isIntact);
     }
 
-    public Vector3 GetChapter1MapPosition()
-    {
-        return Chpater1Map;
-    }
-
     public bool GetStartPuzzle()
     {
         return startPuzzle;
@@ -237,6 +228,26 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
             {
                 otherWateringCan.SetActive(false);
             }
+        }
+
+        if (isPherka3 && isPherka4)
+        {
+            foreach (Transform transform in phone.transforms)
+            {
+                transform.gameObject.SetActive(false);
+            }
+            if (homeTime == 4)
+            {
+                completedPhone.SetActive(true);
+            }
+            else
+            {
+                completedPhone.SetActive(false);
+            }
+        }
+        else
+        {
+            UpdateState(phone, false);
         }
 
         if (allCheck)
@@ -272,25 +283,7 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
             }
         }
 
-        if (isPherka3 && isPherka4)
-        {
-            foreach (Transform transform in phone.transforms)
-            {
-                transform.gameObject.SetActive(false);
-            }
-            if (homeTime == 4)
-            {
-                completedPhone.SetActive(true);
-            }
-            else
-            {
-                completedPhone.SetActive(false);
-            }
-        }
-        else
-        {
-            UpdateState(phone, false);
-        }
+
 
         if (puzzleClear)
         {
@@ -367,4 +360,14 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
         return false;
     }
 
+    public void StartChapterTwo()
+    {
+        activeObj.SetActive(true);
+        DialogueManager.Instance.SetPresentChapter(2);
+    }
+
+    public void EndChapterOne()
+    {
+        deactiveObj.SetActive(false);
+    }
 }

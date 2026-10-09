@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DialogueSystem;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class DialogueEventManager :
     [Header("Player Object")]
     [SerializeField] private GameObject player;
     [SerializeField] private PlayerFollower SubPlayer;
+    [SerializeField] private GameObject[] prologueItems;
     private bool isRunningEvent;
 
     public bool IsRunningEvent
@@ -64,6 +66,24 @@ public class DialogueEventManager :
                     FadeManager.Instance.FadeIn(duration)
                 );
                 break;
+            case DialogueEventType.SpawnItem:
+                switch (DialogueManager.Instance.GetPresentChapter())
+                {
+                    case 0:
+                        FindItem(eventData.spawnItem, prologueItems);
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        // PrologueManager.Instance.CheckWasAction(objectData);
+                        break;
+                    case 4:
+                        // PrologueManager.Instance.CheckWasAction(objectData);
+                        break;
+                }
+                break;
             case DialogueEventType.SetMartActive:
                 yield return StartCoroutine(PrologueManager.Instance.SetMartNPCActive(true));
                 break;
@@ -81,6 +101,32 @@ public class DialogueEventManager :
         isRunningEvent = false;
     }
 
+
+    private void FindItem(DialogueItem item, GameObject[] items)
+    {
+        string targetName;
+
+        switch (item)
+        {
+            case DialogueItem.TeddyBear:
+                targetName = "TeddyBear";
+                break;
+
+            default:
+                return;
+        }
+
+        foreach (GameObject obj in items)
+        {
+            if (obj == null || obj.name != targetName)
+                continue;
+
+            obj.SetActive(true);
+            return;
+        }
+
+        Debug.LogWarning($"{targetName}을(를) 등록된 배열에서 찾지 못했습니다.");
+    }
     private IEnumerator TeleportPlayer(DialogueTeleportTarget teleportTarget, float duration)
     {
         if (player == null)
@@ -138,17 +184,24 @@ public class DialogueEventManager :
 
                 break;
 
-            case DialogueTeleportTarget.GoChapter1Map:
-                if (Chapter1Manager.Instance == null) yield break;
-
-                targetPosition = Chapter1Manager.Instance.GetChapter1MapPosition();
-                break;
-
             case DialogueTeleportTarget.GoToMainStreet:
                 if (GameManager.Instance == null) yield break;
 
                 targetPosition = GameManager.Instance.GetMainStreetMap();
                 break;
+
+            case DialogueTeleportTarget.GoChapter1Map:
+                if (GameManager.Instance == null) yield break;
+
+                targetPosition = GameManager.Instance.GetChapter1Map();
+                break;
+
+            case DialogueTeleportTarget.GoChapter2Map:
+                if(GameManager.Instance == null) yield break;
+
+                targetPosition = GameManager.Instance.GetChapter2Map();
+                break;
+            
 
             default:
                 Debug.LogWarning(

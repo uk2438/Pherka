@@ -10,9 +10,11 @@ using TMPro;
 public class UIManager : Singleton<UIManager>
 {
 
-    // ── 초상화 index ──────────────────────────────────────────
+    // ── 초상화 ──────────────────────────────────────────
     private int prevPotraitIdx = -1;
     private int currPotraitIdx = -1;
+    [Header("스탠딩 일러스트")]
+    [SerializeField] private Sprite[] characterSprites;
     // ── 볼륨 슬라이더 ──────────────────────────────────────────
     [Header("볼륨 슬라이더")]
     [SerializeField] private Slider bgmSlider;
@@ -119,39 +121,42 @@ public class UIManager : Singleton<UIManager>
         UIData.dialogueBox.SetBool("isShow", isActive);
     }
 
-    public void UpdatePotrait(CharacterData characterData, DialogueLine line)
+public void UpdatePotrait(DialogueLine line)
+{
+    int index = line.potraitIdx;
+
+    if (characterSprites == null ||
+        index < 0 ||
+        index >= characterSprites.Length ||
+        characterSprites[index] == null)
     {
-        if (characterData == null || characterData.potraits == null || line.potraitIdx < 0 || line.potraitIdx >= characterData.potraits.Length || characterData.potraits[line.potraitIdx] == null)
-        {
-            HidePotrait();
-            return;
-        }
-
-        Sprite portraitSprite = characterData.potraits[line.potraitIdx];
-
-        if (UIData.potraitObj != null)
-        {
-            UIData.potraitObj.SetActive(true);
-        }
-
-        if (UIData.potrait != null)
-        {
-            UIData.potrait.sprite = portraitSprite;
-            UIData.potrait.color = Color.white;
-        }
-
-        currPotraitIdx = line.potraitIdx;
-
-        if (prevPotraitIdx != currPotraitIdx)
-        {
-            if (UIData.potraitAnim != null)
-            {
-                UIData.potraitAnim.SetTrigger("doMove");
-            }
-
-            prevPotraitIdx = currPotraitIdx;
-        }
+        HidePotrait();
+        return;
     }
+
+    if (UIData.potraitObj != null)
+    {
+        UIData.potraitObj.SetActive(true);
+    }
+
+    if (UIData.potrait != null)
+    {
+        UIData.potrait.sprite = characterSprites[index];
+        UIData.potrait.color = Color.white;
+    }
+
+    currPotraitIdx = index;
+
+    if (prevPotraitIdx != currPotraitIdx)
+    {
+        if (UIData.potraitAnim != null)
+        {
+            UIData.potraitAnim.SetTrigger("doMove");
+        }
+
+        prevPotraitIdx = currPotraitIdx;
+    }
+}
     private void HidePotrait()
     {
         if (UIData.potraitObj != null)
@@ -169,7 +174,7 @@ public class UIManager : Singleton<UIManager>
         prevPotraitIdx = -1;
     }
 
-    public void UpdateDialogueUI(ObjectData objData, string nameData, DialogueLine line)
+    public void UpdateDialogueUI(string nameData, DialogueLine line)
     {
 
         if (UIData.nameText != null)
@@ -178,9 +183,8 @@ public class UIManager : Singleton<UIManager>
 
         }
 
-        CharacterData characterData = objData != null ? objData.characterData : null;
 
-        UpdatePotrait(characterData, line);
+        UpdatePotrait(line);
 
         TextAnim.Instance.SetText(line.sentence);
 
@@ -190,7 +194,7 @@ public class UIManager : Singleton<UIManager>
         UIData.nameText.text = nameData;
         TextAnim.Instance.SetText(line.sentence);
     }
-    public void UpdateCutSceneDialogueUI(CharacterData characterData, string nameData, DialogueLine line)
+    public void UpdateCutSceneDialogueUI(string nameData, DialogueLine line)
     {
 
         if (UIData.nameText != null)
@@ -198,7 +202,7 @@ public class UIManager : Singleton<UIManager>
             UIData.nameText.text = nameData ?? string.Empty;
         }
 
-        UpdatePotrait(characterData, line);
+        UpdatePotrait(line);
 
         TextAnim.Instance.SetText(line.sentence);
     }

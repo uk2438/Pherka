@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
     Vector2 prevSize, prevOffset;
     CapsuleDirection2D prevDirection;
     BoxCollider2D objCol;
-    DoorInteraction doorInteraction;
     private bool isAutoMoving;
 
     public PlayerData playerData = new PlayerData();
@@ -187,8 +186,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (rayhit.collider.CompareTag("Door"))
                 {
-                    doorInteraction =
-                        rayhit.collider.GetComponent<DoorInteraction>();
+                    InteractiableObject doorInteraction = rayhit.collider.GetComponent<InteractiableObject>();
 
                     if (doorInteraction != null)
                     {

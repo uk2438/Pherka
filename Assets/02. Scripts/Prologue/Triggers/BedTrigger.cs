@@ -37,21 +37,4 @@ public class BedTrigger : MonoBehaviour
 
 
     }
-    private void DeactivePrologueMap()
-    {
-    }
-    // private void FirstOnMonologueFinished(Transform transform)
-    // {
-    //     StartCoroutine(DirectorPlay(transform));
-
-    // }
-
-    // private IEnumerator DirectorPlay(Transform transform)
-    // {
-    //     director.Play();
-    //     yield return new WaitForSeconds(2f);
-    //     PrologueManager.Instance.StartChapterOne();
-    //     transform.position = position;
-
-    // }
 }

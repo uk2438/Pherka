@@ -16,6 +16,7 @@ public class PrologueManager : Singleton<PrologueManager>
 
     [Header("나타나게 할 오브젝트들")]
     [SerializeField] private GameObject martNPC;
+    [SerializeField] private GameObject teddybear;
     [SerializeField] private GameObject[] martShinyEffects;
     [SerializeField] private GameObject square;
     [SerializeField] public GameObject homeBoxs, dogFood;

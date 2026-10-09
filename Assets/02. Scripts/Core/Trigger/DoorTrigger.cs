@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorTrigger : MonoBehaviour
 {
-    public DoorInteraction doorInteraction;
+    [SerializeField] private InteractiableObject doorInteraction;
         void OnTriggerExit2D(Collider2D other)
     {
         if(doorInteraction == null) return;

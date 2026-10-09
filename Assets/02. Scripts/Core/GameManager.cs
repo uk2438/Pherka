@@ -7,7 +7,11 @@ using UnityEngine.Playables;
 
 public class GameManager : Singleton<GameManager>
 {
+    [Header("챕터별 이동 위치")]
     [SerializeField] Vector3 mainStreetMap;
+    [SerializeField] Vector3 chapter1Map;
+    [SerializeField] Vector3 chapter2Map;
+    [SerializeField] Vector3 chapter3Map;
     public GameData gameData = new GameData();
 
     // 현재 대화 묶음 안에서 진행 중인 줄 인덱스
@@ -203,7 +207,6 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.SetDialogueBoxActive(true);
 
         UIManager.Instance.UpdateDialogueUI(
-            objData,
             nameData,
             line
         );
@@ -291,6 +294,14 @@ public class GameManager : Singleton<GameManager>
                 SetDialogueFinishedCallback(() => StartMonologue(monologueId), false);
 
                 break;
+
+            case 200:
+                Chapter2Manager.Instance.SetSchoolTime(false);
+                break;
+            case 201:
+                Chapter2Manager.Instance.SetSchoolTime(true);
+                break;
+            
         }
     }
 
@@ -471,6 +482,19 @@ public class GameManager : Singleton<GameManager>
     public Vector3 GetMainStreetMap()
     {
         return mainStreetMap;
+    }
+
+    public Vector3 GetChapter1Map()
+    {
+        return chapter1Map;
+    }
+    public Vector3 GetChapter2Map()
+    {
+        return chapter2Map;
+    }
+    public Vector3 GetChapter3Map()
+    {
+        return chapter3Map;
     }
 
     public void Quit()
