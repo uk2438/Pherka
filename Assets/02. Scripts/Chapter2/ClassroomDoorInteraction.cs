@@ -14,35 +14,38 @@ public class ClassroomDoorInteraction : InteractiableObject
         doorAnim = GetComponent<Animator>();
 
         SaveCollider();
-        
+
     }
     public override void Activate()
     {
 
-        if(GameManager.Instance.gameData.isDoorOpen) return;
+        if (GameManager.Instance.gameData.isDoorOpen)
+        {
+            return;
+        }
+
+        Debug.Log("3. Open 트리거 실행", this);
 
         doorAnim?.SetTrigger("Open");
-    
         GameManager.Instance.gameData.isDoorOpen = true;
 
         PlayactivateSound();
         LeftHalfCollider();
     }
-
     public override void Deactivate()
-    {        
+    {
         doorAnim?.SetTrigger("Close");
         PlaydeactivateSound();
-    
+
         GameManager.Instance.gameData.isDoorOpen = false;
         BackUpCollider();
 
-        
+
     }
 
     private void SaveCollider()
     {
-        if(doorCollider == null) return;
+        if (doorCollider == null) return;
 
         originalSize = doorCollider.size;
         originalOffset = doorCollider.offset;
@@ -51,7 +54,7 @@ public class ClassroomDoorInteraction : InteractiableObject
 
     private void LeftHalfCollider()
     {
-        if(doorCollider == null) return;
+        if (doorCollider == null) return;
 
         doorCollider.size = new Vector2(originalSize.x * 0.5f, originalSize.y);
         doorCollider.offset = originalOffset + new Vector2(-originalSize.x * 0.25f, 0f);

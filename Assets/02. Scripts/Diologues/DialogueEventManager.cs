@@ -3,13 +3,23 @@ using System.Collections;
 using DialogueSystem;
 using UnityEngine;
 
-public class DialogueEventManager :
-    Singleton<DialogueEventManager>
+public class DialogueEventManager : Singleton<DialogueEventManager>
 {
+    [Serializable]
+    private class Items
+    {
+        public GameObject[] findItems;
+        public GameObject[] hiddenItems;
+    }
     [Header("Player Object")]
     [SerializeField] private GameObject player;
     [SerializeField] private PlayerFollower SubPlayer;
-    [SerializeField] private GameObject[] prologueItems;
+    
+    [Header("Items")]
+    [SerializeField] private Items prologueItems;
+    [SerializeField] private Items chpater1Items;
+    [SerializeField] private Items chpater2Items;
+    [SerializeField] private Items chpater3Items;
     private bool isRunningEvent;
 
     public bool IsRunningEvent
@@ -70,11 +80,13 @@ public class DialogueEventManager :
                 switch (DialogueManager.Instance.GetPresentChapter())
                 {
                     case 0:
-                        FindItem(eventData.spawnItem, prologueItems);
+                        FindItem(eventData.item, prologueItems);
                         break;
                     case 1:
+                        FindItem(eventData.item, chpater1Items);
                         break;
                     case 2:
+                        FindItem(eventData.item, chpater2Items);
                         break;
                     case 3:
                         // PrologueManager.Instance.CheckWasAction(objectData);
@@ -84,6 +96,27 @@ public class DialogueEventManager :
                         break;
                 }
                 break;
+            case DialogueEventType.HiddenItem:
+                switch (DialogueManager.Instance.GetPresentChapter())
+                {
+                    case 0:
+                        HiddenItem(eventData.item, prologueItems);
+                        break;
+                    case 1:
+                        HiddenItem(eventData.item, chpater1Items);
+                        break;
+                    case 2:
+                        HiddenItem(eventData.item, chpater2Items);
+                        break;
+                    case 3:
+                        // PrologueManager.Instance.CheckWasAction(objectData);
+                        break;
+                    case 4:
+                        // PrologueManager.Instance.CheckWasAction(objectData);
+                        break;
+                }
+                break;
+
             case DialogueEventType.SetMartActive:
                 yield return StartCoroutine(PrologueManager.Instance.SetMartNPCActive(true));
                 break;
@@ -102,7 +135,7 @@ public class DialogueEventManager :
     }
 
 
-    private void FindItem(DialogueItem item, GameObject[] items)
+    private void FindItem(DialogueItem item, Items items)
     {
         string targetName;
 
@@ -112,16 +145,49 @@ public class DialogueEventManager :
                 targetName = "TeddyBear";
                 break;
 
+            case DialogueItem.BookPherkaOutline:
+                targetName = "BookPherkaOutline";
+                break;
+
+            case DialogueItem.GymPherkaOutline:
+                targetName = "GymPherkaOutline";
+                break;
+
             default:
                 return;
         }
 
-        foreach (GameObject obj in items)
+        foreach (GameObject obj in items.findItems)
         {
             if (obj == null || obj.name != targetName)
                 continue;
 
             obj.SetActive(true);
+            return;
+        }
+
+        Debug.LogWarning($"{targetName}을(를) 등록된 배열에서 찾지 못했습니다.");
+    }
+    private void HiddenItem(DialogueItem item, Items items)
+    {
+        string targetName;
+
+        switch (item)
+        {
+            case DialogueItem.Book:
+                targetName = "Book";
+                break;
+
+            default:
+                return;
+        }
+
+        foreach (GameObject obj in items.hiddenItems)
+        {
+            if (obj == null || obj.name != targetName)
+                continue;
+
+            obj.SetActive(false);
             return;
         }
 

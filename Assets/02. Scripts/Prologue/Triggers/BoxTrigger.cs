@@ -11,7 +11,6 @@ public class BoxTrigger : MonoBehaviour
     {
         if(other.CompareTag("Carried")) {
             count++;
-            Debug.Log($"{count}");
             if(count == 4)
             {
                 PrologueManager.Instance.ChangeAllChildrenTag(PrologueManager.Instance.homeBoxs, "Structure");
@@ -26,7 +25,6 @@ public class BoxTrigger : MonoBehaviour
         if(other.CompareTag("Carried"))
         {
             count--;
-            Debug.Log($"{count}");
         }
     }
 }

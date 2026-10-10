@@ -8,16 +8,24 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
 {
     [Header("조건 충족 시 Condition 바꿔야 할 ObjectData 목록")]
     [SerializeField] private ObjectData[] ConditionData;
+
     [Header("교실 문 태그 변경 목록")]
     [SerializeField] private Transform[] classroomDoors;
+
     [Header("텔레포트 활성화 유무")]
     [SerializeField] private BoxCollider2D[] teleports;
+
     [Header("복도 NPC")]
     [SerializeField] private Transform[] corridorNPC;
+
     [Header("체육복이 들어있는 사물함 키")]
     [SerializeField] private Transform lockerKey;
 
-    private bool restTime, prevRestTime, getKey;
+    public GameObject[] books;
+
+    private bool restTime, prevRestTime, getKey, firstCompleted;
+
+    
 
     public void CheckWasAction(ObjectData objectData)
     {
@@ -49,7 +57,7 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
         return null;
     }
 
-    public void SetSchoolTime(bool time)
+    public void SetRestTime(bool time)
     {
         prevRestTime = restTime;
         restTime = time;
@@ -59,7 +67,7 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
         SetActiveCorridorNPC();
         SetDoorTag();
     }
-    public bool GetSchoolTime()
+    public bool GetRestTime()
     {
         return restTime;
     }
@@ -111,6 +119,14 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
         }
     }
 
+    public void ChangeAllChildrenTag(GameObject[] objects, string tag)
+    {
+        foreach(GameObject obj in objects)
+        {
+            obj.tag = tag;
+        }
+    }
+
     public void SetGetKey(bool key)
     {
         getKey = key;
@@ -119,6 +135,16 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
     public bool GetGetKey()
     {
         return getKey;
+    }
+    
+    public void SetFirstCompleted(bool completed)
+    {
+        firstCompleted = completed;
+    }
+
+    public bool GetFirstCompleted()
+    {
+        return firstCompleted;
     }
 
     

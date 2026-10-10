@@ -56,6 +56,26 @@ public static class DialogueEventStaticData
 
         new DialogueEventData
         {
+            dialogueId = 3003,
+            lineIndex = 1,
+            
+            eventType = DialogueEventType.SpawnItem,
+            timing = DialogueEventTiming.AfterLine,
+            item = DialogueItem.Book
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 3003,
+            lineIndex = 1,
+            
+            eventType = DialogueEventType.HiddenItem,
+            timing = DialogueEventTiming.AfterLine,
+            item = DialogueItem.Book
+        },
+
+        new DialogueEventData
+        {
             dialogueId = 5006,
             lineIndex = 4,
 
@@ -118,7 +138,17 @@ public static class DialogueEventStaticData
             eventType = DialogueEventType.SpawnItem,
             timing = DialogueEventTiming.BeforeLine,
 
-            spawnItem = DialogueItem.TeddyBear
+            item = DialogueItem.TeddyBear
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 7000,
+            lineIndex = 10,
+            eventType = DialogueEventType.SpawnItem,
+            timing = DialogueEventTiming.AfterLine,
+
+            item = DialogueItem.BookPherkaOutline
         },
 
 

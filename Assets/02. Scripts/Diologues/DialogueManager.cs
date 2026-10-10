@@ -8,7 +8,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private readonly Dictionary<int, DialogueData> dialogueDict
         = new Dictionary<int, DialogueData>();
 
-    private int presentChpater = 0;
+    private int presentChpater = 2;
 
     private void Awake()
     {

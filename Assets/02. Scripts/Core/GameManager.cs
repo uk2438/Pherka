@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using DialogueSystem;
 using UnityEngine;
 using UnityEngine.Playables;
-
 public class GameManager : Singleton<GameManager>
 {
     [Header("챕터별 이동 위치")]
@@ -13,16 +12,15 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] Vector3 chapter2Map;
     [SerializeField] Vector3 chapter3Map;
     public GameData gameData = new GameData();
-
     // 현재 대화 묶음 안에서 진행 중인 줄 인덱스
     public int currentLineIdx = 0;
-
     // Raycast에서 오브젝트가 사라져도 대화를 유지하기 위한 필드
     private ObjectData currentDialogueObject;
-
     // 대화 이벤트 또는 대사 출력 준비가 진행 중인지 확인
     private bool isProcessingDialogueLine;
 
+    // 글자 출력이 끝날 때까지 다음 줄로 넘어가지 않도록 관리
+    private bool isWaitingForLineCompletion;
     //monologue params
     private bool isMonologue;
     private int currentMonologueId;
@@ -30,43 +28,42 @@ public class GameManager : Singleton<GameManager>
     //callback params
     private System.Action onMonologueFinished, onDialogueFinished;
     private readonly HashSet<PlayableDirector> playedDirector = new HashSet<PlayableDirector>();
-
     public void CutSceneAction(PlayableDirector director)
     {
         if (director == null)
             return;
-
         if (!playedDirector.Add(director))
             return;
-
         director.Play();
-
         gameData.isRunningCutScene = true;
     }
     public void TriggerAction()
     {
-        if (isProcessingDialogueLine ||
+        if (isProcessingDialogueLine || isWaitingForLineCompletion ||
             FadeManager.Instance.fadeData.isFading)
         {
             return;
         }
-
         if (gameData.triggerObjectData == null)
             return;
-
         gameData.isTrigger = true;
-
         currentDialogueObject =
             gameData.triggerObjectData;
-
         Talk(currentDialogueObject);
     }
-
     public void Action()
     {
         if (FadeManager.Instance.fadeData.isFading ||
             isProcessingDialogueLine)
         {
+            return;
+        }
+        if (isWaitingForLineCompletion)
+        {
+            // 출력 중에는 전체 문장 표시만 수행하고 다음 줄로 넘기지 않음
+            if (TextAnim.Instance.isAnim)
+                TextAnim.Instance.SetText("");
+
             return;
         }
         if (isMonologue)
@@ -76,11 +73,9 @@ public class GameManager : Singleton<GameManager>
                 TextAnim.Instance.SetText("");
                 return;
             }
-
             NextMonologueLine();
             return;
         }
-
         // 이미 대화 중이면 Raycast 결과와 관계없이 기존 대화 진행
         if (gameData.isAction &&
             currentDialogueObject != null)
@@ -88,77 +83,67 @@ public class GameManager : Singleton<GameManager>
             Talk(currentDialogueObject);
             return;
         }
-
         if (gameData.scanObject == null)
         {
-
             return;
         }
-
         ObjectData objData =
             gameData.scanObject.GetComponent<ObjectData>();
-
         if (objData == null)
         {
             Debug.LogWarning(
                 "상호작용 오브젝트에 ObjectData가 없습니다."
             );
-
             return;
         }
-
         Debug.Log(
     $"상호작용 대상: {objData.name}, " +
     $"현재 대화 ID: {objData.GetCurrentDialogueId()}"
 );
-
         currentDialogueObject = objData;
-
         Talk(currentDialogueObject);
     }
-
     public void Talk(ObjectData objData)
     {
         if (isProcessingDialogueLine)
             return;
+        if (isWaitingForLineCompletion)
+        {
+            if (TextAnim.Instance.isAnim)
+                TextAnim.Instance.SetText("");
 
+            return;
+        }
         if (objData == null)
         {
             EndDialogue(null);
             return;
         }
-
         // 타이핑 애니메이션 진행 중이면 문장 전체 출력
         if (TextAnim.Instance.isAnim)
         {
             TextAnim.Instance.SetText("");
             return;
         }
-
         int lineIndex =
             currentLineIdx;
-
         DialogueLine? lineNullable =
             DialogueManager.Instance.GetLine(
                 objData,
                 lineIndex
             );
-
         if (!lineNullable.HasValue)
         {
             EndDialogue(objData);
             return;
         }
-
         DialogueLine line =
             lineNullable.Value;
-
         string nameData =
             DialogueManager.Instance.GetName(
                 objData,
                 lineIndex
             );
-
         StartCoroutine(
             ProcessDialogueLine(
                 objData,
@@ -168,15 +153,11 @@ public class GameManager : Singleton<GameManager>
             )
         );
     }
-
-
     private IEnumerator ProcessDialogueLine(ObjectData objData, DialogueLine line, string nameData, int lineIndex)
     {
         isProcessingDialogueLine = true;
-
         int dialogueId =
             objData.GetCurrentDialogueId();
-
         // 현재 대사를 출력하기 전에 등록된 이벤트 실행
         if (DialogueEventManager.Instance != null)
         {
@@ -194,22 +175,25 @@ public class GameManager : Singleton<GameManager>
                 "DialogueEventManager.Instance가 존재하지 않습니다."
             );
         }
-
         // 이벤트 실행 도중 대화가 종료되었는지 확인
         if (currentDialogueObject == null)
         {
             isProcessingDialogueLine = false;
             yield break;
         }
-
         gameData.isAction = true;
-
         UIManager.Instance.SetDialogueBoxActive(true);
-
         UIManager.Instance.UpdateDialogueUI(
             nameData,
             line
         );
+        yield return StartCoroutine(WaitForLineAndRunAfterEvent(dialogueId, lineIndex));
+
+        if (currentDialogueObject == null)
+        {
+            isProcessingDialogueLine = false;
+            yield break;
+        }
 
         if (line.hasChoices)
         {
@@ -223,10 +207,25 @@ public class GameManager : Singleton<GameManager>
             currentLineIdx =
                 line.nextLineIdx;
         }
-
         isProcessingDialogueLine = false;
     }
+    private IEnumerator WaitForLineAndRunAfterEvent(int dialogueId, int lineIndex)
+    {
+        isWaitingForLineCompletion = true;
+        isProcessingDialogueLine = false;
 
+        // UI에서 글자 출력을 시작하는 프레임을 기다림
+        yield return null;
+        yield return new WaitUntil(() => !TextAnim.Instance.isAnim);
+
+        isWaitingForLineCompletion = false;
+        isProcessingDialogueLine = true;
+
+        if (DialogueEventManager.Instance != null)
+        {
+            yield return StartCoroutine(DialogueEventManager.Instance.ExecuteEvent(dialogueId, lineIndex, DialogueEventTiming.AfterLine));
+        }
+    }
 
     private void ShowDialogueChoices(ObjectData objData, DialogueLine line)
     {
@@ -239,28 +238,22 @@ public class GameManager : Singleton<GameManager>
     $"선택지 실행 후: {objData.name}, " +
     $"현재 대화 ID: {objData.GetCurrentDialogueId()}"
 );
-
                 UIManager.Instance.HideChoices();
-
                 int dialogueId =
                     objData.GetCurrentDialogueId();
-
                 // Dialogue ID 0: 저장 책상
                 if (dialogueId == 0 &&
                     choiceIndex == 0)
                 {
                     SaveLoadManager.Instance.SaveGame();
                 }
-
                 currentLineIdx = nextIdx;
-
                 StartCoroutine(
                     TalkNextFrame(objData)
                 );
             }
         );
     }
-
     private void ExecuteChoiceEvent(int eventId)
     {
         switch (eventId)
@@ -290,67 +283,49 @@ public class GameManager : Singleton<GameManager>
                 Chapter1Manager.Instance.isPherka4 = true;
                 int monologueId = 21002 + Chapter1Manager.Instance.completeIndex;
                 Chapter1Manager.Instance.completeIndex++;
-
                 SetDialogueFinishedCallback(() => StartMonologue(monologueId), false);
-
                 break;
-
             case 200:
-                Chapter2Manager.Instance.SetSchoolTime(false);
+                Chapter2Manager.Instance.SetRestTime(false);
                 break;
             case 201:
-                Chapter2Manager.Instance.SetSchoolTime(true);
+                Chapter2Manager.Instance.SetRestTime(true);
                 break;
-            
         }
     }
-
     private IEnumerator TalkNextFrame(ObjectData objData)
     {
         yield return null;
-
         // 선택 당시 이전 문장의 글자 출력이 진행 중이라면 끝날 때까지 기다림
         yield return new WaitUntil(() => !TextAnim.Instance.isAnim);
-
         if (objData == null)
             yield break;
-
         Talk(objData);
     }
-
     private void EndDialogue(ObjectData objData)
     {
         if (!gameData.isTrigger && objData != null)
         {
             objData.AdvanceDialogue();
         }
-
         StopAllCoroutines();
-
+        isWaitingForLineCompletion = false;
         isProcessingDialogueLine = false;
-
         gameData.isAction = false;
         gameData.isTrigger = false;
-
         gameData.triggerObjectData = null;
         gameData.scanObject = null;
-
         currentDialogueObject = null;
-
         if (FadeManager.Instance != null)
         {
             FadeManager.Instance.fadeData.isFading = false;
         }
-
         currentLineIdx = 0;
-
         UIManager.Instance.HideChoices();
         UIManager.Instance.SetDialogueBoxActive(false);
-
         Debug.Log($"EndDialogue 실행 / 등록된 콜백: {onDialogueFinished?.Method.Name ?? "없음"}");
         Action callback = onDialogueFinished;
         onDialogueFinished = null;
-
         if (callback != null)
         {
             StartCoroutine(InvokeDialogueCallbackNextFrame(callback));
@@ -361,43 +336,50 @@ public class GameManager : Singleton<GameManager>
         yield return null;
         callback?.Invoke();
     }
-
     private void ShowMonologueLine()
     {
-        if (isProcessingDialogueLine)
+        if (isProcessingDialogueLine || isWaitingForLineCompletion)
             return;
-
         StartCoroutine(ProcessMonologueLine());
     }
-
     private IEnumerator ProcessMonologueLine()
     {
         isProcessingDialogueLine = true;
-
+        int dialogueId = currentMonologueId;
         int lineIndex = currentMonologueLineIdx;
-
         DialogueLine? line = DialogueManager.Instance.GetLine(
-            currentMonologueId,
+            dialogueId,
             lineIndex
         );
-
         if (!line.HasValue)
         {
             isProcessingDialogueLine = false;
             FinishMonologue();
             yield break;
         }
-
         if (DialogueEventManager.Instance != null)
         {
             yield return StartCoroutine(
                 DialogueEventManager.Instance.ExecuteEvent(
-                    currentMonologueId,
+                    dialogueId,
                     lineIndex,
                     DialogueEventTiming.BeforeLine
                 )
             );
         }
+        if (!isMonologue)
+        {
+            isProcessingDialogueLine = false;
+            yield break;
+        }
+        DialogueLine currentLine = line.Value;
+        string nameData = currentLine.defaultname;
+        UIManager.Instance.UpdateMonologueUI(
+            nameData,
+            currentLine
+        );
+        UIManager.Instance.SetDialogueBoxActive(true);
+        yield return StartCoroutine(WaitForLineAndRunAfterEvent(dialogueId, lineIndex));
 
         if (!isMonologue)
         {
@@ -405,34 +387,18 @@ public class GameManager : Singleton<GameManager>
             yield break;
         }
 
-        DialogueLine currentLine = line.Value;
-        string nameData = currentLine.defaultname;
-
-        UIManager.Instance.UpdateMonologueUI(
-            nameData,
-            currentLine
-        );
-
-        UIManager.Instance.SetDialogueBoxActive(true);
-
         currentMonologueLineIdx = currentLine.nextLineIdx;
         isProcessingDialogueLine = false;
     }
-
     public void StartMonologue(int dialogueId, Action onFinished)
     {
-
         if (isMonologue)
             return;
-
         isMonologue = true;
         onMonologueFinished = onFinished;
-
         currentMonologueId = dialogueId;
         currentMonologueLineIdx = 0;
-
         gameData.isAction = true;
-
         ShowMonologueLine();
     }
     public void StartMonologue(int dialogueId)
@@ -443,27 +409,21 @@ public class GameManager : Singleton<GameManager>
     {
         if (!isMonologue)
             return;
-
         ShowMonologueLine();
     }
-
     private void FinishMonologue()
     {
+        isWaitingForLineCompletion = false;
         isMonologue = false;
         isProcessingDialogueLine = false;
-
         currentMonologueId = -1;
         currentMonologueLineIdx = 0;
-
         gameData.isAction = false;
         gameData.isTrigger = false;
-
         UIManager.Instance.HideChoices();
         UIManager.Instance.SetDialogueBoxActive(false);
-
         Action callback = onMonologueFinished;
         onMonologueFinished = null;
-
         if (callback != null)
         {
             StartCoroutine(
@@ -475,15 +435,12 @@ public class GameManager : Singleton<GameManager>
     {
         if (!overwrite && onDialogueFinished != null)
             return;
-
         onDialogueFinished = callback;
     }
-
     public Vector3 GetMainStreetMap()
     {
         return mainStreetMap;
     }
-
     public Vector3 GetChapter1Map()
     {
         return chapter1Map;
@@ -496,7 +453,6 @@ public class GameManager : Singleton<GameManager>
     {
         return chapter3Map;
     }
-
     public void Quit()
     {
         Application.Quit();

@@ -11,7 +11,6 @@ public class DoorTrigger : MonoBehaviour
         if (GameManager.Instance.gameData.isDoorOpen && doorInteraction != null)
         {
             doorInteraction.Deactivate();
-            doorInteraction = null;
         }
     }
 }
