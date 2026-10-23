@@ -18,6 +18,8 @@ public class ChangeToSubPlayer : MonoBehaviour
         isTriggered = true;
 
         SetSubPlayer();
+        PlayerController playerController = other.GetComponent<PlayerController>();
+        playerController.isFollower = true;
 
     }
 
@@ -26,6 +28,7 @@ public class ChangeToSubPlayer : MonoBehaviour
         PlayerFollower follower = subPlayer.GetComponent<PlayerFollower>();
         BoxCollider2D collider2D = subPlayer.GetComponent<BoxCollider2D>();
         subPlayer.tag = "SubPlayer";
+
 
         follower.enabled = true;
         collider2D.enabled = false;

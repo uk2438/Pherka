@@ -26,7 +26,7 @@ public class PrologueManager : Singleton<PrologueManager>
     [SerializeField] private GameObject activeObj;
     
     //B1F 책 읽었는지에 대한 bool
-    private bool id1006, id1007, id1008, id1009, id1010, id1011, id1012, id1013, isCompleted;
+    private bool id1006, id1007, id1008, id1009, id1010, id1011, id1012, id1013, id1014, isCompleted;
     //Mart Check bool
     private bool id1032, id1033, id1034, id1035, id1036, id1037, id1038, id1039, id1040, id1041, id1042;
     //계단 트리거 bool
@@ -39,7 +39,7 @@ public class PrologueManager : Singleton<PrologueManager>
         int id = objectData.GetCurrentDialogueId();
 
         //B1 책 한번씩 읽었는지 확인하는 트리거
-        if (1006 <= id && id <= 1013)
+        if (1006 <= id && id <= 1014)
         {
 
             GameObject shinyEffect = objectData.transform.Find("ShinyEffect").gameObject;
@@ -74,6 +74,7 @@ public class PrologueManager : Singleton<PrologueManager>
                 case 1013:
                     id1013 = true;
                     break;
+                case 1014:
 
                 default: break;
             }
@@ -173,7 +174,7 @@ public class PrologueManager : Singleton<PrologueManager>
 
     private bool CheckBooks()
     {
-        if (id1006 && id1007 && id1008 && id1009 && id1010 && id1011 && id1012 && id1013) return true;
+        if (id1006 && id1007 && id1008 && id1009 && id1010 && id1011 && id1012 && id1013 && id1014) return true;
 
         return false;
     }

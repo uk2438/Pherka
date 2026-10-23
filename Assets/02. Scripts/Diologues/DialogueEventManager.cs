@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using DialogueSystem;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class DialogueEventManager : Singleton<DialogueEventManager>
 {
@@ -14,18 +15,23 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
     [Header("Player Object")]
     [SerializeField] private GameObject player;
     [SerializeField] private PlayerFollower SubPlayer;
-    
+
     [Header("Items")]
     [SerializeField] private Items prologueItems;
     [SerializeField] private Items chpater1Items;
     [SerializeField] private Items chpater2Items;
     [SerializeField] private Items chpater3Items;
     private bool isRunningEvent;
-
     public bool IsRunningEvent
     {
         get { return isRunningEvent; }
     }
+
+    [Header("설명 영상")]
+    [SerializeField] private GameObject guideVideoPanel;
+    [SerializeField] private VideoPlayer guideVideoPlayer;
+    [SerializeField] private VideoClip[] guideVideoClips;
+
 
     public IEnumerator ExecuteEvent(int dialogueId, int lineIndex, DialogueEventTiming timing)
     {
@@ -120,11 +126,11 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
             case DialogueEventType.SetMartActive:
                 yield return StartCoroutine(PrologueManager.Instance.SetMartNPCActive(true));
                 break;
-            case DialogueEventType.ShowGuide0:
-                yield return StartCoroutine(GuideManager.Instance.ShowGuide(0));
+            case DialogueEventType.ShowVideo:
+                ShowVideo(eventData.videoIndex);
                 break;
-            case DialogueEventType.ShowGuide1:
-                yield return StartCoroutine(GuideManager.Instance.ShowGuide(1));
+            case DialogueEventType.HideVideo:
+                HideVideo();
                 break;
             case DialogueEventType.TeleportPlayer:
                 yield return StartCoroutine(TeleportPlayer(eventData.teleportTarget, duration));
@@ -134,6 +140,52 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
         isRunningEvent = false;
     }
 
+    private void ShowVideo(int videoIndex)
+    {
+        Debug.Log($"[ShowVideo 호출] index={videoIndex}", this);
+        if (guideVideoPanel == null || guideVideoPlayer == null)
+        {
+            Debug.LogError("영상 패널과 VideoPlayer를 연결해주세요.", this);
+            return;
+        }
+
+        if (guideVideoClips == null ||
+            videoIndex < 0 ||
+            videoIndex >= guideVideoClips.Length ||
+            guideVideoClips[videoIndex] == null)
+        {
+            Debug.LogError($"영상 번호를 확인해주세요: {videoIndex}", this);
+            return;
+        }
+
+        guideVideoPlayer.playOnAwake = false;
+
+        guideVideoPanel.SetActive(true);
+
+        // 이전 영상을 멈추고 선택한 영상을 처음부터 재생
+        guideVideoPlayer.Stop();
+        guideVideoPlayer.source = VideoSource.VideoClip;
+        guideVideoPlayer.clip = guideVideoClips[videoIndex];
+        Debug.Log(
+        $"[클립 대입 완료] 대상={guideVideoPlayer.name}, 클립={guideVideoPlayer.clip?.name ?? "None"}",
+        guideVideoPlayer
+    );
+        guideVideoPlayer.isLooping = true;
+        guideVideoPlayer.Play();
+    }
+
+    private void HideVideo()
+    {
+        if (guideVideoPlayer != null)
+        {
+            guideVideoPlayer.Stop();
+        }
+
+        if (guideVideoPanel != null)
+        {
+            guideVideoPanel.SetActive(false);
+        }
+    }
 
     private void FindItem(DialogueItem item, Items items)
     {
@@ -143,6 +195,18 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
         {
             case DialogueItem.TeddyBear:
                 targetName = "TeddyBear";
+                break;
+
+            case DialogueItem.Book:
+                targetName = "Book";
+                break;
+
+            case DialogueItem.Book2:
+                targetName = "Book2";
+                break;
+
+            case DialogueItem.Sweatsuit:
+                targetName = "Sweatsuit";
                 break;
 
             case DialogueItem.BookPherkaOutline:
@@ -263,11 +327,10 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                 break;
 
             case DialogueTeleportTarget.GoChapter2Map:
-                if(GameManager.Instance == null) yield break;
+                if (GameManager.Instance == null) yield break;
 
                 targetPosition = GameManager.Instance.GetChapter2Map();
                 break;
-            
 
             default:
                 Debug.LogWarning(

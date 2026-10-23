@@ -19,14 +19,15 @@ public class GameManager : Singleton<GameManager>
     // 대화 이벤트 또는 대사 출력 준비가 진행 중인지 확인
     private bool isProcessingDialogueLine;
 
-    // 글자 출력이 끝날 때까지 다음 줄로 넘어가지 않도록 관리
-    private bool isWaitingForLineCompletion;
+    // nextLineIdx가 아닌 실제 마지막으로 표시한 대사의 ID와 줄 번호
+    private int lastDisplayedDialogueId = -1;
+    private int lastDisplayedLineIndex = -1;
     //monologue params
     private bool isMonologue;
     private int currentMonologueId;
     private int currentMonologueLineIdx;
     //callback params
-    private System.Action onMonologueFinished, onDialogueFinished;
+    private Action onMonologueFinished, onDialogueFinished;
     private readonly HashSet<PlayableDirector> playedDirector = new HashSet<PlayableDirector>();
     public void CutSceneAction(PlayableDirector director)
     {
@@ -39,7 +40,7 @@ public class GameManager : Singleton<GameManager>
     }
     public void TriggerAction()
     {
-        if (isProcessingDialogueLine || isWaitingForLineCompletion ||
+        if (isProcessingDialogueLine ||
             FadeManager.Instance.fadeData.isFading)
         {
             return;
@@ -56,14 +57,6 @@ public class GameManager : Singleton<GameManager>
         if (FadeManager.Instance.fadeData.isFading ||
             isProcessingDialogueLine)
         {
-            return;
-        }
-        if (isWaitingForLineCompletion)
-        {
-            // 출력 중에는 전체 문장 표시만 수행하고 다음 줄로 넘기지 않음
-            if (TextAnim.Instance.isAnim)
-                TextAnim.Instance.SetText("");
-
             return;
         }
         if (isMonologue)
@@ -107,13 +100,6 @@ public class GameManager : Singleton<GameManager>
     {
         if (isProcessingDialogueLine)
             return;
-        if (isWaitingForLineCompletion)
-        {
-            if (TextAnim.Instance.isAnim)
-                TextAnim.Instance.SetText("");
-
-            return;
-        }
         if (objData == null)
         {
             EndDialogue(null);
@@ -187,13 +173,8 @@ public class GameManager : Singleton<GameManager>
             nameData,
             line
         );
-        yield return StartCoroutine(WaitForLineAndRunAfterEvent(dialogueId, lineIndex));
-
-        if (currentDialogueObject == null)
-        {
-            isProcessingDialogueLine = false;
-            yield break;
-        }
+        lastDisplayedDialogueId = dialogueId;
+        lastDisplayedLineIndex = lineIndex;
 
         if (line.hasChoices)
         {
@@ -209,24 +190,6 @@ public class GameManager : Singleton<GameManager>
         }
         isProcessingDialogueLine = false;
     }
-    private IEnumerator WaitForLineAndRunAfterEvent(int dialogueId, int lineIndex)
-    {
-        isWaitingForLineCompletion = true;
-        isProcessingDialogueLine = false;
-
-        // UI에서 글자 출력을 시작하는 프레임을 기다림
-        yield return null;
-        yield return new WaitUntil(() => !TextAnim.Instance.isAnim);
-
-        isWaitingForLineCompletion = false;
-        isProcessingDialogueLine = true;
-
-        if (DialogueEventManager.Instance != null)
-        {
-            yield return StartCoroutine(DialogueEventManager.Instance.ExecuteEvent(dialogueId, lineIndex, DialogueEventTiming.AfterLine));
-        }
-    }
-
     private void ShowDialogueChoices(ObjectData objData, DialogueLine line)
     {
         UIManager.Instance.ShowChoices(
@@ -291,6 +254,9 @@ public class GameManager : Singleton<GameManager>
             case 201:
                 Chapter2Manager.Instance.SetRestTime(true);
                 break;
+            case 202:
+                Chapter2Manager.Instance.SetRestTime(false);
+                break;
         }
     }
     private IEnumerator TalkNextFrame(ObjectData objData)
@@ -304,12 +270,15 @@ public class GameManager : Singleton<GameManager>
     }
     private void EndDialogue(ObjectData objData)
     {
+        int finishedDialogueId = lastDisplayedDialogueId;
+        int finishedLineIndex = lastDisplayedLineIndex;
+        lastDisplayedDialogueId = -1;
+        lastDisplayedLineIndex = -1;
         if (!gameData.isTrigger && objData != null)
         {
             objData.AdvanceDialogue();
         }
         StopAllCoroutines();
-        isWaitingForLineCompletion = false;
         isProcessingDialogueLine = false;
         gameData.isAction = false;
         gameData.isTrigger = false;
@@ -326,11 +295,26 @@ public class GameManager : Singleton<GameManager>
         Debug.Log($"EndDialogue 실행 / 등록된 콜백: {onDialogueFinished?.Method.Name ?? "없음"}");
         Action callback = onDialogueFinished;
         onDialogueFinished = null;
-        if (callback != null)
-        {
-            StartCoroutine(InvokeDialogueCallbackNextFrame(callback));
-        }
+        isProcessingDialogueLine = true;
+        StartCoroutine(ProcessDialogueEnd(finishedDialogueId, finishedLineIndex, callback));
     }
+    private IEnumerator ProcessDialogueEnd(int dialogueId, int lineIndex, Action callback)
+    {
+        // 대화창을 닫은 다음 프레임에 종료 이벤트 실행
+        yield return null;
+
+        if (dialogueId >= 0 && lineIndex >= 0 && DialogueEventManager.Instance != null)
+        {
+            yield return StartCoroutine(DialogueEventManager.Instance.ExecuteEvent(dialogueId, lineIndex, DialogueEventTiming.EndDialogue));
+        }
+
+        isProcessingDialogueLine = false;
+
+        // 종료 이벤트가 완료된 뒤 기존 종료 콜백 실행
+        if (callback != null)
+            yield return StartCoroutine(InvokeDialogueCallbackNextFrame(callback));
+    }
+
     private IEnumerator InvokeDialogueCallbackNextFrame(Action callback)
     {
         yield return null;
@@ -338,17 +322,16 @@ public class GameManager : Singleton<GameManager>
     }
     private void ShowMonologueLine()
     {
-        if (isProcessingDialogueLine || isWaitingForLineCompletion)
+        if (isProcessingDialogueLine)
             return;
         StartCoroutine(ProcessMonologueLine());
     }
     private IEnumerator ProcessMonologueLine()
     {
         isProcessingDialogueLine = true;
-        int dialogueId = currentMonologueId;
         int lineIndex = currentMonologueLineIdx;
         DialogueLine? line = DialogueManager.Instance.GetLine(
-            dialogueId,
+            currentMonologueId,
             lineIndex
         );
         if (!line.HasValue)
@@ -361,7 +344,7 @@ public class GameManager : Singleton<GameManager>
         {
             yield return StartCoroutine(
                 DialogueEventManager.Instance.ExecuteEvent(
-                    dialogueId,
+                    currentMonologueId,
                     lineIndex,
                     DialogueEventTiming.BeforeLine
                 )
@@ -379,13 +362,8 @@ public class GameManager : Singleton<GameManager>
             currentLine
         );
         UIManager.Instance.SetDialogueBoxActive(true);
-        yield return StartCoroutine(WaitForLineAndRunAfterEvent(dialogueId, lineIndex));
-
-        if (!isMonologue)
-        {
-            isProcessingDialogueLine = false;
-            yield break;
-        }
+        lastDisplayedDialogueId = currentMonologueId;
+        lastDisplayedLineIndex = lineIndex;
 
         currentMonologueLineIdx = currentLine.nextLineIdx;
         isProcessingDialogueLine = false;
@@ -413,7 +391,10 @@ public class GameManager : Singleton<GameManager>
     }
     private void FinishMonologue()
     {
-        isWaitingForLineCompletion = false;
+        int finishedDialogueId = lastDisplayedDialogueId;
+        int finishedLineIndex = lastDisplayedLineIndex;
+        lastDisplayedDialogueId = -1;
+        lastDisplayedLineIndex = -1;
         isMonologue = false;
         isProcessingDialogueLine = false;
         currentMonologueId = -1;
@@ -424,12 +405,8 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.SetDialogueBoxActive(false);
         Action callback = onMonologueFinished;
         onMonologueFinished = null;
-        if (callback != null)
-        {
-            StartCoroutine(
-                InvokeDialogueCallbackNextFrame(callback)
-            );
-        }
+        isProcessingDialogueLine = true;
+        StartCoroutine(ProcessDialogueEnd(finishedDialogueId, finishedLineIndex, callback));
     }
     public void SetDialogueFinishedCallback(Action callback, bool overwrite = true)
     {

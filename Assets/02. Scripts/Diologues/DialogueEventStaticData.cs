@@ -42,6 +42,18 @@ public static class DialogueEventStaticData
 
         new DialogueEventData
         {
+            dialogueId = 202,
+            lineIndex = 2,
+
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 3f,
+            teleportTarget = DialogueTeleportTarget.GoToMainStreet  
+        },
+
+        new DialogueEventData
+        {
             dialogueId = 1017,
             lineIndex = 5,
 
@@ -60,7 +72,7 @@ public static class DialogueEventStaticData
             lineIndex = 1,
             
             eventType = DialogueEventType.SpawnItem,
-            timing = DialogueEventTiming.AfterLine,
+            timing = DialogueEventTiming.EndDialogue,
             item = DialogueItem.Book
         },
 
@@ -70,8 +82,18 @@ public static class DialogueEventStaticData
             lineIndex = 1,
             
             eventType = DialogueEventType.HiddenItem,
-            timing = DialogueEventTiming.AfterLine,
+            timing = DialogueEventTiming.EndDialogue,
             item = DialogueItem.Book
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 3007,
+            lineIndex = 10,
+
+            eventType = DialogueEventType.SpawnItem,
+            timing = DialogueEventTiming.EndDialogue,
+            item = DialogueItem.Sweatsuit
         },
 
         new DialogueEventData
@@ -111,14 +133,21 @@ public static class DialogueEventStaticData
         },
 
         new DialogueEventData
-        {
+        {// grab guide
             dialogueId = 5006,
             lineIndex = 6,
+            eventType = DialogueEventType.ShowVideo,
+            timing = DialogueEventTiming.BeforeLine,
 
-            eventType = DialogueEventType.ShowGuide0,
+            videoIndex = 2
+        },
+        new DialogueEventData
+        {
+            dialogueId = 5006,
+            lineIndex = 8,
+            eventType = DialogueEventType.HideVideo,
             timing = DialogueEventTiming.BeforeLine
         },
-
         new DialogueEventData
         {
             dialogueId = 5008,
@@ -146,9 +175,68 @@ public static class DialogueEventStaticData
             dialogueId = 7000,
             lineIndex = 10,
             eventType = DialogueEventType.SpawnItem,
-            timing = DialogueEventTiming.AfterLine,
+            timing = DialogueEventTiming.EndDialogue,
 
             item = DialogueItem.BookPherkaOutline
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 7006,
+            lineIndex = 2,
+            eventType = DialogueEventType.SpawnItem,
+            timing = DialogueEventTiming.EndDialogue,
+
+            item = DialogueItem.GymPherkaOutline
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 7011,
+            lineIndex = 3,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 0.5f,
+
+            teleportTarget = DialogueTeleportTarget.GoChapter2Map
+        },
+        new DialogueEventData
+        {
+            dialogueId = 7011,
+            lineIndex = 6,
+            eventType = DialogueEventType.SpawnItem,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 0.5f,
+
+            item = DialogueItem.Book2
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 10000,
+            lineIndex = 13,
+            eventType = DialogueEventType.ShowVideo,
+            timing = DialogueEventTiming.BeforeLine,
+
+            videoIndex = 0
+        },
+        new DialogueEventData
+        {
+            dialogueId = 10000,
+            lineIndex = 14,
+            eventType = DialogueEventType.ShowVideo,
+            timing = DialogueEventTiming.BeforeLine,
+
+            videoIndex = 1
+        },
+        new DialogueEventData
+        {
+            dialogueId = 10000,
+            lineIndex = 15,
+            eventType = DialogueEventType.HideVideo,
+            timing = DialogueEventTiming.BeforeLine,
         },
 
 

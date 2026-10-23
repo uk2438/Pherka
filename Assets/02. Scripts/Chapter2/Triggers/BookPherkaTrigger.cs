@@ -10,7 +10,7 @@ public class BookPherkaTrigger : MonoBehaviour
     {
         if(other.CompareTag("Carried")) {
 
-            if(other.name != "Book") {
+            if(other.name != "Book" && other.name != "Book2") {
                 GameManager.Instance.StartMonologue(40002);
                 return;
             }
@@ -18,11 +18,13 @@ public class BookPherkaTrigger : MonoBehaviour
             count++;
             if(count == 2)
             {
-                Chapter2Manager.Instance.ChangeAllChildrenTag(Chapter2Manager.Instance.books, "Structure");
+                Chapter2Manager.Instance.ChangeAllTag(Chapter2Manager.Instance.books, "Structure");
                 if(!Chapter2Manager.Instance.GetFirstCompleted())
                     GameManager.Instance.StartMonologue(40000);
                 else GameManager.Instance.StartMonologue(40001);
                 Pherka.GetComponent<ObjectData>().SetDialogueCondition(true);
+                Chapter2Manager.Instance.SetClear(0);
+                
             }
         }
     }

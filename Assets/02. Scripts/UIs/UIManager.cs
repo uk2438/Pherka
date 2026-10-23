@@ -15,6 +15,8 @@ public class UIManager : Singleton<UIManager>
     private int currPotraitIdx = -1;
     [Header("스탠딩 일러스트")]
     [SerializeField] private Sprite[] characterSprites;
+    [SerializeField] private RectTransform potraitRect;
+    private Vector3 defaultPotraitPosition;
     // ── 볼륨 슬라이더 ──────────────────────────────────────────
     [Header("볼륨 슬라이더")]
     [SerializeField] private Slider bgmSlider;
@@ -42,6 +44,7 @@ public class UIManager : Singleton<UIManager>
 
     void Start()
     {
+        defaultPotraitPosition = potraitRect.anchoredPosition3D;
         // 슬라이더 범위 설정
         bgmSlider.minValue = 0.0001f;
         bgmSlider.maxValue = 1f;
@@ -119,49 +122,78 @@ public class UIManager : Singleton<UIManager>
     public void SetDialogueBoxActive(bool isActive)
     {
         UIData.dialogueBox.SetBool("isShow", isActive);
-    }
 
-public void UpdatePotrait(DialogueLine line)
-{
-    int index = line.potraitIdx;
-
-    if (characterSprites == null ||
-        index < 0 ||
-        index >= characterSprites.Length ||
-        characterSprites[index] == null)
-    {
-        HidePotrait();
-        return;
-    }
-
-    if (UIData.potraitObj != null)
-    {
-        UIData.potraitObj.SetActive(true);
-    }
-
-    if (UIData.potrait != null)
-    {
-        UIData.potrait.sprite = characterSprites[index];
-        UIData.potrait.color = Color.white;
-    }
-
-    currPotraitIdx = index;
-
-    if (prevPotraitIdx != currPotraitIdx)
-    {
-        if (UIData.potraitAnim != null)
+        if (!isActive)
         {
-            UIData.potraitAnim.SetTrigger("doMove");
+            HidePotrait();
+        }
+    }
+
+    public void UpdatePotrait(DialogueLine line)
+    {
+        int index = line.potraitIdx;
+
+        if (characterSprites == null ||
+            index < 0 ||
+            index >= characterSprites.Length ||
+            characterSprites[index] == null)
+        {
+            HidePotrait();
+            return;
         }
 
-        prevPotraitIdx = currPotraitIdx;
+        if (UIData.potraitObj != null)
+        {
+            UIData.potraitObj.SetActive(true);
+        }
+
+        if (UIData.potrait != null)
+        {
+            UIData.potrait.sprite = characterSprites[index];
+            UIData.potrait.color = Color.white;
+        }
+
+        currPotraitIdx = index;
+        if (prevPotraitIdx != currPotraitIdx)
+        {
+            if (UIData.potraitAnim != null)
+            {
+                // 종료할 때 중지했던 Animator를 초기화하고 다시 시작
+                if (!UIData.potraitAnim.enabled)
+                {
+                    UIData.potraitAnim.enabled = true;
+                    UIData.potraitAnim.Rebind();
+                    UIData.potraitAnim.Update(0f);
+
+                    if (potraitRect != null)
+                    {
+                        potraitRect.anchoredPosition3D = defaultPotraitPosition;
+                    }
+                }
+
+                UIData.potraitAnim.SetTrigger("doMove");
+            }
+
+            prevPotraitIdx = currPotraitIdx;
+        }
     }
-}
     private void HidePotrait()
     {
+        // 위치를 복원한 뒤 Animator가 다시 덮어쓰지 않도록 중지
+        if (UIData.potraitAnim != null)
+        {
+            UIData.potraitAnim.ResetTrigger("doMove");
+            UIData.potraitAnim.enabled = false;
+        }
+
         if (UIData.potraitObj != null)
         {
             UIData.potraitObj.SetActive(false);
+        }
+
+        if (potraitRect != null)
+        {
+            potraitRect.anchoredPosition3D = defaultPotraitPosition;
         }
 
         if (UIData.potrait != null)
@@ -192,6 +224,9 @@ public void UpdatePotrait(DialogueLine line)
     public void UpdateMonologueUI(string nameData, DialogueLine line)
     {
         UIData.nameText.text = nameData;
+
+        UpdatePotrait(line);
+
         TextAnim.Instance.SetText(line.sentence);
     }
     public void UpdateCutSceneDialogueUI(string nameData, DialogueLine line)
@@ -388,5 +423,5 @@ public void UpdatePotrait(DialogueLine line)
         clearChoiceFlagCoroutine = null;
     }
 
-    
+
 }

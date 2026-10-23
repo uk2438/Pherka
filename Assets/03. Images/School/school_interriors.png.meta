@@ -676,6 +676,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: school_interriors_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97c659d83eb73664791dbe6010ce7d03
+      internalID: 1755547588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: school_interriors_28
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 32
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a739177eba2c554ba80a219bd8a240f
+      internalID: -1040525112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -693,6 +735,7 @@ TextureImporter:
       school_interriors_11: -234468564
       school_interriors_12: 1919952365
       school_interriors_13: 839502374
+      school_interriors_14: 1755547588
       school_interriors_15: 39077256
       school_interriors_16: -88594198
       school_interriors_17: 1867557961
@@ -707,6 +750,7 @@ TextureImporter:
       school_interriors_25: 1781506927
       school_interriors_26: -948686729
       school_interriors_27: 722519812
+      school_interriors_28: -1040525112
       school_interriors_3: 1858096315
       school_interriors_4: -1190788952
       school_interriors_5: 952476995

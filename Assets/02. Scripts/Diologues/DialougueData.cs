@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEditor.Callbacks;
 using UnityEngine.Experimental.AI;
 using Unity.VisualScripting;
+using System.Linq.Expressions;
 
 namespace DialogueSystem
 {
@@ -61,8 +62,8 @@ namespace DialogueSystem
         FadeIn,
         FadeOutIn,
         SetMartActive,
-        ShowGuide0,
-        ShowGuide1,
+        ShowVideo,
+        HideVideo,
         TeleportPlayer,
         SpawnItem,
         HiddenItem
@@ -72,6 +73,8 @@ namespace DialogueSystem
     {
         TeddyBear,
         Book,
+        Book2,
+        Sweatsuit,
         BookPherkaOutline,
         GymPherkaOutline
     }
@@ -80,7 +83,7 @@ namespace DialogueSystem
     {
         None,
         BeforeLine,
-        AfterLine
+        EndDialogue
     }
     public enum DialogueTeleportTarget
     {
@@ -107,6 +110,7 @@ namespace DialogueSystem
         public float duration;
         public DialogueTeleportTarget teleportTarget;
         public DialogueItem item;
+        public int videoIndex = -1;
     }
 
     // 스크립트에서 데이터를 직접 들고 있는 static 클래스
@@ -550,7 +554,19 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "이번에도 영혼을 먼저 찾아보죠.", name = "하달", potraitIdx = 1, nextLineIdx = 16
+                    sentence = "이번에도 페르카의 먼저 찾아보죠.", name = "모사", potraitIdx = 6, nextLineIdx = 16
+                },
+                new DialogueLine
+                {
+                    sentence = "페르카요?", name = "모사", potraitIdx = 20, nextLineIdx = 17
+                },
+                new DialogueLine
+                {
+                    sentence = "네. 아까 기억에서 영혼의 이름이 페르카였던거 같더라고요.", name = "모사", potraitIdx = 6, nextLineIdx = 18
+                },
+                new DialogueLine
+                {
+                    sentence = "그럼 페르카를 찾아 볼까요?", name = "모사", potraitIdx = 1, nextLineIdx = 19
                 },
                 new DialogueLine
                 {
@@ -578,6 +594,104 @@ namespace DialogueSystem
                 new DialogueLine
                 {
                     sentence = "네!!", name = "모사", potraitIdx = 7, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            202,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 이제 다 해결했으니, 다음 기억으로 가볼꼐요.", name = "하달", potraitIdx = 1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "모사", potraitIdx = 5, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "왼쪽 위로 가ㅈ...", name = "하달", potraitIdx = 1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "하달 씨.", name = "하달", potraitIdx = 6, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "지금 이렇게까지 기억을 재구성해야 하는게 맞다고 생각하는거에요?", name = "모사", potraitIdx = 6, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "기억을 재구성하는 것이 영혼을 안정화 시키는데 가장 쉽고 좋은 방법이라 생각해요.", name = "하달", potraitIdx = 1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "지금 이 행동이 맞다고요..?", name = "모사", potraitIdx = 6, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "영혼이 어떤 방식이든 상관없이 후회가 없는 기억만 있는게 진정 완벽하고 행복한 삶이라고 생각하는거에요?", name = "모사", potraitIdx = 6, nextLineIdx =8 
+                },
+                new DialogueLine
+                {
+                    sentence = "...", name = "하달", potraitIdx = 0, nextLineIdx = 9
+                },
+                new DialogueLine
+                {
+                    sentence = "후회가 없는 삶은 저도 동경하는 삶이에요.", name = "모사", potraitIdx = 6, nextLineIdx = 10
+                },
+                new DialogueLine
+                {
+                    sentence = "모든 선택이 만족스러우면 얼마나 좋겠어요.", name = "모사", potraitIdx = 6, nextLineIdx = 11
+                },
+                new DialogueLine
+                {
+                    sentence = "하지만… 그건 진짜가 아니잖아요.", name = "모사", potraitIdx = 6, nextLineIdx = 12
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 4, nextLineIdx = 13
+                },
+                new DialogueLine
+                {
+                    sentence = "그러면 이 방법 말고 좋은 방법이 있나요?", name = "하달", potraitIdx = 3, nextLineIdx = 14
+                },
+                new DialogueLine
+                {
+                    sentence = "더 좋은 방법은 모르겠지만 .....", name = "하달", potraitIdx = 6, nextLineIdx = 15
+                },
+                new DialogueLine
+                {
+                    sentence = "적어도 이 방법이 잘못된 방식이라는 건 확실해요.", name = "모사", potraitIdx = 6, nextLineIdx = 16
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 17
+                },
+                new DialogueLine
+                {
+                    sentence = "다음 기억으로 진행하죠 ....", name = "하달", potraitIdx = 1, nextLineIdx = 18
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "모사", potraitIdx = 5, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            203,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "보건실이 잠겨있어.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "보건선생님이 잠시 자리를 비웠나봐.", name = "하달", potraitIdx = 0, nextLineIdx = -1
                 }
             }
         ),
@@ -2136,7 +2250,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "'페르카! 4시 30분까지 공원에 오는거 알지? 늦으면 안돼!!!'", name = "???", potraitIdx = -1, nextLineIdx = 4
+                    sentence = "'페르카! 4시 30분까지 다람쥐 공원에 오는거 알지? 늦으면 안돼!!!'", name = "???", potraitIdx = -1, nextLineIdx = 4
                 },
                 new DialogueLine
                 {
@@ -2144,7 +2258,11 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "....", name = "하달", potraitIdx = 4, nextLineIdx = -1
+                    sentence = "....", name = "하달", potraitIdx = 4, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "(여기서부터 다람쥐 공원까지는 40분정도 걸릴텐데...)", name = "하달", potraitIdx = 4, nextLineIdx = -1
                 }
             }
         ),
@@ -2660,7 +2778,540 @@ namespace DialogueSystem
                 }
             }
         ),
+        
+        new DialogueData(
+            3005,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이건... 사물함 열쇠인거 같네요..", name = "모사", potraitIdx = 6, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "누구 열쇠인 걸까요?", name = "모사", potraitIdx = 21, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "일단 가지고 있어보죠.", name = "하달", potraitIdx = 1, nextLineIdx = -1
+                }
+            }
+        ),
 
+        new DialogueData(
+            3006,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "사물함이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3007,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "아까 주운 사물함 열쇠랑 딱 맞아요.", name = "모사", potraitIdx = 6, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "안에 체육복이 들어있어요.", name = "모사", potraitIdx = 6, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "......", name = "하달", potraitIdx = 0, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "이걸 페르카한테 주죠.", name = "하달", potraitIdx = 1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "네??", name = "모사", potraitIdx = 6, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "이건 페르카의 것이 아니잖아요!", name = "모사", potraitIdx = 8, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "모사씨. 저희가 지금 하는 일은 기억을 재구성 하는 일이에요.", name = "하달", potraitIdx = 1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "다른상황 보다 영혼의 후회하는 일을 바로잡는게 우선이에요.", name = "하달", potraitIdx = 1, nextLineIdx = 8
+                },
+                new DialogueLine
+                {
+                    sentence = "......", name = "모사", potraitIdx = 9, nextLineIdx = 9
+                },
+                new DialogueLine
+                {
+                    sentence = "그 체육복이 페르카에게 사이즈가 맞는다는 보장이 있어요?", name = "모사", potraitIdx = 9, nextLineIdx = 10
+                },
+                new DialogueLine
+                {
+                    sentence = "무조건 맞을 거에요.", name = "하달", potraitIdx = 1, nextLineIdx = 11
+                },
+                new DialogueLine
+                {
+                    sentence = "어떻게 그렇게 확신해요??", name = "모사", potraitIdx = 6, nextLineIdx = 12
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 13
+                },
+                new DialogueLine
+                {
+                    sentence = "얼핏 봤을 때 페르카의 체형과 저의 체형이 비슷했어요.", name = "하달", potraitIdx = 1, nextLineIdx = 14
+                },
+                new DialogueLine
+                {
+                    sentence = "제가 보기엔 이 체육복은 저한테 사이즈가 맞는거같아요.", name = "하달", potraitIdx = 1, nextLineIdx = 15
+                },
+                new DialogueLine
+                {
+                    sentence = "그래서 페르카도 딱 맞을거라고 확신하는거에요.", name = "하달", potraitIdx = 1, nextLineIdx = 16
+                },
+                new DialogueLine
+                {
+                    sentence = ".....", name = "모사", potraitIdx = 5, nextLineIdx = 17
+                },
+                new DialogueLine
+                {
+                    sentence = "... 그런가요..", name = "모사", potraitIdx = 9, nextLineIdx = 18
+                },
+                new DialogueLine
+                {
+                    sentence = "네. 빨리 갖다주죠.", name = "하달", potraitIdx = 1, nextLineIdx = 19
+                },
+                new DialogueLine
+                {
+                    sentence = "네...", name = "모사", potraitIdx = 9, nextLineIdx = -1
+                }
+
+            }
+        ),
+        new DialogueData(
+            3008,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "사물함이다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "사물함 안에는 아무것도 없다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3009,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "체육복이다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "누구의 것인지는 알고싶지 않다...", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3010,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "캔버스다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "그림은 맑은날의 풍경이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3011,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "캔버스다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "그림은 그림주인의 집을 그린것 같다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3012,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "캔버스다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "정말 잘 그려진 화분이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3013,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "캔버스다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "도화지가 비어있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3014,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "캔버스다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이상한 그림이 그려져 있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3015,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "....", name = "모사", potraitIdx = 9, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "정말로 훔치시게요...?", name = "모사", potraitIdx = 9, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "...", name = "하달", potraitIdx = 0, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "달리 방법이 없잖아요.", name = "하달", potraitIdx = 1, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "...", name = "모사", potraitIdx = 9, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3016,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "그림을 교체했다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "모사", potraitIdx = 5, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                },
+            }
+        ),
+        new DialogueData(
+            3017,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "굳게 닫혀있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }  
+        ),
+        new DialogueData(
+            3018,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "다목적용 교실", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3019,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "보건실", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3020,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "도서관", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3021,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "1층", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3022,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "2층", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3023,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "3층", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3024,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "1-1", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3025,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "1-2", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3026,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "1-3", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3027,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "수업중이라 들어가면 안될거같아요...", name = "모사", potraitIdx = 6, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "쉬는 시간이면 들어갈 수 있었을 텐데..", name = "모사", potraitIdx = 6, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3028,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "화장실이다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "화장실에 갈 필요는 없어.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3029,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "식수대다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3030,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "엄청 큰 칠판이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3031,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "페르카의 이름이 적히 사물함이에요.", name = "모사", potraitIdx = 6, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "모사", potraitIdx = 5, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "안에 아무것도 없어요...", name = "모사", potraitIdx = 9, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3032,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "방송실", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3033,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "미술실", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3034,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "체육관", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3035,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "많은 도화지가 쌓여져있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3036,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "매트가 쌓여져있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3037,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "농구 골대이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3038,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "공 바구니다.", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "농구공, 축구공 등 여러가지 공들이 들어가 있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            3039,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "배드민턴 그물이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            3040,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = ""
+                }
+            }
+        ),
+        
         // 5000~ 9999 npc
 
         // 분수대 앞 npc
@@ -2851,11 +3502,19 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "갑자기 어수선해졌어.", name = "하달", potraitIdx = -20, nextLineIdx = 5
+                    sentence = "갑자기 어수선해졌어.", name = "하달", potraitIdx = 20, nextLineIdx = 5
                 },
                 new DialogueLine
                 {
                     sentence = "주변을 한번 살펴보자.", name = "하달", potraitIdx = 1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "어떤 물건은 쉬프트 키를 이용하여 들어올릴 수 있습니다.", potraitIdx = 1, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "쉬프트키를 다시 눌러 물건을 놓을 수 있습니다.", potraitIdx = 1, nextLineIdx = 8
                 },
                 new DialogueLine
                 {
@@ -3436,7 +4095,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence ="유능한 직원 한분 계신데 굳이 뽑아야 되나?", name = "총 관리자", potraitIdx = 19, nextLineIdx = 4
+                    sentence ="유능한 직원 한분 계신데 굳이 뽑아야 되나?", name = "총 관리자", potraitIdx = 17, nextLineIdx = 4
                 },
                 new DialogueLine
                 {
@@ -3612,7 +4271,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "아무래도...", name = "하달", potraitIdx = 4, nextLineIdx = -1
+                    sentence = "네...", name = "하달", potraitIdx = 4, nextLineIdx = -1
                 }
             }
         ),
@@ -3647,7 +4306,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "그래서 이런 일을 하는건가요?", name = "모사", potraitIdx = 6, nextLineIdx = 7
+                    sentence = "하달씨도 그랬나요?", name = "모사", potraitIdx = 6, nextLineIdx = 7
                 },
                 new DialogueLine
                 {
@@ -3655,7 +4314,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "....", name = "하달", potraitIdx = 3, nextLineIdx = 9
+                    sentence = "과거의 기억은 지워졌으니..", name = "하달", potraitIdx = 3, nextLineIdx = 9
                 },
                 new DialogueLine
                 {
@@ -3730,23 +4389,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "일단 이 영혼의 교실부터 찾아보죠.", name = "하달", potraitIdx = 1, nextLineIdx = 6
-                },
-                new DialogueLine
-                {
-                    sentence = "이 영혼 이름이...", name = "하달", potraitIdx = 1, nextLineIdx = 7
-                },
-                new DialogueLine
-                {
-                    sentence = "페르카에요.", name = "모사", potraitIdx = 6, nextLineIdx = 8
-                },
-                new DialogueLine
-                {
-                    sentence = "저번 기억에 문자에 페르카라고 적혀있었어요.", name = "모사", potraitIdx = 6, nextLineIdx = 9
-                },
-                new DialogueLine
-                {
-                    sentence = "그럼 페르카의 교실부터 한번 찾아보죠.", name = "하달", potraitIdx = 1, nextLineIdx = 10
+                    sentence = "일단 페르카의 교실부터 찾아보죠.", name = "하달", potraitIdx = 1, nextLineIdx = 6
                 },
                 new DialogueLine
                 {
@@ -3776,7 +4419,10 @@ namespace DialogueSystem
             7002,
             new DialogueLine[]
             {
-                
+                new DialogueLine
+                {
+                    sentence = "...", name = "페르카", potraitIdx = -1, nextLineIdx = -1
+                }
             }
         ),
 
@@ -3810,7 +4456,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "이대로 그림을 제춯하면 주제에 안맞는 그림을 그렸다고", name = "모사", potraitIdx = 9, nextLineIdx = 7
+                    sentence = "이대로 그림을 제출하면 주제에 안맞는 그림을 그렸다고", name = "모사", potraitIdx = 9, nextLineIdx = 7
                 },
                 new DialogueLine
                 {
@@ -3826,7 +4472,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "주위를 일단 한번 둘러보죠.", name = "하달", potraitIdx = 1, nextLineIdx = -1
+                    sentence = "다른 사람들은 어떤 그림을 그렸는지 살펴보죠.", name = "하달", potraitIdx = 1, nextLineIdx = -1
                 }
             }
         ),
@@ -3836,7 +4482,7 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    sentence = "(주위를 한번 둘러보자.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                    sentence = "(다른 그림들을 한번 둘러보자.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
                 }
             }
         ),
@@ -3847,7 +4493,7 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    sentence = ""
+                    sentence = "....", name = "페르카", potraitIdx = -1, nextLineIdx = -1
                 }
             }
         ),
@@ -3888,10 +4534,472 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    sentence = ""
+                    sentence = "....", name = "페르카", potraitIdx = -1, nextLineIdx = -1
                 }
             }
         ),
+
+        //1-1 NPC
+
+        new DialogueData(
+            7009,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "혹시 페르카의 반이 여긴가요?", name = "모사", potraitIdx = 21, nextLineIdx= 1
+                },
+                new DialogueLine
+                {
+                    sentence = "네! 맞아요!", name = "???", potraitIdx = -1, nextLineIdx= 2
+                },
+                new DialogueLine
+                {
+                    sentence = "네! 감사합니다!", name = "모사", potraitIdx = 7, nextLineIdx= 3
+                },
+                new DialogueLine
+                {
+                    sentence = "여기가 페르카의 반인가 봐요.", name = "모사", potraitIdx = 6, nextLineIdx= 4
+                },
+                new DialogueLine
+                {
+                    sentence = "여기에 뭔가 있을수도 있으니 조사해 보죠", name = "모사", potraitIdx = 6, nextLineIdx= -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7010,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "혹시 책 보신적 있으세요?", name = "모사", potraitIdx = 6, nextLineIdx= 1
+                },
+                new DialogueLine
+                {
+                    sentence = "네! 그런데....", name = "???", potraitIdx = -1, nextLineIdx= 2
+                },
+                new DialogueLine
+                {
+                    sentence = "여기 4명 중 한명이 가져가서 돌려주지 않고있어요.", name = "???", potraitIdx = -1, nextLineIdx= 3
+                },
+                new DialogueLine
+                {
+                    sentence = "음... 어떻게해야 책을 주는거죠?", name = "모사", potraitIdx = 21, nextLineIdx= 4
+                },
+                new DialogueLine
+                {
+                    sentence = "4명중에 책을 가지고있는 사람을 한명 골라주면 돼요!", name = "???", potraitIdx = -1, nextLineIdx= 5
+                },
+                new DialogueLine
+                {
+                    sentence = "힌트는 4명중 3명은 거짓말을 하고 있고, 단 한명만이 진실을 얘기하고있어요.", name = "???", potraitIdx = -1, nextLineIdx= 6
+                },
+                new DialogueLine
+                {
+                    sentence = "...", name = "모사", potraitIdx = 8, nextLineIdx= 7
+                },
+                new DialogueLine
+                {
+                    sentence = "맞추면 바로 책을 주나요?", name = "모사", potraitIdx = 21, nextLineIdx= 8
+                },
+                new DialogueLine
+                {
+                    sentence = "네 바로 돌려준다고 하더라고요.", name = "???", potraitIdx = -1, nextLineIdx= 9
+                },
+                new DialogueLine
+                {
+                    sentence = "틀리면, 쉬는시간이 끝나서 다음 쉬는시간에 맞추셔야돼요!", name = "???", potraitIdx = -1, nextLineIdx= 10
+                },
+                new DialogueLine
+                {
+                    sentence = "하달씨... 누가 책을 가지고 있을까요...", name = "모사", potraitIdx = 9, nextLineIdx= -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7011,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "4명중 3명은 거짓말을 하고 있고, 단 한명만이 진실을 얘기하고있어요.", name = "???", potraitIdx = -1, nextLineIdx= 1
+                },
+                new DialogueLine
+                {
+                    sentence = "누가 가지고 있을까요??", name = "모사", potraitIdx = 21, nextLineIdx= 2
+                },
+                new DialogueLine
+                {
+                    sentence = "", potraitIdx = -1,
+                    choices = new DialogueChoice[]
+                    {
+                        new DialogueChoice
+                        {
+                            text = "첫번째 영혼", nextLineIdx = 3, eventId = 202
+                        },new DialogueChoice
+                        {
+                            text = "두번쨰 영혼", nextLineIdx = 3, eventId = 202
+                        },new DialogueChoice
+                        {
+                            text = "세번째 영혼", nextLineIdx = 4
+                        },new DialogueChoice
+                        {
+                            text = "네번째 영혼", nextLineIdx = 3, eventId = 202
+                        },
+                        new DialogueChoice
+                        {
+                            text = "아직 선택하지 않는다.", nextLineIdx = -1
+                        }
+                    }
+                },
+                new DialogueLine
+                {
+                    sentence = "틀린거같아요... 다시 생각해보죠!", name = "모사", potraitIdx = 6, nextLineIdx= -1
+                },
+                new DialogueLine
+                {
+                    sentence = "정답이에요!", name = "???", potraitIdx = -1, nextLineIdx= 5
+                },
+                new DialogueLine
+                {
+                    sentence = "약속대로 책 드릴게요!", name = "???", potraitIdx = -1, nextLineIdx= 6
+                },
+                new DialogueLine
+                {
+                    sentence = "페르카가 찾던 책이 맞는거같아요!", name = "모사", potraitIdx = 7, nextLineIdx= 7
+                },
+                new DialogueLine
+                {
+                    sentence = "도서관가서 갖다주죠!!", name = "모사", potraitIdx = 7, nextLineIdx= -1
+                }
+            }
+
+        ),
+
+        new DialogueData(
+            7012,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이제 수업시간이 오기전에 수업 준비를 해야겠어요.", name = "???", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7013,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "책은 두 번째 사람이 가지고 있어.", name = "첫번째 영혼", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+        new DialogueData(
+            7014,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "책을 가지고있는 사람은 세번쨰가 아니야.", name = "두번째 영혼", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+        new DialogueData(
+            7015,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "첫 번째 사람은 거짓말을 하고 있어.", name = "세번째 영혼", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+        new DialogueData(
+            7016,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "책 주인은 남자야.", name = "네번째 영혼", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+
+        //artroom teacher
+        new DialogueData(
+            7017,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "오늘 그림의 주제는!", name = "선생님 영혼", potraitIdx = -1, nextLineIdx= 1
+                },
+                new DialogueLine
+                {
+                    sentence = "자신이 가장 기억에 남는 추억을 그리는거에요!", name = "선생님 영혼", potraitIdx = -1, nextLineIdx= -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7018,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "도서관에선 정숙해 주세요!!", name = "사서 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7019,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "난 쉬는시간마다 도서관을 가서 책을 읽어.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "도서관은 조용해서 좋아.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7020,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이 교실은 다목적용 교실이야.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "선생님 허락없이는 사용하면 안돼.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7021,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "웅성웅성.", name = "학생 영혼들", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "친구들끼리 대화하고 있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7022,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "다음 교시 뭐야?", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "다음 교시 영어야..", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "아... 영어 수업 너무 지루한데...", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7023,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "벌컥벌컥.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7024,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "점심시간은 언제오지.....", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7025,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "여긴 교실이 있는 층이야.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "쉬는시간에는 자유롭게 돌아다녀도 되지만, 수업시간에는 .", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "수업시간에는 돌아다니면 안돼!.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+        
+        new DialogueData(
+            7026,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "(책상을 치우고 있다.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7027,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "(칠판을 치우고 있다.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7028,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "(거울을 보면서 화장을 고치고 있다.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        
+        new DialogueData(
+            7029,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "쉬는시간이야!", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이제 다른 교실에도 들어갈 수 있으니깐 다른 반 친구들이랑 놀아야겠어.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7030,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이 층은 교과실이 있는 층이야.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7031,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "(농구를 하고있다.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7032,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "배드민턴을 하고있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7033,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "뜀틀을 넘나들고 있다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7034,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "그림을 잘못 그려서 새로 그려야돼.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "선생님께서 도화지는 충분히 있으니깐 마음껏 쓰라고 하셨어.", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7035,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "....", name = "학생 영혼", potraitIdx = -1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "(열심히 그리고있으니 방해하지 말자.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+        new DialogueData(
+            7036,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "선생님 오늘 주제가 뭐였죠?", name = "학생 영혼", potraitIdx = -1, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            7037,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "책장이다.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+
         // 10000~19999 cutscene dialogue
 
          // Opening
@@ -3941,16 +5049,30 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence ="...", name = "하달", potraitIdx = -1, nextLineIdx = 11
+                    sentence ="...", name = "하달", potraitIdx = 0, nextLineIdx = 11
                 },
                 new DialogueLine
                 {
-                    sentence = "지금 몇시지?", name = "하달", potraitIdx = -1, nextLineIdx = 12
+                    sentence = "지금 몇시지?", name = "하달", potraitIdx = 20, nextLineIdx = 12
                 },
                 new DialogueLine
                 {
-                    sentence = "벌써 출근 시간이네... 슬슬 일어나야겠어.", name = "하달", potraitIdx = -1, nextLineIdx = -1
-                }
+                    sentence = "벌써 출근 시간이네..", name = "하달", potraitIdx = 3, nextLineIdx = 13
+                },
+                new DialogueLine
+                {
+                    sentence = "방향키로 캐릭터를 움직일 수 있습니다.", name = "", potraitIdx = -1, nextLineIdx = 14
+                },
+                new DialogueLine
+                {
+                    sentence = "스페이스 바를 이용하여 사물들을 조사할 수 있습니다.", name = "", potraitIdx = -1, nextLineIdx = 15
+                },
+                new DialogueLine
+                {
+                    sentence = "슬슬 일어나야겠어.", name = "하달", potraitIdx = 3, nextLineIdx = -1
+                },
+
+
 
 
             }
@@ -4048,7 +5170,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence ="맞아. 눈치가 빠르네?", name = "총 관리자", potraitIdx = 19, nextLineIdx = 13
+                    sentence ="맞아. 눈치가 빠르네?", name = "총 관리자", potraitIdx = 17, nextLineIdx = 13
                 },
                 new DialogueLine
                 {
@@ -4140,7 +5262,7 @@ namespace DialogueSystem
                 },
                 new DialogueLine
                 {
-                    sentence = "네가 이때까지 해왔던 일이니깐 잘할 수 있지?", name = "총 관리자", potraitIdx = 19, nextLineIdx = 36
+                    sentence = "네가 이때까지 해왔던 일이니깐 잘할 수 있지?", name = "총 관리자", potraitIdx = 17, nextLineIdx = 36
                 },
                 new DialogueLine
                 {
@@ -4459,11 +5581,102 @@ namespace DialogueSystem
             {
                 new DialogueLine
                 {
-                    sentence = "이건 책이 아니에요!", name = "모사", potraitIdx = 6, nextLineIdx = -1
+                    sentence = "뭐하는거에요??", name = "모사", potraitIdx = 6, nextLineIdx = -1
                 }
                 
             }
-        )
+        ),
+        new DialogueData(
+            40003,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "이렇게 놔두면 되겠지.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+                
+            }
+        ),
+
+        new DialogueData(
+            40004,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "주변 그림과 선생님 말씀을 들어보니, 인상깊었던 장면을 그리는거같아요.", name = "하달", potraitIdx = 1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "페르카의 인상깊었던 장면을 우리가 어떻게 알 수 있을까요...", name = "모사", potraitIdx = 6, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "그러게요... 지금 상태에서 딱히 알 수 있는 방법이 없네요.", name = "하달", potraitIdx = 4, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "그러면 이 문제는 어떻게 해결할 수 있을까요..?", name = "모사", potraitIdx = 9, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = "음...", name = "하달", potraitIdx = 0, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "다른 사람의 그림을 훔치죠.", name = "하달", potraitIdx = 1, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "네??", name = "모사", potraitIdx = 6, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 8
+                },
+                new DialogueLine
+                {
+                    sentence = "(파란색 하늘 풍경 그림으로 가자.)", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        new DialogueData(
+            40005,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "모든 후회를 재구성 했어요.", name = "하달", potraitIdx = 1, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = "이제 다른 시간대로 가죠.", name = "하달", potraitIdx = 1, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = ".....", name = "모사", potraitIdx = 8, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "네...", name = "모사", potraitIdx = 8, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = ".....", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+
+            }
+        ),
+        
+        new DialogueData(100000,
+        new DialogueLine[]
+        {
+            new DialogueLine
+            {
+                sentence = "테스트", potraitIdx = -1, nextLineIdx = -1
+            }
+        }),
 
         };
 

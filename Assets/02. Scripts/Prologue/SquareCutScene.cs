@@ -13,6 +13,7 @@ public class SquareCutScene : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(isWatched) return;
+        isWatched = true;
         director.Play();
 
     }

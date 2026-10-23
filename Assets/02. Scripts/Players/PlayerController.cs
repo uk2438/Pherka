@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     bool isHorizontalMove = false;
     bool isGrabbing = false;
+    public bool IsGrabbing => isGrabbing;
     Vector3 vecDir;
     GameObject obj;
     Vector3 distancePlayerObj;
@@ -27,7 +28,10 @@ public class PlayerController : MonoBehaviour
     public PlayerData playerData = new PlayerData();
     public MovementData objMovementData = new MovementData();
     public FadeData fadeData = new FadeData();
+    [SerializeField] private PlayerFollower follower;
     private Transform originalParent;
+    private bool followerHiddenByGrab;
+    [HideInInspector]public bool isFollower;
 
 
     void Awake()
@@ -43,8 +47,7 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.gameData.isAction ||
             FadeManager.Instance.fadeData.isFading ||
             UIManager.Instance.panelData.isPause ||
-            GameManager.Instance.gameData.isRunningCutScene ||
-            GuideManager.Instance.IsShowing)
+            GameManager.Instance.gameData.isRunningCutScene)
         {
             h = 0;
             v = 0;
@@ -271,6 +274,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
+//Update 이후 실행되는 함수
+    private void LateUpdate()
+{
+    UpdateFollowerGrabState();
+}
+
     void FixedUpdate()
     {
         if (isAutoMoving) return;
@@ -324,6 +333,35 @@ public class PlayerController : MonoBehaviour
         ChangeHitBox();
 
     }
+
+    private void UpdateFollowerGrabState()
+{
+    if (follower == null)
+        return;
+
+    if(!isFollower) return;
+
+    if (isGrabbing)
+    {
+        if (!follower.gameObject.activeSelf)
+            return;
+
+        followerHiddenByGrab = true;
+        follower.gameObject.SetActive(false);
+        return;
+    }
+
+    // 잡기가 끝난 순간에만 다시 표시
+    if (!followerHiddenByGrab)
+        return;
+
+    followerHiddenByGrab = false;
+
+    follower.gameObject.SetActive(true);
+
+    // 플레이어 위치로 이동하고 기존 이동 경로 초기화
+    follower.TeleportWithPlayer(transform.position);
+}
 
 
     void Drop()
