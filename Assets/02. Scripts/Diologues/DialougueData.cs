@@ -98,7 +98,7 @@ namespace DialogueSystem
     }
 
 
-    [System.Serializable]
+    [Serializable]
     public class DialogueEventData
     {
         public int dialogueId;
@@ -692,6 +692,99 @@ namespace DialogueSystem
                 new DialogueLine
                 {
                     sentence = "보건선생님이 잠시 자리를 비웠나봐.", name = "하달", potraitIdx = 0, nextLineIdx = -1
+                }
+            }
+        ),
+
+        // chapter3 trigger
+
+        new DialogueData(
+            300,
+            new DialogueLine[]
+            {
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 1
+                },
+                new DialogueLine
+                {
+                    sentence = ".....", name = "모사", potraitIdx = 5, nextLineIdx = 2
+                },
+                new DialogueLine
+                {
+                    sentence = "... 그럼 가볼ㄱ....", name = "하달", potraitIdx = 1, nextLineIdx = 3
+                },
+                new DialogueLine
+                {
+                    sentence = "....??", name = "하달", potraitIdx = 20, nextLineIdx = 4
+                },
+                new DialogueLine
+                {
+                    sentence = ".... 왜 그러세요?", name = "모사", potraitIdx = 21, nextLineIdx = 5
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 20, nextLineIdx = 6
+                },
+                new DialogueLine
+                {
+                    sentence = "...!!", name = "하달", potraitIdx = 22, nextLineIdx = 7
+                },
+                new DialogueLine
+                {
+                    sentence = "... 모사씨 오지마세요!", name = "하달", potraitIdx = 1, nextLineIdx = 8
+                },
+                new DialogueLine
+                {
+                    sentence = ".... 카이씨한테 도움을..!", name = "하달", potraitIdx = 1, nextLineIdx = 9
+                },
+                new DialogueLine
+                {
+                    sentence = "....", name = "하달", potraitIdx = 0, nextLineIdx = 10
+                },
+                new DialogueLine
+                {
+                    sentence = "여긴... 일반적인 기억은 아닌거같아.", name = "하달", potraitIdx = 0, nextLineIdx = 11
+                },
+                new DialogueLine
+                {
+                    sentence = "모사씨는....", name = "하달", potraitIdx = 4, nextLineIdx = 12
+                },
+                new DialogueLine
+                {
+                    sentence = "다행히 같이 들어오진 않은거 같네.", name = "하달", potraitIdx = 0, nextLineIdx = 13
+                },
+                new DialogueLine
+                {
+                    sentence = ".... 페르카의 무의식 공간인가...", name = "하달", potraitIdx = 0, nextLineIdx = 14
+                },
+                new DialogueLine
+                {
+                    sentence = "분명 책에서...", name = "하달", potraitIdx = 0, nextLineIdx = 15
+                },
+                new DialogueLine
+                {
+                    sentence = "(내 낙오 영혼에서 업무를 진행할 경우 해당 영혼에 무의식에 들어가지 않게 조심하시길 바랍니다.)", name = "책", potraitIdx = -1, nextLineIdx = 16
+                },
+                new DialogueLine
+                {
+                    sentence = "(무의식에 들어가면, 평소의 기억보다 탈출하는 것이 어렵습니다. 즉 탈출하지 못하고 갇힐 가능성이 있습니다.)", name = "책", potraitIdx = -1, nextLineIdx = 17
+                },
+                new DialogueLine
+                {
+                    sentence = "(만약 무의식에 들어갔다면, 업무 진행보다 탈출을 목적으로 행동해주시길 바랍니다.)", name = "책", potraitIdx = -1, nextLineIdx = 18
+                },
+                new DialogueLine
+                {
+                    sentence = "지침서에 분명 그렇게 적혀있었지.", name = "하달", potraitIdx = 0, nextLineIdx = 19
+                },
+                new DialogueLine
+                {
+                    sentence = "분명 빠져나갈 곳이 있을거야.", name = "하달", potraitIdx = 0, nextLineIdx = 20
+                },
+                new DialogueLine
+                {
+                    sentence = "일단 주변을 살펴보는수 밖에...", name = "하달", potraitIdx = 0, nextLineIdx = -1
                 }
             }
         ),

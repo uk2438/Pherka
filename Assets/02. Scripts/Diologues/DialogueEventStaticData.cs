@@ -54,6 +54,99 @@ public static class DialogueEventStaticData
 
         new DialogueEventData
         {
+            dialogueId = 300,
+            lineIndex = 3,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 5,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 6,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 6,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 8,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 8,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 8,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 9,
+            eventType = DialogueEventType.FadeOut,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 1f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 9,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoChapter3Map
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 300,
+            lineIndex = 9,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 4f  
+        },
+
+        new DialogueEventData
+        {
             dialogueId = 1017,
             lineIndex = 5,
 

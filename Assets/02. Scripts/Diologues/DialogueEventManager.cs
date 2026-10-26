@@ -257,7 +257,7 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
 
         Debug.LogWarning($"{targetName}을(를) 등록된 배열에서 찾지 못했습니다.");
     }
-    private IEnumerator TeleportPlayer(DialogueTeleportTarget teleportTarget, float duration)
+    private IEnumerator TeleportPlayer(DialogueTeleportTarget teleportTarget, float duration = 0f)
     {
         if (player == null)
         {
@@ -268,7 +268,7 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
             yield break;
         }
 
-        if (FadeManager.Instance == null)
+        if (duration > 0f && FadeManager.Instance == null)
         {
             Debug.LogError(
                 "FadeManager.Instance가 존재하지 않습니다."
@@ -332,6 +332,12 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                 targetPosition = GameManager.Instance.GetChapter2Map();
                 break;
 
+            case DialogueTeleportTarget.GoChapter3Map:
+                if(GameManager.Instance == null) yield break;
+
+                targetPosition = GameManager.Instance.GetChapter3Map();
+                break;
+
             default:
                 Debug.LogWarning(
                     "순간이동 목적지가 지정되지 않았습니다."
@@ -340,23 +346,19 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                 yield break;
         }
 
+        if(duration <= 0f)
+        {
+            SetPlayerPosition(targetPosition);
+            yield break;
+        }
+
         FadeManager.Instance.fadeData.isFading = true;
 
-        yield return StartCoroutine(
-            FadeManager.Instance.FadeOut(
-                duration
-            )
-        );
+        yield return StartCoroutine(FadeManager.Instance.FadeOut(duration));
 
-        SetPlayerPosition(
-            targetPosition
-        );
+        SetPlayerPosition(targetPosition);
 
-        yield return StartCoroutine(
-            FadeManager.Instance.FadeIn(
-                duration
-            )
-        );
+        yield return StartCoroutine(FadeManager.Instance.FadeIn(duration));
 
         FadeManager.Instance.fadeData.isFading = false;
     }
