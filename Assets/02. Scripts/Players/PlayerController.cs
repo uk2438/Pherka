@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerFollower follower;
     private Transform originalParent;
     private bool followerHiddenByGrab;
-    [HideInInspector]public bool isFollower;
+    [HideInInspector] public bool isFollower;
 
 
     void Awake()
@@ -47,7 +47,10 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.gameData.isAction ||
             FadeManager.Instance.fadeData.isFading ||
             UIManager.Instance.panelData.isPause ||
-            GameManager.Instance.gameData.isRunningCutScene)
+            GameManager.Instance.gameData.isRunningCutScene ||
+            GameManager.Instance.gameData.IsInputting ||
+            (InvestigationTextUI.Instance != null &&
+            InvestigationTextUI.Instance.IsTyping))
         {
             h = 0;
             v = 0;
@@ -85,8 +88,7 @@ public class PlayerController : MonoBehaviour
         else if (!isHorizontalMove && v != 0) h = 0;
 
         // 4. 애니메이션 파라미터 전달
-        if (!isAutoMoving &&
-            !GameManager.Instance.gameData.isRunningCutScene)
+        if (!isAutoMoving)
         {
             int curH =
                 playerData.anim.GetInteger("hAxisRaw");
@@ -150,7 +152,9 @@ public class PlayerController : MonoBehaviour
 
         // game action 구현
         if (Input.GetKeyDown(KeyCode.Space) &&
-            !UIManager.Instance.panelData.isChoice)
+            !UIManager.Instance.panelData.isChoice &&
+            !GameManager.Instance.gameData.IsInputting &&
+            !GameManager.Instance.gameData.isRunningCutScene)
         {
 
             // 트리거 대화 진행
@@ -166,7 +170,7 @@ public class PlayerController : MonoBehaviour
             // 새로운 오브젝트와 상호작용
             else if (obj != null && rayhit.collider != null)
             {
-                if (rayhit.collider.CompareTag("Director")) 
+                if (rayhit.collider.CompareTag("Director"))
                 {
                     PlayableDirector director = rayhit.transform.GetComponent<PlayableDirector>();
                     ObjectData objectData = rayhit.transform.GetComponent<ObjectData>();
@@ -196,9 +200,9 @@ public class PlayerController : MonoBehaviour
                         doorInteraction.Activate();
                     }
                 }
-                else if (rayhit.collider.CompareTag("Movement"))
+                else if (rayhit.collider.CompareTag("Puzzle"))
                 {
-                    StartCoroutine(Move());
+                    DialogueManager.Instance.CheckWasAction(rayhit.collider.GetComponent<ObjectData>());
                 }
             }
         }
@@ -274,11 +278,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-//Update 이후 실행되는 함수
+    //Update 이후 실행되는 함수
     private void LateUpdate()
-{
-    UpdateFollowerGrabState();
-}
+    {
+        UpdateFollowerGrabState();
+    }
 
     void FixedUpdate()
     {
@@ -335,33 +339,33 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateFollowerGrabState()
-{
-    if (follower == null)
-        return;
-
-    if(!isFollower) return;
-
-    if (isGrabbing)
     {
-        if (!follower.gameObject.activeSelf)
+        if (follower == null)
             return;
 
-        followerHiddenByGrab = true;
-        follower.gameObject.SetActive(false);
-        return;
+        if (!isFollower) return;
+
+        if (isGrabbing)
+        {
+            if (!follower.gameObject.activeSelf)
+                return;
+
+            followerHiddenByGrab = true;
+            follower.gameObject.SetActive(false);
+            return;
+        }
+
+        // 잡기가 끝난 순간에만 다시 표시
+        if (!followerHiddenByGrab)
+            return;
+
+        followerHiddenByGrab = false;
+
+        follower.gameObject.SetActive(true);
+
+        // 플레이어 위치로 이동하고 기존 이동 경로 초기화
+        follower.TeleportWithPlayer(transform.position);
     }
-
-    // 잡기가 끝난 순간에만 다시 표시
-    if (!followerHiddenByGrab)
-        return;
-
-    followerHiddenByGrab = false;
-
-    follower.gameObject.SetActive(true);
-
-    // 플레이어 위치로 이동하고 기존 이동 경로 초기화
-    follower.TeleportWithPlayer(transform.position);
-}
 
 
     void Drop()

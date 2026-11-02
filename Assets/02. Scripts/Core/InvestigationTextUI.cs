@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class InvestigationTextUI : Singleton<InvestigationTextUI>
     [SerializeField] private TextMeshProUGUI investigationText;
 
     private Coroutine typingCoroutine;
+    public bool IsTyping => typingCoroutine != null;
 
     public void ShowText(string message)
     {
@@ -47,13 +49,29 @@ public class InvestigationTextUI : Singleton<InvestigationTextUI>
     {
         StopTyping();
 
-        if (investigationText != null)
+        if (investigationText == null)
+            return;
+
+        investigationText.text = string.Empty;
+        investigationText.maxVisibleCharacters = 0;
+        investigationText.gameObject.SetActive(false);
+    }
+
+    public async void ShowTextAndHide(string message)
+    {
+        ShowText(message);
+
+        // 글자 출력이 끝날 때까지 대기
+        while (this != null && IsTyping)
         {
-            investigationText.text = string.Empty;
-            investigationText.maxVisibleCharacters = 0;
+            await Task.Yield();
         }
-        else if (investigationText != null)
-            investigationText.gameObject.SetActive(false);
+
+        // 출력 완료 후 1초 대기
+        await Task.Delay(1000);
+
+        if (this != null)
+            HideText();
     }
 
     private IEnumerator PlayText(string message)

@@ -18,17 +18,21 @@ public class Chapter2ClearTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+
+        GameManager.Instance.gameData.triggerObjectData = triggerObjectData;
+        GameManager.Instance.TriggerAction();
+
         if (Chapter2Manager.Instance.clear)
         {
+            GameManager.Instance.SetDialogueFinishedCallback(() =>
+            {
             Chapter3Block.SetActive(false);
-            // Chapter2Manager.Instance.StartChapterThree();
+            DialogueManager.Instance.SetPresentChapter(3);                
+            });
         }
         else
         {
             backStep.BackStep(other.transform, backStep.stepDistance);
         }
-
-        GameManager.Instance.gameData.triggerObjectData = triggerObjectData;
-        GameManager.Instance.TriggerAction();
     }
 }

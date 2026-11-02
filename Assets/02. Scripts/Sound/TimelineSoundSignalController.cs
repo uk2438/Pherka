@@ -1,75 +1,81 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TimelineSoundSignalController : MonoBehaviour
 {
-    [Header("Timeline에서 사용할 AudioSource")]
-    [SerializeField] private AudioSource[] audioSources;
+    [Header("BGM 믹서로 출력하는 AudioSource")]
+    [SerializeField] private AudioSource bgmSource;
 
-    public void Play(int index)
+    [Header("SFX 믹서로 출력하는 AudioSource")]
+    [SerializeField] private AudioSource sfxSource;
+
+    public void PlayBGM(AudioClip clip)
     {
-        AudioSource source = GetSource(index);
+        if (bgmSource == null || clip == null)
+            return;
 
-        if(source == null || source.clip == null) return;
-
-        source.Play();
-        
+        bgmSource.clip = clip;
+        bgmSource.Play();
     }
 
-    public void PlayOneShot(int index)
+    public void PlaySFX(AudioClip clip)
     {
-        AudioSource source = GetSource(index);
+        if (sfxSource == null || clip == null)
+            return;
 
-        if(source == null || source.clip == null) return;
-
-        source.PlayOneShot(source.clip);
+        sfxSource.PlayOneShot(clip);
     }
 
-    public void Stop(int index)
+    public void StopBGM()
     {
-        AudioSource source = GetSource(index);
+        if (bgmSource == null)
+            return;
 
-        if(source == null || source.clip == null) return;
-
-        source.Stop();        
+        bgmSource.Stop();
     }
 
-    public void Pause(int index)
+    public void StopSFX()
     {
-        AudioSource source = GetSource(index);
+        if (sfxSource == null)
+            return;
 
-        if(source == null || source.clip == null) return;
-
-        source.Pause();
+        sfxSource.Stop();
     }
 
-    public void Resume(int index)
+    public void PauseBGM()
     {
-        AudioSource source = GetSource(index);
+        if (bgmSource == null)
+            return;
 
-        if(source == null || source.clip == null) return;
+        bgmSource.Pause();
+    }
 
-        source.UnPause();
+    public void PauseSFX()
+    {
+        if (sfxSource == null)
+            return;
+
+        sfxSource.Pause();
+    }
+
+    public void ResumeBGM()
+    {
+        if (bgmSource == null)
+            return;
+
+        bgmSource.UnPause();
+    }
+
+    public void ResumeSFX()
+    {
+        if (sfxSource == null)
+            return;
+
+        sfxSource.UnPause();
     }
 
     public void StopAll()
     {
-        foreach(AudioSource source in audioSources)
-        {
-            if(source == null || source.clip == null) return;
-
-            source.Stop();
-        }
-    }
-
-    public AudioSource GetSource(int index)
-    {
-        if(audioSources == null || index < 0 || index >= audioSources.Length) return null;
-
-        if(audioSources[index] == null) return null;
-
-        return audioSources[index];
+        StopBGM();
+        StopSFX();
     }
 }

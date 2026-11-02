@@ -8,7 +8,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private readonly Dictionary<int, DialogueData> dialogueDict
         = new Dictionary<int, DialogueData>();
 
-    private int presentChpater = 2;
+    private int presentChpater = 4;
 
     private void Awake()
     {
@@ -123,10 +123,10 @@ public class DialogueManager : Singleton<DialogueManager>
                 Chapter2Manager.Instance.CheckWasAction(objectData);
                 break;
             case 3:
-                // PrologueManager.Instance.CheckWasAction(objectData);
+                Chapter3Manager.Instance.CheckWasAction(objectData);
                 break;
             case 4:
-                // PrologueManager.Instance.CheckWasAction(objectData);
+                Chapter4Manager.Instance.CheckWasAction(objectData);
                 break;
         }
     }

@@ -314,4 +314,5 @@ public class Chapter2Manager : Singleton<Chapter2Manager>
         }
     }
 
+
 }

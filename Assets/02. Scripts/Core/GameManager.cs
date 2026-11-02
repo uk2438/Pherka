@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 public class GameManager : Singleton<GameManager>
 {
+    // [SerializeField] private 
     [Header("챕터별 이동 위치")]
     [SerializeField] Vector3 mainStreetMap;
     [SerializeField] Vector3 chapter1Map;
@@ -29,14 +30,31 @@ public class GameManager : Singleton<GameManager>
     //callback params
     private Action onMonologueFinished, onDialogueFinished;
     private readonly HashSet<PlayableDirector> playedDirector = new HashSet<PlayableDirector>();
-    public void CutSceneAction(PlayableDirector director)
+    public void CutSceneAction(PlayableDirector director, Action onFinished = null)
     {
         if (director == null)
             return;
+
         if (!playedDirector.Add(director))
             return;
-        director.Play();
+
+        // 컷신이 종료됐을 때 실행
+        void OnStopped(PlayableDirector stoppedDirector)
+        {
+            // 한 번 실행한 뒤 이벤트 연결 해제
+            stoppedDirector.stopped -= OnStopped;
+
+            gameData.isRunningCutScene = false;
+
+            // 전달받은 콜백 실행
+            onFinished?.Invoke();
+        }
+
+        // 재생 전에 종료 이벤트 등록
+        director.stopped += OnStopped;
+
         gameData.isRunningCutScene = true;
+        director.Play();
     }
     public void TriggerAction()
     {
@@ -257,6 +275,16 @@ public class GameManager : Singleton<GameManager>
             case 202:
                 Chapter2Manager.Instance.SetRestTime(false);
                 break;
+            case 300:
+                Chapter3Manager.Instance.ShowComputerPuzzle();
+                break;
+            case 301:
+                Chapter3Manager.Instance.InputComputerPuzzle();
+                break;
+            case 400:
+                Chapter4Manager.Instance.SevenOClock();
+                break;
+
         }
     }
     private IEnumerator TalkNextFrame(ObjectData objData)

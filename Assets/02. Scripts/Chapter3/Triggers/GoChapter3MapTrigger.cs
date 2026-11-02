@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GoChapter3MapTrigger : MonoBehaviour
 {
+    [SerializeField] private GameObject Mosa;
     ObjectData triggerObjectData;
     bool isTriggered;
+    
 
     void Awake()
     {
@@ -21,5 +23,10 @@ public class GoChapter3MapTrigger : MonoBehaviour
 
         GameManager.Instance.gameData.triggerObjectData = triggerObjectData;
         GameManager.Instance.TriggerAction();
+        
+        GameManager.Instance.SetDialogueFinishedCallback(() =>
+        {
+            Mosa.SetActive(false);
+        });
     }
 }

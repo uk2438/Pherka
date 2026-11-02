@@ -15,6 +15,7 @@ TagManager:
   - BGMTrigger
   - Director
   - SubPlayer
+  - Puzzle
   layers:
   - Default
   - TransparentFX

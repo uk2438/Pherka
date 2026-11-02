@@ -38,8 +38,8 @@ public class GameData
     public bool isRunningCutScene = false;
     public bool isTrigger = false;
     public bool isDoorOpen = false;
+    public bool IsInputting = false;
     
-    public int ChapterIdx;
 }
 
 [Serializable]

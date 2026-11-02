@@ -39,6 +39,10 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     [SerializeField] private Condition waterCan;
     [SerializeField] private Condition painting;
     [SerializeField] private Condition phone;
+
+    [Header("Chapter 4 GameObject")]
+    [SerializeField] private GameObject cutsceneTrigger;
+    [SerializeField] private GameObject[] blockedTriggers;
     [Header("Chapter 1 맵 Deactive")]
     [SerializeField] private GameObject deactiveObj;
     [SerializeField] private GameObject activeObj;
@@ -305,6 +309,18 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
         UpdateState(4, Pherka4, isPherka4);
         UpdateState(5, Pherka5, isPherka3 && isPherka4);
         UpdateState(6, Pherka6, isPherka6);
+
+
+        if(homeTime == 7)
+        {
+        UpdateState(curtain0, tiedCurtains);
+        UpdateState(curtain1, tiedCurtains);
+        cutsceneTrigger.SetActive(true);
+        foreach(GameObject obj in blockedTriggers)
+            {
+                obj.SetActive(false);
+            }
+        }
 
 
     }

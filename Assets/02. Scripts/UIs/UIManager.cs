@@ -37,6 +37,10 @@ public class UIManager : Singleton<UIManager>
     private readonly List<Button> choiceButtons = new List<Button>();
     private Coroutine clearChoiceFlagCoroutine;
 
+    private bool isDialogueActive;
+
+    public bool IsPuzzleInputActive { get; private set; }
+
 
     public UIData UIData = new UIData();
     public PanelData panelData = new PanelData();
@@ -121,12 +125,22 @@ public class UIManager : Singleton<UIManager>
 
     public void SetDialogueBoxActive(bool isActive)
     {
-        UIData.dialogueBox.SetBool("isShow", isActive);
+        isDialogueActive = isActive;
+        RefreshDialogueBox();
+    }
 
-        if (!isActive)
-        {
-            HidePotrait();
-        }
+    public void SetPuzzleInputActive(bool isActive)
+    {
+        IsPuzzleInputActive = isActive;
+        RefreshDialogueBox();
+    }
+
+    private void RefreshDialogueBox()
+    {
+        UIData.dialogueBox.SetBool(
+            "isShow",
+            isDialogueActive || IsPuzzleInputActive
+        );
     }
 
     public void UpdatePotrait(DialogueLine line)

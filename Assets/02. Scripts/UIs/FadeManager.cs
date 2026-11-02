@@ -1,7 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class FadeManager : Singleton<FadeManager>
 {
@@ -40,10 +40,10 @@ public class FadeManager : Singleton<FadeManager>
         img.sprite = image;
         Color c = img.color;
 
-        while(elapsed < fadeDuration)
+        while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(0f, 1f, elapsed/fadeDuration);
+            float alpha = Mathf.Lerp(0f, 1f, elapsed / fadeDuration);
             img.color = new Color(c.r, c.g, c.b, alpha);
             yield return null;
         }
@@ -85,19 +85,52 @@ public class FadeManager : Singleton<FadeManager>
         fadeData.isFading = false;
     }
 
-    public void SetGuideBackgroundActive(bool active)
-{
-    if (fadeData.guideBackground == null)
+    // 페이드 완료 후 대화 시작
+    public void StartDialogueAfterFade(ObjectData objectData)
     {
-        Debug.LogWarning(
-            "FadeManager의 Background가 지정되지 않았습니다."
-        );
+        StartCoroutine(WaitForFade(() =>
+        {
+            if (objectData == null)
+                return;
 
-        return;
+            GameManager.Instance.gameData.triggerObjectData = objectData;
+            GameManager.Instance.TriggerAction();
+        }));
     }
 
-    fadeData.guideBackground .gameObject.SetActive(active);
-}
+    // 페이드 완료 후 컷신 시작
+    public void StartDirectorAfterFade(PlayableDirector director)
+    {
+        StartCoroutine(WaitForFade(() =>
+        {
+            if (director == null)
+                return;
+
+            GameManager.Instance.CutSceneAction(director);
+        }));
+    }
+
+    // 공통 대기 처리
+    private IEnumerator WaitForFade(System.Action callback)
+    {
+        yield return new WaitUntil(() => !fadeData.isFading);
+
+        callback?.Invoke();
+    }
+
+    public void SetGuideBackgroundActive(bool active)
+    {
+        if (fadeData.guideBackground == null)
+        {
+            Debug.LogWarning(
+                "FadeManager의 Background가 지정되지 않았습니다."
+            );
+
+            return;
+        }
+
+        fadeData.guideBackground.gameObject.SetActive(active);
+    }
     public void StartFadeOut(float fadeDuration)
     {
         StartCoroutine(FadeOut(fadeDuration));
@@ -111,7 +144,7 @@ public class FadeManager : Singleton<FadeManager>
     {
         StartCoroutine(FadeOutImage(image, 1f));
     }
-    
+
     public void StartFadeInImage(Sprite image)
     {
         StartCoroutine(FadeInImage(image, 1f));

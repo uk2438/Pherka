@@ -135,6 +135,12 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
             case DialogueEventType.TeleportPlayer:
                 yield return StartCoroutine(TeleportPlayer(eventData.teleportTarget, duration));
                 break;
+            case DialogueEventType.ShowDiary:
+                InvestigationTextUI.Instance.ShowText(eventData.diaryContent);
+                break;
+            case DialogueEventType.HideDiary:
+                InvestigationTextUI.Instance.HideText();
+                break;
         }
 
         isRunningEvent = false;
@@ -333,9 +339,13 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                 break;
 
             case DialogueTeleportTarget.GoChapter3Map:
-                if(GameManager.Instance == null) yield break;
+                if (GameManager.Instance == null) yield break;
 
                 targetPosition = GameManager.Instance.GetChapter3Map();
+                break;
+
+            case DialogueTeleportTarget.GradePuzzle:
+                targetPosition = new Vector3(345, 326, 0);
                 break;
 
             default:
@@ -346,7 +356,7 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                 yield break;
         }
 
-        if(duration <= 0f)
+        if (duration <= 0f)
         {
             SetPlayerPosition(targetPosition);
             yield break;
