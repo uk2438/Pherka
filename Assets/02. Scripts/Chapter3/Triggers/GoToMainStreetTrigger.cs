@@ -16,5 +16,10 @@ public class GoToMainStreetTrigger : MonoBehaviour
         GameManager.Instance.gameData.triggerObjectData = triggerObjectData;
         GameManager.Instance.TriggerAction();
         Chapter3Manager.Instance.StartChapter4();
+
+        SpriteRenderer spriteRenderer = other.GetComponent<SpriteRenderer>();
+
+        Color color = spriteRenderer.color;
+        spriteRenderer.color = new Color(color.r, color.g, color.b, 1f);
     }
 }

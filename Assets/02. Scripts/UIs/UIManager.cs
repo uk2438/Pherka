@@ -23,10 +23,9 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Slider sfxSlider;
 
     // ── 설정 페이지 ────────────────────────────────────────────
-    [Header("설정 페이지")]
-    [SerializeField] private Animator pageTurnAnimator; // PausePanel 애니메이터
-    [SerializeField] private GameObject buttonList;     // 기본 버튼 목록
-    [SerializeField] private GameObject settingUI;      // 설정 UI (SFXSlider, BGMSlider)
+    [Header("설정 패널")]
+    [SerializeField] private GameObject buttonList;     // 일시정지 버튼 목록
+    [SerializeField] private GameObject settingUI;      // 설정 패널
 
     // ── Choice UI ────────────────────────────────────────────
     [Header("선택지 UI")]
@@ -67,44 +66,28 @@ public class UIManager : Singleton<UIManager>
         SoundManager.Instance.SetBGMVolume(bgmSlider.value);
         SoundManager.Instance.SetSFXVolume(sfxSlider.value);
 
-        // 기본 상태: ButtonList만 보이고 SettingUI는 숨김
-        if (buttonList != null) buttonList.SetActive(true);
-        if (settingUI != null) settingUI.SetActive(false);
+        // 시작할 때 일시정지 관련 패널 닫기
+        SetPauseActive(false);
     }
 
-    // ── 설정 페이지 전환 ───────────────────────────────────────
+    // ── 설정 패널 ──────────────────────────────────────────────
 
-    // 설정 버튼에 연결
     public void OpenSettingPage()
     {
-        StartCoroutine(OpenSettingRoutine());
-    }
+        if (settingUI == null)
+            return;
 
-    private IEnumerator OpenSettingRoutine()
-    {
-        // 1. ButtonList 숨기기
-        buttonList.SetActive(false);
-
-        // 2. 페이지 넘김 애니메이션 재생
-        if (pageTurnAnimator != null && !menuData.isSetting)
-        {
-            menuData.isSetting = true;
-            pageTurnAnimator.SetTrigger("PageTurn");
-            yield return null; // 애니메이션 시작될 때까지 한 프레임 대기
-            float animLength = pageTurnAnimator.GetCurrentAnimatorStateInfo(0).length;
-            yield return new WaitForSeconds(animLength);
-        }
-
-        // 3. ButtonList 다시 보이기 + SettingUI 보이기
-        buttonList.SetActive(true);
+        SetQuitPanelActive(false);
+        menuData.isSetting = true;
         settingUI.SetActive(true);
     }
 
-    private void CloseSetting()
+    public void CloseSetting()
     {
-        // 1. SettingUI 숨기기
-        settingUI.SetActive(false);
         menuData.isSetting = false;
+
+        if (settingUI != null)
+            settingUI.SetActive(false);
     }
 
     // ── 슬라이더 콜백 ──────────────────────────────────────────
@@ -259,9 +242,25 @@ public class UIManager : Singleton<UIManager>
     // ── Pause UI on/off ────────────────────────────────────────────
     public void TogglePause()
     {
-        panelData.isPause = !panelData.isPause;
-        panelData.pausePanel.SetActive(panelData.isPause);
+        SetPauseActive(!panelData.isPause);
+    }
+
+    public void Resume()
+    {
+        SetPauseActive(false);
+    }
+
+    private void SetPauseActive(bool isActive)
+    {
+        panelData.isPause = isActive;
         CloseSetting();
+        SetQuitPanelActive(false);
+
+        if (buttonList != null)
+            buttonList.SetActive(true);
+
+        if (panelData.pausePanel != null)
+            panelData.pausePanel.SetActive(isActive);
     }
 
     // ── Quit UI on/off ────────────────────────────────────────────
@@ -277,10 +276,13 @@ public class UIManager : Singleton<UIManager>
 
     public void SetQuitPanelActive(bool isActive)
     {
-        if (panelData.quitPanel != null)
-        {
-            panelData.quitPanel.SetActive(isActive);
-        }
+        if (panelData.quitPanel == null)
+            return;
+
+        if (isActive)
+            CloseSetting();
+
+        panelData.quitPanel.SetActive(isActive);
     }
 
     public void OpenCheckPanel()

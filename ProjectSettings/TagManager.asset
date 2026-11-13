@@ -16,6 +16,7 @@ TagManager:
   - Director
   - SubPlayer
   - Puzzle
+  - Footstep
   layers:
   - Default
   - TransparentFX

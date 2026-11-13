@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
-using UnityEditor.XR;
 using UnityEngine;
 
 public class PrologueManager : Singleton<PrologueManager>
@@ -20,10 +19,6 @@ public class PrologueManager : Singleton<PrologueManager>
     [SerializeField] private GameObject[] martShinyEffects;
     [SerializeField] private GameObject square;
     [SerializeField] public GameObject homeBoxs, dogFood;
-
-    [Header("프롤로그 맵 Deactive")]
-    [SerializeField] private GameObject deactiveObj;
-    [SerializeField] private GameObject activeObj;
     
     //B1F 책 읽었는지에 대한 bool
     private bool id1006, id1007, id1008, id1009, id1010, id1011, id1012, id1013, id1014, isCompleted;
@@ -75,7 +70,8 @@ public class PrologueManager : Singleton<PrologueManager>
                     id1013 = true;
                     break;
                 case 1014:
-
+                    id1014 = true;
+                    break;
                 default: break;
             }
 
@@ -264,13 +260,7 @@ public class PrologueManager : Singleton<PrologueManager>
 
     public void StartChapterOne()
     {
-        activeObj.SetActive(true);
         DialogueManager.Instance.SetPresentChapter(1);
-    }
-
-    public void EndPrologue()
-    {
-        deactiveObj.SetActive(false);
     }
 
 }

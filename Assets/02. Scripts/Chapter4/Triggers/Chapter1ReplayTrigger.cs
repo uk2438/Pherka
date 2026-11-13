@@ -8,6 +8,7 @@ public class Chapter1ReplayTrigger : MonoBehaviour
     private bool isTriggered;
     private PlayableDirector director;
 
+    [SerializeField] private ObjectData changedData;
     private void OnTriggerEnter2D(Collider2D other) {
         if(!other.CompareTag("Player")) return;
         if(isTriggered) return;
@@ -19,6 +20,7 @@ public class Chapter1ReplayTrigger : MonoBehaviour
         GameManager.Instance.CutSceneAction(director);
         Chapter4Manager.Instance.SetChapter1ClearCheck(true);
 
+        changedData.SetDialogueCondition(true);
 
     }
 }

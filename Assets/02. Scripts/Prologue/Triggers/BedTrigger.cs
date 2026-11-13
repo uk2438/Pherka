@@ -11,30 +11,24 @@ public class BedTrigger : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if(isTrigger) return;
+        if (isTrigger) return;
 
         isTrigger = true;
         player = other.transform;
 
 
-        GameManager.Instance.StartMonologue(20002, FirstOnMonologueFinished);
+        GameManager.Instance.CutSceneAction(director, () =>
+        {
+            PrologueManager.Instance.StartChapterOne();
+
+            Invoke(nameof(MovePlayer), 0.001f);
+        });
 
     }
-
-    private void FirstOnMonologueFinished()
-    {
-        director.Play();
-        PrologueManager.Instance.StartChapterOne();
-
-        Invoke(nameof(MovePlayer), 2f);
-    }
-
     private void MovePlayer()
     {
-        if(player == null) return;
+        if (player == null) return;
         player.position = position;
-        PrologueManager.Instance.EndPrologue();
-
 
     }
 }

@@ -30,18 +30,6 @@ public static class DialogueEventStaticData
 
         new DialogueEventData
         {
-            dialogueId = 200,
-            lineIndex = 14,
-
-            eventType = DialogueEventType.TeleportPlayer,
-            timing = DialogueEventTiming.BeforeLine,
-            duration = 3f,
-
-            teleportTarget = DialogueTeleportTarget.GoChapter2Map
-        },
-
-        new DialogueEventData
-        {
             dialogueId = 202,
             lineIndex = 2,
 
@@ -50,6 +38,28 @@ public static class DialogueEventStaticData
 
             duration = 3f,
             teleportTarget = DialogueTeleportTarget.GoToMainStreet  
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 204,
+            lineIndex = 0,
+
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoChapter2Map
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 204,
+            lineIndex = 0,
+
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
         },
 
         new DialogueEventData
@@ -207,6 +217,103 @@ public static class DialogueEventStaticData
 
         new DialogueEventData
         {
+            dialogueId = 403,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeOut,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 403,
+            lineIndex = 0,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoToMainStreet
+        },
+        new DialogueEventData
+        {
+            dialogueId = 403,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+
+        new DialogueEventData{
+            dialogueId = 404,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeOut,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 404,
+            lineIndex = 0,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoChapter2Map
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 404,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+        new DialogueEventData{
+            dialogueId = 406,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeOut,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+        new DialogueEventData
+        {
+            dialogueId = 406,
+            lineIndex = 0,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoChapter4_3Map
+        },
+        new DialogueEventData
+        {
+            dialogueId = 406,
+            lineIndex = 0,
+            eventType = DialogueEventType.FadeIn,
+            timing = DialogueEventTiming.BeforeLine,
+
+            duration = 2f
+        },
+
+        new DialogueEventData
+        {
+            dialogueId = 407,
+            lineIndex = 0,
+            eventType = DialogueEventType.TeleportPlayer,
+            timing = DialogueEventTiming.BeforeLine,
+
+            teleportTarget = DialogueTeleportTarget.GoToMainStreet,
+
+            duration = 2f
+        },
+
+        
+
+
+        new DialogueEventData
+        {
             dialogueId = 1017,
             lineIndex = 5,
 
@@ -242,7 +349,7 @@ public static class DialogueEventStaticData
         new DialogueEventData
         {
             dialogueId = 3007,
-            lineIndex = 10,
+            lineIndex = 19,
 
             eventType = DialogueEventType.SpawnItem,
             timing = DialogueEventTiming.EndDialogue,
@@ -262,7 +369,7 @@ public static class DialogueEventStaticData
         new DialogueEventData
         {
             dialogueId = 4007,
-            lineIndex = 4,
+            lineIndex = 0,
             eventType = DialogueEventType.ShowDiary,
             timing = DialogueEventTiming.BeforeLine,
 
@@ -271,7 +378,7 @@ public static class DialogueEventStaticData
         new DialogueEventData
         {
             dialogueId = 4007,
-            lineIndex = 0,
+            lineIndex = 4,
             eventType = DialogueEventType.HideDiary,
             timing = DialogueEventTiming.EndDialogue,
         },
@@ -377,23 +484,6 @@ public static class DialogueEventStaticData
 
             duration = 2f
         },
-
-        new DialogueEventData
-        {// grab guide
-            dialogueId = 5006,
-            lineIndex = 6,
-            eventType = DialogueEventType.ShowVideo,
-            timing = DialogueEventTiming.BeforeLine,
-
-            videoIndex = 2
-        },
-        new DialogueEventData
-        {
-            dialogueId = 5006,
-            lineIndex = 8,
-            eventType = DialogueEventType.HideVideo,
-            timing = DialogueEventTiming.BeforeLine
-        },
         new DialogueEventData
         {
             dialogueId = 5008,
@@ -419,7 +509,7 @@ public static class DialogueEventStaticData
         new DialogueEventData
         {
             dialogueId = 7000,
-            lineIndex = 10,
+            lineIndex = 6,
             eventType = DialogueEventType.SpawnItem,
             timing = DialogueEventTiming.EndDialogue,
 
@@ -457,32 +547,6 @@ public static class DialogueEventStaticData
             duration = 0.5f,
 
             item = DialogueItem.Book2
-        },
-
-        new DialogueEventData
-        {
-            dialogueId = 10000,
-            lineIndex = 13,
-            eventType = DialogueEventType.ShowVideo,
-            timing = DialogueEventTiming.BeforeLine,
-
-            videoIndex = 0
-        },
-        new DialogueEventData
-        {
-            dialogueId = 10000,
-            lineIndex = 14,
-            eventType = DialogueEventType.ShowVideo,
-            timing = DialogueEventTiming.BeforeLine,
-
-            videoIndex = 1
-        },
-        new DialogueEventData
-        {
-            dialogueId = 10000,
-            lineIndex = 15,
-            eventType = DialogueEventType.HideVideo,
-            timing = DialogueEventTiming.BeforeLine,
         },
 
 

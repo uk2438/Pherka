@@ -56,14 +56,13 @@ public class Chapter3Manager : Singleton<Chapter3Manager>
                     SetTag(item.spriteRenderer.gameObject, structureTag);
                 }
                 puzzle1 = true;
-                GameManager.Instance.StartMonologue(22000);
-                GetObjectData(4006).SetDialogueCondition(true);
-                GameManager.Instance.SetDialogueFinishedCallback(() =>
+                GameManager.Instance.StartMonologue(22000, () =>
                 {
                     doors[1].SetActive(true);
                     walls[1].SetActive(false);
 
                 });
+                GetObjectData(4006).SetDialogueCondition(true);
             }
         }
         else if (4016 <= id && id <= 4020)
@@ -193,6 +192,9 @@ public class Chapter3Manager : Singleton<Chapter3Manager>
             if(data == null) break;
             data.SetDialogueCondition(true);
         }
+
+        Chapter1Manager.Instance.SetHomeTime(1);
+        Chapter2Manager.Instance.SetRestTime(false);
 
         DialogueManager.Instance.SetPresentChapter(4);
     }

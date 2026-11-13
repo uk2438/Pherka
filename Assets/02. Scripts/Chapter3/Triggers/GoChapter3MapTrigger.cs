@@ -17,7 +17,8 @@ public class GoChapter3MapTrigger : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(!other.CompareTag("Player")) return;
-        if(isTriggered) return;
+
+        if(isTriggered && DialogueManager.Instance.GetPresentChapter() != 4) return;
 
         isTriggered = true;
 

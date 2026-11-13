@@ -622,7 +622,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -643,7 +643,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -664,7 +664,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -685,7 +685,7 @@ TextureImporter:
         width: 48
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -693,6 +693,27 @@ TextureImporter:
       bones: []
       spriteID: 8de6688d761f1ab4d8d039f7277d920d
       internalID: 468838388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: unconscious_furniture_28
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 448
+        width: 96
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b74bbb3b8abd769499a165931ab3055f
+      internalID: -1759933397
       vertices: []
       indices: 
       edges: []
@@ -729,6 +750,7 @@ TextureImporter:
       unconscious_furniture_25: 2034478446
       unconscious_furniture_26: -935935395
       unconscious_furniture_27: 468838388
+      unconscious_furniture_28: -1759933397
       unconscious_furniture_3: 229262888
       unconscious_furniture_4: -875044739
       unconscious_furniture_5: -369063935

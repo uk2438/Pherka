@@ -9,7 +9,6 @@ public class Chapter1ReplayClearTrigger : MonoBehaviour
 
     void Awake()
     {
-        triggerObjectData = GetComponent<ObjectData>();
         backStep = GetComponent<BackStepFunc>();
     }
 
@@ -17,8 +16,16 @@ public class Chapter1ReplayClearTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        if(!Chapter4Manager.Instance.GetChapter1ClearCheck()) 
+        triggerObjectData = GetComponent<ObjectData>();
+
+        if (!Chapter4Manager.Instance.GetChapter1ClearCheck())
+        {
             backStep.BackStep(other.transform, backStep.stepDistance);
+        }
+        else
+        {
+            triggerObjectData.SetDialogueCondition(true);
+        }
 
         GameManager.Instance.gameData.triggerObjectData = triggerObjectData;
         GameManager.Instance.TriggerAction();

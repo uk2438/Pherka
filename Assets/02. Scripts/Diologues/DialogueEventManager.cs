@@ -126,12 +126,6 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
             case DialogueEventType.SetMartActive:
                 yield return StartCoroutine(PrologueManager.Instance.SetMartNPCActive(true));
                 break;
-            case DialogueEventType.ShowVideo:
-                ShowVideo(eventData.videoIndex);
-                break;
-            case DialogueEventType.HideVideo:
-                HideVideo();
-                break;
             case DialogueEventType.TeleportPlayer:
                 yield return StartCoroutine(TeleportPlayer(eventData.teleportTarget, duration));
                 break;
@@ -144,53 +138,6 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
         }
 
         isRunningEvent = false;
-    }
-
-    private void ShowVideo(int videoIndex)
-    {
-        Debug.Log($"[ShowVideo 호출] index={videoIndex}", this);
-        if (guideVideoPanel == null || guideVideoPlayer == null)
-        {
-            Debug.LogError("영상 패널과 VideoPlayer를 연결해주세요.", this);
-            return;
-        }
-
-        if (guideVideoClips == null ||
-            videoIndex < 0 ||
-            videoIndex >= guideVideoClips.Length ||
-            guideVideoClips[videoIndex] == null)
-        {
-            Debug.LogError($"영상 번호를 확인해주세요: {videoIndex}", this);
-            return;
-        }
-
-        guideVideoPlayer.playOnAwake = false;
-
-        guideVideoPanel.SetActive(true);
-
-        // 이전 영상을 멈추고 선택한 영상을 처음부터 재생
-        guideVideoPlayer.Stop();
-        guideVideoPlayer.source = VideoSource.VideoClip;
-        guideVideoPlayer.clip = guideVideoClips[videoIndex];
-        Debug.Log(
-        $"[클립 대입 완료] 대상={guideVideoPlayer.name}, 클립={guideVideoPlayer.clip?.name ?? "None"}",
-        guideVideoPlayer
-    );
-        guideVideoPlayer.isLooping = true;
-        guideVideoPlayer.Play();
-    }
-
-    private void HideVideo()
-    {
-        if (guideVideoPlayer != null)
-        {
-            guideVideoPlayer.Stop();
-        }
-
-        if (guideVideoPanel != null)
-        {
-            guideVideoPanel.SetActive(false);
-        }
     }
 
     private void FindItem(DialogueItem item, Items items)
@@ -346,6 +293,11 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
 
             case DialogueTeleportTarget.GradePuzzle:
                 targetPosition = new Vector3(345, 326, 0);
+                break;
+            case DialogueTeleportTarget.GoChapter4_3Map:
+                if(GameManager.Instance == null) yield break;
+
+                targetPosition = new Vector3(250,370,0);
                 break;
 
             default:

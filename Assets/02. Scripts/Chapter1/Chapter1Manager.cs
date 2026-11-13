@@ -43,9 +43,6 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
     [Header("Chapter 4 GameObject")]
     [SerializeField] private GameObject cutsceneTrigger;
     [SerializeField] private GameObject[] blockedTriggers;
-    [Header("Chapter 1 맵 Deactive")]
-    [SerializeField] private GameObject deactiveObj;
-    [SerializeField] private GameObject activeObj;
 
     private bool FirstToSecond = false;
     private bool startPuzzle = false;
@@ -378,12 +375,7 @@ public class Chapter1Manager : Singleton<Chapter1Manager>
 
     public void StartChapterTwo()
     {
-        activeObj.SetActive(true);
         DialogueManager.Instance.SetPresentChapter(2);
     }
 
-    public void EndChapterOne()
-    {
-        deactiveObj.SetActive(false);
-    }
 }

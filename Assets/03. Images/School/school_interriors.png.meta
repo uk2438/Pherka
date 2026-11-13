@@ -718,6 +718,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: school_interriors_29
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 32
+        width: 96
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfb56819c542f044ba52db5c54100147
+      internalID: -788317318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -751,6 +772,7 @@ TextureImporter:
       school_interriors_26: -948686729
       school_interriors_27: 722519812
       school_interriors_28: -1040525112
+      school_interriors_29: -788317318
       school_interriors_3: 1858096315
       school_interriors_4: -1190788952
       school_interriors_5: 952476995

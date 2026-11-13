@@ -287,4 +287,9 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
                 .SetSpeed(speed);
         }
     }
+
+    public void Pause()
+    {
+        director.Pause();
+    }
 }
