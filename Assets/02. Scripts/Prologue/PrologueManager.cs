@@ -15,6 +15,8 @@ public class PrologueManager : Singleton<PrologueManager>
 
     [Header("나타나게 할 오브젝트들")]
     [SerializeField] private GameObject martNPC;
+    [SerializeField] private BGMTrigger martBGM;
+    [SerializeField] private AudioClip martClip;
     [SerializeField] private GameObject teddybear;
     [SerializeField] private GameObject[] martShinyEffects;
     [SerializeField] private GameObject square;
@@ -254,6 +256,8 @@ public class PrologueManager : Singleton<PrologueManager>
             effect.SetActive(boolean);
         }
         square.SetActive(boolean);
+        martBGM.clip = martClip;
+        martBGM.StartBGM();
         yield return null;
 
     }

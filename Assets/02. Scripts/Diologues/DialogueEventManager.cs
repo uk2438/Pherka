@@ -94,12 +94,6 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                     case 2:
                         FindItem(eventData.item, chpater2Items);
                         break;
-                    case 3:
-                        // PrologueManager.Instance.CheckWasAction(objectData);
-                        break;
-                    case 4:
-                        // PrologueManager.Instance.CheckWasAction(objectData);
-                        break;
                 }
                 break;
             case DialogueEventType.HiddenItem:
@@ -113,12 +107,6 @@ public class DialogueEventManager : Singleton<DialogueEventManager>
                         break;
                     case 2:
                         HiddenItem(eventData.item, chpater2Items);
-                        break;
-                    case 3:
-                        // PrologueManager.Instance.CheckWasAction(objectData);
-                        break;
-                    case 4:
-                        // PrologueManager.Instance.CheckWasAction(objectData);
                         break;
                 }
                 break;

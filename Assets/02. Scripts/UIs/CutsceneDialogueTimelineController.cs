@@ -270,6 +270,12 @@ public class CutsceneDialogueTimelineController : MonoBehaviour
         FinishDialogue();
     }
 
+    //오프닝을 위한 signal
+    public void StartCutScene()
+    {
+        GameManager.Instance.gameData.isRunningCutScene = true;
+    }
+
     private void SetTimelineSpeed(double speed)
     {
         if (director == null)

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4229682190918314176}
   - component: {fileID: 8220826699262593108}
   - component: {fileID: 7875361316173168485}
+  - component: {fileID: -4817962814627709306}
   m_Layer: 8
   m_Name: StepSound
   m_TagString: Untagged
@@ -240,3 +241,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb54865728a3b934b984627a278f5e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 0
+--- !u!114 &-4817962814627709306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8461597362848902847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda63be10c7ba864ab0b5c61005333ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip: {fileID: 0}
+  fadeDuration: 1.5
